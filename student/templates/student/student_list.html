@@ -1,0 +1,81 @@
+{% extends 'student/base.html' %}
+{% block content %}
+<section id="main-content">
+    <div class="wrapper">
+        <div class="row">
+                <div class="panel-body" style="overflow-x:auto;">
+                        <table class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr class="hdclr">
+                                    <th>Sl No.</th>
+                                    <th>Student Name</th>
+                                    <th>Date Of Birth</th>
+                                    <th>Blood Group</th>
+                                    <th>Caste</th>
+                                    <th>Sub Caste</th>
+                                    <th>Place Of Birth</th>
+                                    <th>Aadhar Number</th>
+                                    <th>Gender</th>  
+
+                                    <th>Father's Name</th>
+                                    <th>Father's Occupation</th> 
+                                    <th>Father's D.O.B</th>
+                                    <th>Father's Phone No</th>  
+                                    <th>Father's Email Id</th>                       
+                                    <th>Father's Annual Income</th> 
+                                    <th>Mother's Name</th>
+                                    <th>Mother's Occupation</th> 
+                                    <th>Mother's D.O.B</th>
+                                    <th>Mother's Phone No</th>  
+                                    <th>Mother's Email Id</th>                       
+                                    <th>Mother's Annual Income</th>             
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stud in object_list %}
+                                <tr>
+                                    <td>{{stud.id}}</td>
+                                    <td>{{stud.first_name}}{{stud.middle_name}}{{stud.last_name}}</td>
+                                    <td>{{stud.date_of_birth}}</td>
+                                    <td>{{stud.blood_group}}</td>
+                                    <td>{{stud.caste}}</td>
+                                    <td>{{stud.sub_caste}}</td>
+                                    <td>{{stud.place_of_birth}}</td>
+                                    <td>{{stud.aadhar_number}}</td>
+                                    <td>{{stud.gender}}</td>                                    
+                                    <td>{{p.parents.fathers_name}}</td>
+                                    <td>{{p.fathers_occupation}}</td>
+                                    <td>{{p.fathers_date_of_birth}}</td>
+                                    <td>{{p.fathers_phone_no}}</td>
+                                    <td>{{p.fathers_email_id}}</td>
+                                    <td>{{p.fathers_annual_income}}</td>
+                                    <td>{{p.mothers_name}}</td>
+                                    <td>{{p.mothers_occupation}}</td>
+                                    <td>{{p.mothers_date_of_birth}}</td>
+                                    <td>{{p.mothers_phone_no}}</td>
+                                    <td>{{p.mothers_email_id}}</td>
+                                    <td>{{p.mothers_annual_income}}</td>
+                                    <td>
+                                        <a href="#" class="social-icon">
+                                            <i class="fa fa-eye vieww"></i>
+                                            <div class="tooltip">View</div>
+                                        </a>
+                                        <a href="#" class="social-icon">
+                                            <i class="fa fa-pencil editt"></i>
+                                            <div class="tooltip">Edit</div>
+                                        </a>
+                                        <a href="#" class="social-icon">
+                                            <i class="fa fa-trash-o deletee"></i>
+                                            <div class="tooltip">Deletee</div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
