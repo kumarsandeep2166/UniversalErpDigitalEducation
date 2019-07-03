@@ -14,120 +14,75 @@
                                     Applicant Registration Form
                                 </h1>
                             </div>
-                            <form role="form" class="frmbgg"  method="POST" id="studentForm" data-branch-url="{% url 'ajax_load_branch' %}" novalidate>
+                            <form role="form" class="frmbgg"  method="POST" id="studentForm" data-branch-url="{% url 'ajax_load_branch' %}" >
                                 {% csrf_token %}
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="">
                                             <label>Name of Applicant</label>
                                         </div>
-                                        <div class="row">
+                                    <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.first_name| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.middle_name| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.last_name| as_crispy_field}}
+                                        </div>
+                                    </div> 
+                                    <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.date_of_birth| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.phone_no| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            {{ form.email_id| as_crispy_field}}
+                                        </div>
+                                    </div> 
+                                   <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
                                                 
-                                                {{ form | crispy }}
+                                                {{ form.department| as_crispy_field}}
+                                            </div>
+                                                
+                                    
+                                        <div class="form-group col-sm-4 col-xs-12">
                                             
+                                            {{ form.branch| as_crispy_field}}
+                                                
                                         </div>
-                                        
-                                        <!-- <div class="row">
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <input type="text" name="fname" id="fname" class="form-control" placeholder="First Name">
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <input type="text" name="mname" id="mname" class="form-control" placeholder="Middle Name">
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <input type="text" name="lname" id="lname" class="form-control" placeholder="Last Name">
-                                            </div>
-                                        </div> -->
-                                        <!-- <div class="row">
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Date of Birth</label>
-                                                <input type="date" name="dob" id="dob" class="form-control" placeholder="Date of Birth">
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Phone Number</label>
-                                                <input type="number" name="phone" id="phone" class="form-control" placeholder="phone Number">
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Email ID</label>
-                                                <input type="email" name="email" id="email" class="form-control" placeholder="Email ID">
-                                            </div>
-                                        </div> -->
-                                        <!-- <div class="row">
-                                                <div class="form-group col-sm-4 col-xs-12">
-                                                        <label>Department</label>
-                                                        <select class="form-control" id="department">
-                                                            <option value="">----Select Department----</option>
-                                                            {% for dept in department %}
-                                                            <option value="{{ dept.pk }}">{{dept.department}}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </div>
-                                                        
-                                            
-                                                <div class="form-group col-sm-4 col-xs-12">
-                                                    <label>Course</label>
-                                                        <select class="form-control">
-                                                            <option value="">----Select Course----</option>
-                                                            {% for branch in branches %}
-                                                            <option value="{{ branch.id }}">{{branch.branch}}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                </div>
     
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                    <label>Shift</label>
-                                                    <select class="form-control" name="shift" id="shift">
-                                                        <option value="">----Select Shift----</option>
-                                                        <option value="First Shift">First Shift</option>
-                                                        <option value="Second Shift">Second Shift</option>
-                                                    </select>
-                                            </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                               
+                                                {{ form.shift| as_crispy_field}}
                                         </div>
-                                        <div class="row">
-                                            <div class="form-group col-sm-12 col-xs-12">
-                                                <label>Educational Qualification Past Determined</label>
-                                                <textarea class="form-control txrare" name="rqual" id="rqual" placeholder="Educational Qualification Past Determined"></textarea>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-12 col-xs-12">
+                                           
+                                            {{ form.last_education| as_crispy_field}}
                                         </div>
-                                        <div class="row">
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Entrance</label>
-                                                <input type="text" class="form-control" name="ent" id="ent" placeholder="Entrance">
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Year</label>
-                                                <select class="form-control" id="year" name="year">
-                                                    <option value="">----Select Year----</option>
-                                                    <option value="2000">2000</option>
-                                                    <option value="2001">2001</option>
-                                                    <option value="2002">2002</option>
-                                                    <option value="2003">2003</option>
-                                                    <option value="2004">2004</option>
-                                                    <option value="2005">2005</option>
-                                                    <option value="2006">2006</option>
-                                                    <option value="2007">2007</option>
-                                                    <option value="2008">2008</option>
-                                                    <option value="2009">2009</option>
-                                                    <option value="2010">2010</option>
-                                                    <option value="2011">2011</option>
-                                                    <option value="2012">2012</option>
-                                                    <option value="2013">2013</option>
-                                                    <option value="2014">2014</option>
-                                                    <option value="2015">2015</option>
-                                                    <option value="2016">2016</option>
-                                                    <option value="2017">2017</option>
-                                                    <option value="2018">2018</option>
-                                                    <option value="2019">2019</option>
-                                                    <option value="2020">2020</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group col-sm-4 col-xs-12">
-                                                <label>Score</label>
-                                                <input type="number" name="score" id="score" class="form-control" placeholder="Score">
-                                            </div>
-                                        </div> -->
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                           
+                                            {{ form.entrance| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                          
+                                            {{ form.year| as_crispy_field}}
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            
+                                            {{ form.score| as_crispy_field}}
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
                                 <button type="reset" class="btn btn-info cancel">Cancel</button>
                                 <button type="submit" class="btn btn-info save">Save & Proceed to Pay</button>
                             </form>
@@ -141,7 +96,7 @@
     
     <script type="text/javascript">
      $("#id_department").change(function(event){
-         event.preventDefault();
+        event.preventDefault();
         var url=$("#studentForm").attr("data-branch-url");
         var department_id=$(this).val();
 

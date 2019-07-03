@@ -1,0 +1,41 @@
+{% extends 'student/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section id="main-content">
+        <div class="wrapper">
+                <div class="col-sm-10 col-xs-12 col-sm-offset-1">
+                    <button type="submit" class="btn btn-info"><a href="{% url 'section_create' %}">Add a Section</a></button>
+                    <table class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr class="hdclr">
+                                        <th>Sl No.</th>
+                                        <th>Stream Name</th>                                                                             
+                                        <th>Course Name</th>
+                                        <th>Batch No</th>
+                                        <th>Section Name</th>                                        
+                                        <th>Remark</th>
+                                       
+                                        <th>Action</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in object_list %}
+                                <tr>
+                                        <td>{{i.id}}</td>
+                                        <td>{{i.stream}}</td>
+                                        <td>{{i.course_name}}</td>
+                                        <td>{{i.batch_no}}</td>
+                                        <td>{{i.section_name}}</td>                                        
+                                        <td>{{i.remark}}</td>
+                                        
+                                        <td><a href="{% url 'section_detail' pk=i.pk %}">View</a>||<a href="{% url 'section_edit' pk=i.pk %}">Edit</a>||<a href="{% url 'section_delete' pk=i.pk %}">Delete</a></td>
+                                       
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+        </div>
+</section>
+{% endblock content %}

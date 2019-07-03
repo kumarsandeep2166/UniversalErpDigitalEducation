@@ -1,0 +1,68 @@
+{% extends 'student/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section id="main-content">
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-lg-6 col-sm-6 col-sm-offset-3">
+                <div class="">
+                    <div class="panel-body">
+                        <div class="text-center">
+                            <h1 class="hdrcolorbg">
+                                Batch
+                            </h1>
+                        </div>
+                        <form role="form" class="frmbgg" action="#" method="post">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Stream</label>
+                                            <select class="form-control">
+                                                <option value="">----Select Stream----</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="Management">Management</option>
+                                                <option value="Medical">Medical</option>
+                                                <option value="Pharmacy">Pharmacy</option>
+                                                <option value="Regular Degree">Regular Degree</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Course Name</label>
+                                            <select class="form-control">
+                                                <option value="">----Select Course Name----</option>
+                                                <option value="course1">course1</option>
+                                                <option value="course2">course2</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Batch No.</label>
+                                            <input type="text" class="form-control" placeholder="Batch No.">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Starting Date</label>
+                                            <input type="text" class="form-control" placeholder="Starting Date">
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Ending Date</label>
+                                            <input type="text" class="form-control" placeholder="Ending Date">
+                                        </div>
+                                        <div class="form-group col-sm-4 col-xs-12">
+                                            <label>Remark</label>
+                                            <input type="text" class="form-control" placeholder="Remark">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-info cancel">Cancel</button>
+                            <button type="submit" class="btn btn-info save">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

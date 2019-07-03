@@ -63,25 +63,6 @@ a,a:hover,a:focus {
     margin-top:30px;
 }
 /*-------------my_style--------------*/
-.control-group{
-    float: left;
-}
-.control-group .textinput,
-.control-group .select,
-.control-group .numberinput,
-.control-group .emailinput,
-.control-group .dateinput{
-    border: 1px solid #e2e2e4;
-    box-shadow: none;
-    color: #000;
-    border-radius: 0;
-    height: 40px;
-    border: 2px solid #64c0bb;
-    border-radius: 8px;
-    outline: 0;
-    padding: 6px 12px;
-    margin-right: 17p
-}
 .clrbg{
     border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -96,12 +77,10 @@ a,a:hover,a:focus {
     font-family: 'Roboto', sans-serif;
 }
 .clrbg label {
+    font-weight: normal;
+    font-size: 15px;
     font-family: 'Roboto', sans-serif;
-    float: left;
-    color: #000000;
-    font-weight: bold;
-    font-size: 13px;
-    text-shadow: 1px 1px 1px #fff;
+    color: #000;
 }
 .clrbg .subhdrt h2{
     color: #000000;
@@ -140,6 +119,27 @@ a,a:hover,a:focus {
 }
 .form-group {
     margin-bottom: 33px !important;
+}
+input,
+select,
+textarea{
+    border: 1px solid #e2e2e4;
+    box-shadow: none;
+    color: #000;
+    border-radius: 0;
+    height: 43px;
+    border: 2px solid #64c0bb;
+    border-radius: 8px;
+    outline: 0;
+    width: 100%;
+}
+.checkboxinput{
+    width: auto;
+}
+#id_present_same_address,
+#id_term_and_condition{
+    position: absolute;
+    top: -48px;
 }
 .hdclr {
     background-color: #1fb5ad !important;
@@ -341,7 +341,7 @@ label {
     color: #000;
     margin:0 25px 20px;
 }
-.txrare{
+.textarea{
     height:100px !important;
 }
 .subbtn{
@@ -351,6 +351,13 @@ label {
     border-radius: 0;
     padding: 6px 20px;
     float: right;
+}
+.radio input{
+    height: 12px;
+    width: auto;
+}
+#exampleInputFile{
+    border: 0px solid #64c0bb;
 }
 .edit{   
     background-color: #099bff;
@@ -6725,14 +6732,78 @@ right: -1px;
     transform: rotate(45deg);
 }
 .stfrmdt td{
-    padding: 0  !important;
+    padding: 0 !important;
 }
-.stfrmdt .form-group {
+.clearablefileinput{
+    border: 0px solid #d3f5f3 !important;
+}
+.stfrmdt1 .form-group {
     margin-bottom: 4px !important;
 }
 .stfrmdt .form-control{
     border-radius:10px !important;
 }
+.input-append{
+    position:relative;
+}
+.input-group-btn {
+    position: relative;
+    font-size: 0;
+    white-space: nowrap;
+}
+.srcbtn{
+     cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    -ms-transition: all 0.3s ease-in-out;
+    padding: 12px 15px;
+    color: #fff;
+    background-color: #66a51c;
+    border-color: #66a51c;
+    border-radius: 0;
+    border-top-right-radius: 3px !important;
+    border-bottom-right-radius: 3px !important;
+    outline: 0;
+    border: 0;
+}
+.modal-footer{
+    border: 0;
+    padding:0px 0 20px;
+    text-align: center;
+}
+.modal-body {
+    border: 0;
+    padding:40px 0 30px;
+    text-align: center;
+}
+.modal-body p{    
+    font-family:'Open Sans',sans-serif;
+    font-size:20px;
+}
+.okbtn{
+    color: #fff;
+    background-color: #10b129;
+    border-color: #10b129;
+    padding: 8px 20px;
+    outline:0;
+}
+.cnlbtn{
+    color: #fff;
+    background-color: #f30505;
+    border-color: #f30505;
+    padding: 8px 20px;
+    outline:0;    
+}
+
+
+
+
+
+
+
 /*-------------responsive------------*/
 
 @media only screen and (max-width:768px) {

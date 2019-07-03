@@ -1,0 +1,88 @@
+{% extends 'student/base.html' %}
+{% block content %}
+
+<section id="main-content">
+    <div class="wrapper">
+           {% include 'student/empfilter.html' %}
+        <div class="row">
+                <div class="panel-body" style="overflow-x:auto;">
+                        <table class="table table-bordered table-striped table-condensed">
+                            <thead>
+                                <tr class="hdclr">
+                                    <th>Sl No.</th>
+                                    <th>Employee Name</th>
+                                    <th>Date Of Birth</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Aadhar Number</th>
+                                    <th>Address</th>  
+                                    <th>Status</th>                                    
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for emp in object_list %}
+                                <tr>
+                                        <td>{{emp.id}}</td>
+                                        <td><a href="{{ emp.get_absolute_url }}">{{emp.title}}{{emp.first_name}}{{emp.middle_name}}{{emp.last_name}}</a></td>
+                                        <td>{{emp.date_of_birth}}</td>
+                                        <td>{{emp.phone_no}}</td>
+                                        <td>{{emp.email}}</td>
+                                        <td>{{emp.employee_department}}</td>
+                                        <td>{{emp.employee_designation}}</td>
+                                        <td>{{emp.aadhar_no}}</td>
+                                        <td>{{emp.communication_address}}</td>
+                                        <td>{{emp.status}}</td>      
+                                    
+                                    <td>
+                                        <a href="{% url 'employee_detail' pk=emp.id %}" class="social-icon">
+                                            <i class="fa fa-eye vieww"></i>
+                                            <div class="tooltip">View</div>
+                                        </a>
+                                        <a href="{% url 'employee_edit' pk=emp.id %}" class="social-icon">
+                                            <i class="fa fa-pencil editt"></i>
+                                            <div class="tooltip">Edit</div>
+                                        </a>
+                                        <a href="{% url 'employee_delete' pk=emp.id %}" class="social-icon" id="delete"  data-toggle="modal" data-target="#myModal">
+                                            <i class="fa fa-trash-o deletee"></i>
+                                            <div class="tooltip">Delete</div>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <div class="container-fluid">
+                                  <h3>No Details Found having search query "{{ request.GET.q }}"</h3>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="modal fade" id="myModal" role="dialog" style="display: none;">
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        Are you sure you want to delete "{{ object }}" ?
+                                    <input type="submit" value="Submit" class="okbtn" />
+                                    <button type="button" class="btn btn-default cnlbtn" data-dismiss="modal">Cancel</button>                                                                    
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function(event){
+      $('#delete').click(function(){
+        return confirm("Are you sure to delete this post?");
+      });
+    });
+    </script>
+{% endblock content %}
+

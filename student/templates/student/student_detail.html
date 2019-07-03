@@ -1,0 +1,269 @@
+{% extends 'student/base.html' %}
+
+{{object.twelth_school}}<br>
+{{object.twelth_university}}<br>
+{{object.twelth_full_mark}}<br>
+{{object.twelth_secured_mark}}<br>
+{{object.tewlth_percentage}}<br>
+{{object.degree_stream}}<br>
+{{object.degree_college}}<br>
+{{object.degree_university}}<br>
+{{object.degree_full_mark}}<br>
+{{object.degree_secured_mark}}<br>
+{{object.degree_percentage}}<br>
+{{object.postdegree_stream}}<br>
+{{object.postdegree_college}}<br>
+{{object.postdegree_university}}<br>
+{{object.postdegree_full_mark}}<br>
+{{object.postdegree_secured_mark}}<br>
+{{object.postdegree_percentage}}<br>
+{{object.present_house_plot_no}}<br>
+{{object.present_Lane}}<br>
+{{object.present_pin}}<br>
+{{object.present_district}}<br>
+{{object.present_state}}<br>
+{{object.present_country}}<br>
+{{object.present_same_address}}<br>
+{{object.permanent_house_plot_no}}<br>
+{{object.permanent_Lane}}<br>
+{{object.permanent_pin}}<br>
+{{object.permanent_district}}<br>
+{{object.permanent_state}}<br>
+{{object.permanent_country}}<br>
+{{object.entrance_name}}<br>
+{{object.entrance_year}}<br>
+{{object.entrance_score}}<br>
+
+
+{% block content %}
+
+<section id="main-content">
+    <div class="wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <header class="panel-heading">
+                        Student  Details For {{object.first_name}}  {{object.middle_name}}  {{object.last_name}}
+                    </header>
+                    <div class="panel-body" style="overflow-x:auto;">
+                        <table class="table table-bordered table-striped table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>{{object.first_name}}  {{object.middle_name}}  {{object.last_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Date Of Birth</td>
+                                    <td>{{object.date_of_birth}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Blood Group</td>
+                                    <td>{{object.blood_group}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Caste</td>
+                                    <td>{{object.caste}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Sub Caste</td>
+                                    <td>{{object.sub_caste}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Place Of Birth</td>
+                                    <td>{{object.place_of_birth}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Aadhar Number</td>
+                                    <td>{{object.aadhar_number}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Gender</td>
+                                    <td>{{object.gender}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Name</td>
+                                    <td>{{object.fathers_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.fathers_occupation}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Date Of Birth</td>
+                                    <td>{{object.fathers_date_of_birth}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Phone Number</td>
+                                    <td>{{object.fathers_phone_no}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's EmailId</td>
+                                    <td>{{object.fathers_email_id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Annual Income</td>
+                                    <td>{{object.fathers_annual_income}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mother's Name</td>
+                                    <td>{{object.mothers_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mother's Occupation</td>
+                                    <td>{{object.mothers_occupation}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mother's Date of Birth</td>
+                                    <td>{{object.mothers_date_of_birth}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Mother's Phone Number</td>
+                                    <td>{{object.mothers_phone_no}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mother's EmailId</td>
+                                    <td>{{object.mothers_email_id}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Mother's Annaul Income</td>
+                                    <td>{{object.mothers_annual_income}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th Board</td>
+                                    <td>{{object.tenth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th Subjects</td>
+                                    <td>{{object.tenth_subjects}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th School</td>
+                                    <td>{{object.tenth_school}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th Full Mark</td>
+                                    <td>{{object.tenth_full_mark}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th Secured Mark</td>
+                                    <td>{{object.tenth_secured_mark}}</td>
+                                </tr>
+                                <tr>
+                                    <td>10th Percentage</td>
+                                    <td>{{object.tenth_percentage}}</td>
+                                </tr>
+                                <tr>
+                                    <td>12th Board</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>12th Stream</td>
+                                    <td>{{object.twelth_stream}}</td>
+                                </tr>
+                                <tr>
+                                    <td>12th College</td>
+                                    <td>{{object.twelth_school}}</td>
+                                </tr>
+                                <tr>
+                                    <td>12th  Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>{{object.twelth_board}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Father's Occupation</td>
+                                    <td>Male</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

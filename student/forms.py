@@ -1,8 +1,5 @@
 from django import forms
-from .models import (StudentEnquiry, Branch,StudentApplicationForm,
-                    StudentDetail,ParentDetails,Tenth,
-                    Twelth,Degree,PostDegree,
-                    Entrance,PresentAddress,PermanentAddress,AttachmentDetails)
+from .models import (StudentEnquiry, Branch,Student,Employee)
 from datetime import datetime
 #from django.views.generic.edit import FormView
 class StudentEnquiryForm(forms.ModelForm):
@@ -10,6 +7,7 @@ class StudentEnquiryForm(forms.ModelForm):
     class Meta:
         model=StudentEnquiry
         fields=('first_name','middle_name','last_name','date_of_birth','phone_no','email_id','department','branch','shift','last_education','entrance','year','score')
+        ordering_by=['-id']
         SHIFT_CHOICES=(("First Shift","First Shift"),("Second Shift","Second Shift")
         )
         
@@ -30,61 +28,92 @@ class StudentEnquiryForm(forms.ModelForm):
         elif self.instance.pk:
             self.fields['branch'].queryset=self.instance.department.branch_set.order_by('branch')
 
+class StudentForm(forms.ModelForm):
+    tenth_board=forms.CharField(label='')
+    tenth_subjects=forms.CharField(label='')
+    tenth_school=forms.CharField(label='')
+    tenth_full_mark=forms.IntegerField(label='')
+    tenth_secured_mark=forms.IntegerField(label='')
+    tenth_percentage=forms.FloatField(label='')
 
-class StudentDetailForm(forms.ModelForm):
-    class Meta:
-        model=StudentDetail
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
 
-class ParentDetailsForm(forms.ModelForm):
-    class Meta:
-        model=ParentDetails
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
+    twelth_board=forms.CharField(label='')
+    twelth_stream=forms.CharField(label='')
+    twelth_school=forms.CharField(label='')
+    twelth_full_mark=forms.IntegerField(label='')
+    twelth_secured_mark=forms.IntegerField(label='')
+    tewlth_percentage=forms.FloatField(label='')
+    
+    degree_stream=forms.CharField(label='')
+    degree_college=forms.CharField(label='')
+    degree_university=forms.CharField(label='')
+    degree_full_mark=forms.IntegerField(label='')
+    degree_secured_mark=forms.IntegerField(label='')
+    degree_percentage=forms.FloatField(label='')
 
-class TenthForm(forms.ModelForm):
-    class Meta:
-        model=Tenth
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
 
-class TwelthForm(forms.ModelForm):
+    postdegree_stream=forms.CharField(label='')
+    postdegree_college=forms.CharField(label='')
+    postdegree_university=forms.CharField(label='')
+    postdegree_full_mark=forms.IntegerField(label='')
+    postdegree_secured_mark=forms.IntegerField(label='')
+    postdegree_percentage=forms.FloatField(label='')
+    present_same_address=forms.BooleanField(label='',required=False)
+    entrance_name=forms.CharField(label='')
+    entrance_year=forms.Select()
+    entrance_score=forms.CharField(label='')
+    student_pic=forms.ImageField(label='')
+    student_tenth=forms.ImageField(label='')
+    tenth_marksheet=forms.ImageField(label='')
+    student_twelth=forms.ImageField(label='')
+    tewlth_marksheet=forms.ImageField(label='')
+    student_degree=forms.ImageField(label='')
+    degree_marksheet=forms.ImageField(label='')
+    student_clc=forms.ImageField(label='')
+    student_conduct_certificate=forms.ImageField(label='')
+    student_migration=forms.ImageField(label='')
+    student_birth_certificate=forms.ImageField(label='')
+    student_address=forms.ImageField(label='')
+    student_thumb=forms.ImageField(label='')
+    student_signature=forms.ImageField(label='')
+    term_and_condition=forms.BooleanField(label='',required=False)
     class Meta:
-        model=Twelth
+        model=Student
         fields='__all__'
         template_name='student/studentadmissionform.html'
+        # widgets={
+        #     'student_pic':forms.FileField(attrs={'onchange': "readURL(this);"})
+        # }
+class EmployeeForm(forms.ModelForm):
+    tenth_subjects=forms.CharField(label='')
+    tenth_school=forms.CharField(label='')
+    tenth_board=forms.CharField(label='')
+    tenth_full_mark=forms.IntegerField(label='')
+    tenth_secured_mark=forms.IntegerField(label='')
+    tenth_percentage=forms.FloatField(label='')
+    
+    twelth_board=forms.CharField(label='')
+    twelth_stream=forms.CharField(label='')
+    twelth_college=forms.CharField(label='')
+    twelth_full_mark=forms.IntegerField(label='')
+    twelth_secured_mark=forms.IntegerField(label='')
+    tewlth_percentage=forms.FloatField(label='')
+    
+    degree_stream=forms.CharField(label='')
+    degree_college=forms.CharField(label='')
+    degree_university=forms.CharField(label='')
+    degree_full_mark=forms.IntegerField(label='')
+    degree_secured_mark=forms.IntegerField(label='')
+    degree_percentage=forms.FloatField(label='')
 
-class DegreeForm(forms.ModelForm):
-    class Meta:
-        model=Degree
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
 
-class PostDegreeForm(forms.ModelForm):
+    postdegree_stream=forms.CharField(label='')
+    postdegree_college=forms.CharField(label='')
+    postdegree_university=forms.CharField(label='')
+    postdegree_full_mark=forms.IntegerField(label='')
+    postdegree_secured_mark=forms.IntegerField(label='')
+    postdegree_percentage=forms.FloatField(label='')
     class Meta:
-        model=PostDegree
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
-
-class EntranceForm(forms.ModelForm):
-    class Meta:
-        model=Entrance
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
-
-class PresentAddressForm(forms.ModelForm):
-    class Meta:
-        model=PresentAddress
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
-class PermanentAddressForm(forms.ModelForm):
-    class Meta:
-        model=PermanentAddress
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
-class AttachmentForm(forms.ModelForm):
-    class Meta:
-        model=AttachmentDetails
-        fields='__all__'
-        template_name='student/studentadmissionform.html'
+        model=Employee
+        fields=('__all__')
+        template_name='student/employeemanagement.html'

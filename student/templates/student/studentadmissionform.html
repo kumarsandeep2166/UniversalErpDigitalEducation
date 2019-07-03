@@ -11,25 +11,10 @@
                         </h1>
                         <div class="col-sm-10 col-xs-12 col-sm-offset-1">
                             <div class="panel-body">
-                                <form role="form" class="stfrmdt" method="POST" enctype="multipart/form-data">
+                                <form role="form" class="stfrmdt1" method="POST" enctype="multipart/form-data">
                                     <div class="col-sm-10 col-xs-12 col-sm-offset-1">
                                             {% csrf_token %}
-                                            {{ form1 | crispy}}
-                                            {{ form2 | crispy}}
-                                            {{ form3 | crispy}}
-                                            {{ form4 | crispy}}
-                                            {{ form5 | crispy}}
-                                            {{ form6 | crispy}}
-                                            {{ form7 | crispy}}
-                                            {{ form10 | crispy}}
-                                            {{ form8 | crispy}}
-                                            {{ form9 | crispy}}
                                     </div>
-                                   
-                                   
-                                   
-                                   
-                                   
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="row">
@@ -37,9 +22,6 @@
                                                     <div class="subhdrt">
                                                         <h2>Enrollment Details</h2>
                                                     </div>
-                                                   
-                                                    
-                
                                                     <div class="form-group col-sm-4 col-xs-12">
                                                         <label>Enrollment Date</label>
                                                         <input type="text" class="form-control" placeholder="Enrollment Date">
@@ -60,13 +42,14 @@
                                                 <div class="form-group col-sm-3 col-xs-12">
                                                     <div class="file-upload">
                                                         <div class="image-upload-wrap">
-                                                            <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+                                                            <!-- <input class="clearablefileinput" type="file" onchange="readURL(this);" accept="image/*"> -->
+                                                            {{ form.student_pic | as_crispy_field}}
                                                             <div class="drag-text">
                                                                 <h3>Upload Recent Passport size Photo</h3>
                                                             </div>
                                                         </div>
                                                         <div class="file-upload-content">
-                                                            <img class="file-upload-image" src="#" alt="your image" />
+                                                            <img class="file-upload-image" src="#" alt="your image">
                                                             <div class="image-title-wrap">
                                                                 <button type="button" onclick="removeUpload()" class="remove-image">Remove </button>
                                                             </div>
@@ -80,63 +63,44 @@
                                                     <div class="subhdrt">
                                                         <h2>Student Details</h2>
                                                     </div>
-                                                    <div class="col-sm-12 col-xs-12">
-                                                        <label>Name of Applicant</label>
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                        {{ form.first_name | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-4 col-xs-12">
-                                                        <input type="text" class="form-control" placeholder="First Name">
+                                                            {{ form.middle_name | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-4 col-xs-12">
-                                                        <input type="text" class="form-control" placeholder="Middle Name">
-                                                    </div>
-                                                    <div class="form-group col-sm-4 col-xs-12">
-                                                        <input type="text" class="form-control" placeholder="Last Name">
+                                                            {{ form.last_name | as_crispy_field}}
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Date of Birth</label>
-                                                        <input type="text" class="form-control" placeholder="Date of Birth">
+                                                    <div class="form-group col-sm-3 col-xs-12">                                                       
+                                                        {{ form.date_of_birth | as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-3 col-xs-12">                                                       
+                                                        {{ form.blood_group | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Blood Group</label>
-                                                        <input type="text" class="form-control" placeholder="Blood Group">
+                                                            {{ form.nationality | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Nationality</label>
-                                                        <input type="text" class="form-control" placeholder="Nationality">
+                                                            {{ form.caste | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Category/Caste</label>
-                                                        <input type="text" class="form-control" placeholder="Category/Caste">
+                                                            {{ form.sub_caste | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Sub Caste</label>
-                                                        <input type="text" class="form-control" placeholder="Sub Caste">
+                                                            {{ form.place_of_birth | as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Place of Birth</label>
-                                                        <input type="text" class="form-control" placeholder="Place of Birth">
+                                                            {{ form.aadhar_number | as_crispy_field}}
+                                                            
                                                     </div>
                                                     <div class="form-group col-sm-3 col-xs-12">
-                                                        <label>Aadhaar Number</label>
-                                                        <input type="text" class="form-control" placeholder="Aadhaar Number">
+                                                            {{ form.gender | as_crispy_field}}
+                                                            
                                                     </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                        <div class="col-sm-12 col-xs-12">
-                                                            <label class="row col-form-label">
-                                                                Gender
-                                                            </label>
-                                                        </div>
-                                                        <div class="radio minimal rdr">
-                                                            <input tabindex="3" type="radio" name="demo-radio">
-                                                            <label>Male</label>
-                                                        </div>
-                                                        <div class="radio minimal rdr">
-                                                            <input tabindex="3" type="radio" name="demo-radio">
-                                                            <label>Female</label>
-                                                        </div>
-                                                    </div>
+                                                  
                                                 </div>
                                             </div>
 
@@ -145,55 +109,43 @@
                                                     <div class="subhdrt">
                                                         <h2>Parents Details</h2>
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Father Name</label>
-                                                        <input type="text" class="form-control" placeholder="Father Name">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_name | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Occupation</label>
-                                                        <input type="text" class="form-control" placeholder="Occupation">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_occupation | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Date of Birth</label>
-                                                        <input type="text" class="form-control" placeholder="Date of Birth">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_date_of_birth | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Phone No.</label>
-                                                        <input type="text" class="form-control" placeholder="Phone No.">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_phone_no | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Email Id</label>
-                                                        <input type="text" class="form-control" placeholder="Email Id">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_email_id | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Annual Income</label>
-                                                        <input type="text" class="form-control" placeholder="Annual Income">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.fathers_annual_income | as_crispy_field}}
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Mother Name</label>
-                                                        <input type="text" class="form-control" placeholder="Mother Name">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_name | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Occupation</label>
-                                                        <input type="text" class="form-control" placeholder="Occupation">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_occupation | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Date of Birth</label>
-                                                        <input type="text" class="form-control" placeholder="Date of Birth">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_date_of_birth | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Phone No.</label>
-                                                        <input type="text" class="form-control" placeholder="Phone No.">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_phone_no | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Email Id</label>
-                                                        <input type="text" class="form-control" placeholder="Email Id">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_email_id | as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-2 col-xs-12">
-                                                        <label>Annual Income</label>
-                                                        <input type="text" class="form-control" placeholder="Annual Income">
+                                                    <div class="form-group col-sm-4 col-xs-12">
+                                                            {{ form.mothers_annual_income | as_crispy_field}}
                                                     </div>
                                                 </div>
                                             </div>
@@ -204,8 +156,8 @@
                                                 <div class="subhdrt">
                                                     <h2>Educational Details</h2>
                                                 </div>
-                                                <div class="col-sm-12 col-xs-12">
-                                                    <table class="table table-bordered table-striped cf">
+                                                <div class="col-sm-12 col-xs-12" style="overflow-x: auto;">
+                                                    <table class="table table-bordered table-striped table-responsive cf">
                                                         <thead class="cf">
                                                             <tr class="dth">
                                                                 <th>Exam</th>
@@ -220,39 +172,41 @@
                                                         <tbody>
                                                             <tr>
                                                                 <td>10th</td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
+                                                                <td>{{ form.tenth_board | as_crispy_field}}</td>
+                                                                <td>{{ form.tenth_subjects| as_crispy_field}}</td>
+                                                                <td>{{ form.tenth_school| as_crispy_field}}</td>
+                                                                <td>{{ form.tenth_full_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.tenth_secured_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.tenth_percentage| as_crispy_field}}</td>
+                                                                
                                                             </tr>
                                                             <tr>
                                                                 <td>+2</td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
+                                                                <td>{{ form.twelth_board | as_crispy_field}}</td>
+                                                                <td>{{ form.twelth_stream | as_crispy_field}}</td>
+                                                                <td>{{ form.twelth_school| as_crispy_field}}</td>
+                                                                
+                                                                <td>{{ form.twelth_full_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.twelth_secured_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.tewlth_percentage| as_crispy_field}}</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Graduate</td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
+                                                                <td>{{ form.degree_stream | as_crispy_field}}</td>
+                                                                <td>{{ form.degree_college| as_crispy_field}}</td>
+                                                                <td>{{ form.degree_university| as_crispy_field}}</td>
+                                                                <td>{{ form.degree_full_mark | as_crispy_field}}</td>
+                                                                <td>{{ form.degree_secured_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.degree_percentage| as_crispy_field}}</td>
                                                             </tr>
                                                             <tr>
                                                                 <td>Post Graduate</td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
+                                                                <td>{{ form.postdegree_stream | as_crispy_field}}</td>
+                                                                <td>{{ form.postdegree_college| as_crispy_field}}</td>
+                                                                <td>{{ form.postdegree_university| as_crispy_field}}</td>
+                                                                <td>{{ form.postdegree_full_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.postdegree_secured_mark| as_crispy_field}}</td>
+                                                                <td>{{ form.postdegree_percentage| as_crispy_field}}</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -274,25 +228,13 @@
                                                         <tbody>
                                                             <tr>
                                                                 <td>
-                                                                    <select class="form-control">
-                                                                        <option>-----Select Entrance-----</option>
-                                                                        <option value="Cat">Cat</option>
-                                                                        <option value="Mat">Mat</option>
-                                                                    </select>
+                                                                        {{ form.entrance_name| as_crispy_field}}
                                                                 </td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
-                                                                <td><input type="text" class="form-control" placeholder=""></td>
+                                                                <td class="numeric">{{ form.entrance_year}}</td>
+                                                                <td class="numeric">{{ form.entrance_score| as_crispy_field}}</td>
                                                             </tr>
-                                                            <tr>
-                                                                <td>
-                                                                    <select class="form-control">
-                                                                        <option>-----Select Entrance-----</option>
-                                                                        <option value="Cat">Cat</option>
-                                                                        <option value="Mat">Mat</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td class="numeric"><input type="text" class="form-control" placeholder=""></td>
-                                                                <td class="numeric"><input type="text" class="form-control" placeholder=""></td>
+                                                           
+                                                                
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -304,108 +246,59 @@
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="row subhdrt2">
-                                                        <h2>Permanent Address</h2>
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>House/Plot/At</label>
-                                                        <input type="text" class="form-control" placeholder="House/Plot/At">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>City</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select City-----</option>
-                                                            <option value="City1">City1</option>
-                                                            <option value="City2">City2</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Post</label>
-                                                        <input type="text" class="form-control" placeholder="Post">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>District</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select District-----</option>
-                                                            <option value="Dist1">Dist1</option>
-                                                            <option value="Dist2">Dist2</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>State</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select State-----</option>
-                                                            <option value="State1">State1</option>
-                                                            <option value="State2">State2</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Pin Code</label>
-                                                        <input type="text" class="form-control" placeholder="Pin">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Country</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select Country-----</option>
-                                                            <option value="Country1">Country1</option>
-                                                            <option value="Country2">Country2</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="row subhdrt2">
                                                         <h2>Present Address</h2>
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>House/Plot/At</label>
-                                                        <input type="text" class="form-control" placeholder="House/Plot/At">
+                                                            {{ form.present_house_no| as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>City</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select City-----</option>
-                                                            <option value="City1">City1</option>
-                                                            <option value="City2">City2</option>
-                                                        </select>
+                                                            {{ form.present_Lane| as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Post</label>
-                                                        <input type="text" class="form-control" placeholder="Post">
+                                                            {{ form.present_pin| as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>District</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select District-----</option>
-                                                            <option value="Dist1">Dist1</option>
-                                                            <option value="Dist2">Dist2</option>
-                                                        </select>
+                                                            {{ form.present_district| as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>State</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select State-----</option>
-                                                            <option value="State1">State1</option>
-                                                            <option value="State2">State2</option>
-                                                        </select>
+                                                            {{ form.present_state| as_crispy_field}}
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Pin Code</label>
-                                                        <input type="text" class="form-control" placeholder="Pin">
+                                                            {{ form.present_country| as_crispy_field}}
                                                     </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label>Country</label>
-                                                        <select class="form-control">
-                                                            <option>-----Select Country-----</option>
-                                                            <option value="Country1">Country1</option>
-                                                            <option value="Country2">Country2</option>
-                                                        </select>
-                                                    </div>
+                                                    
                                                 </div>
+                                                <div class="col-sm-6">
+                                                    <div class="row subhdrt2">
+                                                        <h2>Permanent Address</h2>
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_house_no| as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_Lane| as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_pin| as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_district| as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_state| as_crispy_field}}
+                                                    </div>
+                                                    <div class="form-group col-sm-6 col-xs-12">
+                                                            {{ form.permanent_country| as_crispy_field}}
+                                                    </div>
+                                                    
+                                                </div>
+                                                
                                                 <div class="col-sm-12 col-xs-12 mngtop30">
                                                     <label class="contnr">
-                                                        Check this box if Permanent Address and Present Address are the same.
-                                                        <input type="checkbox">
-                                                        <span class="checkmark"></span>
+                                                            Check this box if Permanent Address and Present Address are the same.
+                                                        <!-- <span class="checkmark"></span> -->
                                                     </label>
+                                                    {{ form.present_same_address| as_crispy_field}}
                                                 </div>
                                             </div>
                                             
@@ -428,12 +321,12 @@
                                                                 <td>10th</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_tenth| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.tenth_marksheet| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -441,12 +334,12 @@
                                                                 <td>+2</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_twelth| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.tewlth_marksheet| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -454,12 +347,12 @@
                                                                 <td>Degree</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_degree| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.degree_marksheet| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -467,7 +360,7 @@
                                                                 <td>ClC of Last Exam</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_clc| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -475,7 +368,7 @@
                                                                 <td>Conduct of last Exam</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_conduct_certificate| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -483,7 +376,7 @@
                                                                 <td>Migration</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_migration| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -491,23 +384,23 @@
                                                                 <td>Birth Certificate</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_birth_certificate| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                            <tr>
+                                                            <!-- <tr>
                                                                 <td>Medical Certificate</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.present_same_address| as_crispy_field}}
                                                                     </div>
                                                                 </td>
-                                                            </tr>
+                                                            </tr> -->
                                                             <tr>
                                                                 <td>Address</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_address| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -515,7 +408,7 @@
                                                                 <td>Thumb</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_thumb| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -523,7 +416,7 @@
                                                                 <td>Signature</td>
                                                                 <td>
                                                                     <div class="form-group">
-                                                                        <input type="file">
+                                                                            {{ form.student_signature| as_crispy_field}}
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -534,10 +427,11 @@
 
                                             <h4 class="trem">Terms and Conditions</h4>
                                             <label class="contnr">
-                                                I accept the terms and conditions for signing up to this service, and hereby confirm I have read the privacy policy.
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
+                                                 I accept the terms and conditions for signing up to this service, and hereby confirm I have read the privacy policy.
+                                                
+                                                <!-- <span class="checkmark"></span> -->
                                             </label>
+                                            {{ form.term_and_condition| as_crispy_field}} 
                                         </div>
                                     </div>
                                     <button type="reset" class="btn btn-info cancel">Cancel</button>
@@ -549,17 +443,15 @@
                 </div>
             </div>
         </section>
-    </section>
 
     <!--js-->
     <script src="{% static 'js/jquery.dcjqaccordion.2.7.js' %}"></script>
     <script src="{% static 'js/jquery.nicescroll.js' %}"></script>
     <!--common_script-->
     <script src="{% static 'js/scripts.js' %}"></script>
-    <!-- add_row_js -->
     <!-- image_upload -->
     <script>
-        function readURL(input) {
+         function readURL(input) {
             if (input.files && input.files[0]) {
 
                 var reader = new FileReader();
@@ -581,7 +473,7 @@
         }
 
         function removeUpload() {
-            $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+            $('.clearablefileinput').replaceWith($('.clearablefileinput').clone());
             $('.file-upload-content').hide();
             $('.image-upload-wrap').show();
         }

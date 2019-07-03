@@ -15,10 +15,25 @@
                     </a>
                     <ul class="sub">
                         <li><a href="/admissionfrm">Student Admission</a></li>
+                        <li><a href="{% url 'employee_create'%}">Employee Management Form</a></li>
                         <li><a href="/studentadmissionlist">Student Admission Details</a></li>
                         <li><a href="/applicantfrm">Student Application Form</a></li>
                         <li><a href="/studentadmissionform">Student Admission Form</a></li>
                         <li><a href="/student-list">Student List</a></li>
+                        <li><a href="/enquiry">Enquiry List</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="active">
+                        <i class="fa fa-envelope"></i>
+                        <span>Course Management </span>
+                    </a>
+                    <ul class="sub">
+                        <li><a href="{% url 'stream_list' %}">Stream</a></li>
+                        <li><a href="{% url 'course_list' %}">Course</a></li>
+                        <li><a href="{% url 'batch_list' %}">Batch</a></li>
+                        <li><a href="{% url 'section_list' %}">Section</a></li>
+                        
                     </ul>
                 </li>
                 <li class="sub-menu">

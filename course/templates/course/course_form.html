@@ -1,0 +1,63 @@
+{% extends 'student/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<section id="main-content">
+    <div class="wrapper">
+            <div class="col-sm-8 col-xs-12 col-sm-offset-2">
+            <div class="text-center">
+                <h1 class="hdrcolorbg">
+                    Add Course
+                </h1>
+            </div>
+            <form class="frmbgg clear-fx" action="." method="post" enctype="multipart/form-data" id="courseForm" data-branch-url="{% url 'ajax_load_branch' %}" novalidate>
+                <div class="row">
+                {% csrf_token %}
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.department_name| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.course_name| as_crispy_field}}
+                </div>
+               <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.course_aliases| as_crispy_field}}
+               </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.duration| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.no_of_semestars| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.approved_university| as_crispy_field}}
+                </div>
+               <div class="form-group col-sm-12 col-xs-12">
+                {{ form.remarks| as_crispy_field}}
+               </div>
+               <div class="form-group col-sm-12 col-xs-12 txrare">
+                {{ form.syllabus| as_crispy_field}}
+               </div>
+                <button type="submit" class="btn btn-info save">Create</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $("#id_department_name").change(function(event){
+       event.preventDefault();
+       var url=$("#courseForm").attr("data-branch-url");
+       var department_id=$(this).val();
+
+       $.ajax({
+           url:url,
+           data:{
+               'department':department_id,
+           },
+           success:function(data){
+               $("#id_course_name").html(data);
+           }
+       });
+    });
+   </script>
+
+{% endblock content %}

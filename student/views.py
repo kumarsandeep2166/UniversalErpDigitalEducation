@@ -1,17 +1,20 @@
 from django.shortcuts import render,redirect
+from django.urls import reverse_lazy
+from django.shortcuts import get_object_or_404
 #from django.views.generic.edit import FormView
-from .models import (StudentDetail,ParentDetails,
-                    Tenth,Twelth,Degree,PostDegree,
-                    PresentAddress,PermanentAddress,Entrance,
-                    AttachmentDetails)
-from .forms import (StudentEnquiryForm,StudentDetailForm,
-                    ParentDetailsForm,EntranceForm,TenthForm,TwelthForm,DegreeForm,PostDegreeForm,
-                    PresentAddressForm,PermanentAddressForm,AttachmentForm)
-from django.views.generic import ListView,DetailView,DeleteView
+from .models import (Student,StudentEnquiry,Employee,Branch,Department)
+from .forms import (StudentForm,StudentEnquiryForm,EmployeeForm)
+from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView
+from django.views.generic.base import TemplateView
+from django.db.models import Q,Count
+
 def index(request):    
     return render(request,'student/index.html')
+
 def admissionfrm(request):
     return render(request,'student/admissionfrm.html',{})
+
+
 def applicantfrm(request):
     form=StudentEnquiryForm()
     if request.method=="POST":
@@ -50,98 +53,113 @@ def load_branches(request):
     branches=Branch.objects.filter(department_id=department_id).order_by('branch')
     return render(request,'student/department_options.html',{'branches':branches})
    
-def studentregister(request):
-    form_a=StudentDetailForm()
-    form_b=ParentDetailsForm()
-    form_c=TenthForm()
-    form_d=TwelthForm()
-    form_e=DegreeForm()
-    form_f=PostDegreeForm()
-    form_g=PresentAddressForm()
-    form_h=EntranceForm()
-    form_i=AttachmentForm()
-    form_j=PermanentAddressForm()
-    if request.method=="POST":
-        form_a=StudentDetailForm(request.POST or None)
-        form_b=ParentDetailsForm(request.POST or None)
-        form_c=TenthForm(request.POST or None)
-        form_d=TwelthForm(request.POST or None)
-        form_e=DegreeForm(request.POST or None)
-        form_f=PostDegreeForm(request.POST or None)
-        form_g=PresentAddressForm(request.POST or None)
-        form_h=EntranceForm(request.POST or None)
-        form_i=AttachmentForm(request.POST or None,request.FILES or None)
-        form_j=PermanentAddressForm(request.POST or None)
-        if form_a.is_valid() and form_b.is_valid() and form_c.is_valid() and form_d.is_valid() and form_e.is_valid() and form_f.is_valid() and form_g.is_valid() and form_h.is_valid() and form_i.is_valid() and form_j.is_valid():
-            form_a.save()
-            form_b.save()
-            form_c.save()
-            form_d.save()
-            form_e.save()
-            form_f.save()
-            form_g.save()
-            form_h.save()
-            form_i.save()
-            form_j.save()
-        context={
-            'form1':form_a,
-            'form2':form_b,
-            'form3':form_c,
-            'form4':form_d,
-            'form5':form_e,
-            'form6':form_f,
-            'form7':form_g,
-            'form8':form_h,
-            'form9':form_i,
-            'form10':form_j,
-        }
-        return render(request,'student/studentadmissionform.html',context)
-    else:
-        form_a=StudentDetailForm()
-        form_b=ParentDetailsForm()
-        form_c=TenthForm()
-        form_d=TwelthForm()
-        form_e=DegreeForm()
-        form_f=PostDegreeForm()
-        form_g=PresentAddressForm()
-        form_h=EntranceForm()
-        form_i=AttachmentForm()
-        form_j=PermanentAddressForm()
-        context={
-            'form1':form_a,
-            'form2':form_b,
-            'form3':form_c,
-            'form4':form_d,
-            'form5':form_e,
-            'form6':form_f,
-            'form7':form_g,
-            'form8':form_h,
-            'form9':form_i,
-            'form10':form_j,
-        }
-        return render(request,'student/studentadmissionform.html',context)
+class StudentCreateView(CreateView):
+    model=Student
+    form_class=StudentForm
+    template_name='student/studentadmissionform.html'
 
+    def get_context_data(self,**kwargs):
+        context=super(StudentCreateView,self).get_context_data(**kwargs)
+        return context
+    def get(self,request,*args,**kwargs):
+        context={'form':StudentForm(),}
+        return render(request,'student/studentadmissionform.html',context)
+    def post(self,request,*args,**kwargs):
+        form=StudentForm(request.POST or None,request.FILES or None)
+        if form.is_valid():
+            form.save()
+        return render(request,'student/studentadmissionform.html',{'form':form})
 
 class StudentListView(ListView):
     context_object_name='student_list'
     template_name='student/student_list.html'
-    queryset=StudentDetail.objects.all()
+    queryset=Student.objects.all()
+    ordering=('-id')
 
     def get_context_data(self,**kwargs):
-        context = super(StudentListView, self).get_context_data(**kwargs)
-        context['parents']=ParentDetails.objects.all()
-        context['tenth']=Tenth.objects.all()
-        context['tewlth']=Twelth.objects.all()
-        context['degree']=Degree.objects.all()
-        context['post_degree']=PostDegree.objects.all()
-        context['entrance']=Entrance.objects.all()
-        context['pres_address']=PresentAddress.objects.all()
-        context['attach']=AttachmentDetails.objects.all()
-        return context
-
-    
+        context = super(StudentListView, self).get_context_data(**kwargs)       
+        return context       
 
 class StudentDetailView(DetailView):
-    pass
+    context_object_name='student_list'
+    template_name='student/student_detail.html'
+    queryset=Student.objects.all()
+    
+    def get_context_data(self,**kwargs):
+        context = super(StudentDetailView, self).get_context_data(**kwargs)       
+        return context
+    
+class StudentUpdateView(UpdateView):
+    model=Student
+    fields='__all__'
+    template_name='student/studentadmissionform.html'
+    success_url=reverse_lazy('student_list')
+
 class StudentDeleteView(DeleteView):
-    pass
+    model=Student
+    success_url=reverse_lazy('student_list')
+
+class EnquiryListView(ListView):
+    context_object_name='enquiry_list'
+    template_name='student/enquiry_list.html'
+    queryset=StudentEnquiry.objects.all()
+    ordering=('-id')
+
+    def get_context_data(self,**kwargs):
+        context = super(EnquiryListView, self).get_context_data(**kwargs)       
+        return context
+
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+def search_list(request):
+    qs=Student.objects.all()
+    exact_search=request.GET.get('anything')
+    category_search=request.GET.get('category')
+
+
+class EmployeeCreateView(CreateView):
+    model=Employee
+    form_class=EmployeeForm
+    template_name='student/employeemanagement.html'
+
+    def get_context_data(self,**kwargs):
+        context=super(EmployeeCreateView,self).get_context_data(**kwargs)
+        return context
+    def get(self,request,*args,**kwargs):
+        context={'form':EmployeeForm(),}
+        return render(request,'student/employeemanagement.html',context)
+    def post(self,request,*args,**kwargs):
+        form=EmployeeForm(request.POST or None,request.FILES or None)
+        if form.is_valid():
+            form.save()
+        return render(request,'student/employeemanagement.html',{'form':form})
+
+
+class EmployeeListView(ListView):
+    model=Employee
+    template_name='student/employee_list.html'
+    queryset=Employee.objects.all()
+    ordering=('-id')
+
+    def get_context_data(self,**kwargs):
+        context = super(EmployeeListView, self).get_context_data(**kwargs)       
+        return context 
+
+class EmployeeDetailView(DetailView):
+    context_object_name='employee_list'
+    template_name='student/employee_detail.html'
+    queryset=Employee.objects.all()
+    
+    def get_context_data(self,**kwargs):
+        context = super(EmployeeDetailView, self).get_context_data(**kwargs)       
+        return context
+    
+class EmployeeUpdateView(UpdateView):
+    model=Employee
+    fields='__all__'
+    template_name='student/employeemanagement.html'
+    success_url=reverse_lazy('employee_list')
+class EmployeeDeleteView(DeleteView):
+    model=Employee
+    success_url=reverse_lazy('employee_list')
