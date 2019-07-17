@@ -2,6 +2,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("strm").className += " active";
+        document.getElementById("strm1").className += " active";
+        document.getElementById("strm03").className += " active";        
+</script>
+<style>
+        #strm03 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -32,22 +42,26 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group col-sm-4 col-xs-12">
-                                            <label>Starting Date</label>
+                                        <div class="form-group col-sm-5 col-xs-12 startdt">
+                                            <div>
+                                                <label>Starting Date</label>
+                                            </div>
                                             {{ form.starting_date }}
                                         </div>
-                                        <div class="form-group col-sm-4 col-xs-12">
-                                            <label>Ending Date</label>
+                                        <div class="form-group col-sm-5 col-xs-12 enddt">
+                                            <div>
+                                                <label>Ending Date</label>
+                                            </div>
                                             {{ form.ending_date }}
                                         </div>
-                                        <div class="form-group col-sm-4 col-xs-12">
+                                        <div class="form-group col-sm-2 col-xs-12">
                                             <label>Remark</label>
                                             {{ form.remark }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-info cancel">Cancel</button>
+                            <button type="reset" class="btn btn-info cancel">Cancel</button>
                             <button type="submit" class="btn btn-info save">Create</button>
                         </form>
                     </div>

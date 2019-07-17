@@ -21,8 +21,8 @@ body {
 ul, .list-unstyled {
     padding-left: 30px;
 }
-ul li {
-    /*list-style:none;*/
+ul, li {
+    list-style:none;
 }
 
 a,a:hover,a:focus {
@@ -61,6 +61,11 @@ a,a:hover,a:focus {
 }
 .mngtop30{
     margin-top:30px;
+}
+.chrgbl{
+    position: relative;
+    top: -12px;
+    left: 0;
 }
 /*-------------my_style--------------*/
 .clrbg{
@@ -128,13 +133,19 @@ textarea{
     color: #000;
     border-radius: 0;
     height: 43px;
-    border: 2px solid #64c0bb;
+    border: 1px solid #64c0bb;
     border-radius: 8px;
     outline: 0;
     width: 100%;
 }
 .checkboxinput{
     width: auto;
+}
+input[type=checkbox]{
+    height: 20px !important;
+    font-size: 10px;
+    float: left;
+    width: 30px;
 }
 #id_present_same_address,
 #id_term_and_condition{
@@ -351,6 +362,7 @@ label {
     border-radius: 0;
     padding: 6px 20px;
     float: right;
+    margin-left: 20px;
 }
 .radio input{
     height: 12px;
@@ -367,6 +379,9 @@ label {
     padding: 6px 20px;
     float: right;
     margin-left: 20px;
+}
+.edit a{   
+    color: #fff;
 }
 .cancel{
     background-color: #ff0606;
@@ -391,16 +406,18 @@ label {
     color: #fff;
 }
 .addmor{
-	background-color: #000000;
-	color: #fff;
-	border-radius: 0;
-	padding: 4px 17px 3px;
-	outline: 0px !important;
-	border: 1px solid #000;
-	font-size: 11px;
-	transition: 0.5s all ease;
-	margin-top: 8px;
-	position:relative;
+    background-color: #000000;
+    color: #fff;
+    border-radius: 0;
+    padding: 4px 17px 3px;
+    outline: 0px !important;
+    border: 1px solid #000;
+    font-size: 11px;
+    transition: 0.5s all ease;
+    margin-top: 8px;
+    position: relative;
+    height: 30px;
+    width: auto;
 }
 .adbtn{
     position: relative;
@@ -408,7 +425,7 @@ label {
 .adbtn i{
     color: #fff;
     position: absolute;
-    top: 16px;
+    top: 19px;
     z-index: 1;
     font-size: 10px;
     margin-left: 6px;
@@ -6665,6 +6682,7 @@ right: -1px;
     font-weight: 400;
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
+    margin-bottom: 30px;
 }
 .htgt{
     font-size: 24px;
@@ -6769,14 +6787,18 @@ right: -1px;
     outline: 0;
     border: 0;
 }
+/*-------------delete_modal--------------*/
+.deltemodalbox .modal-body {
+    border: 0;
+    padding: 40px 0 100px;
+    text-align: center;
+    font-family: 'Open Sans',sans-serif;
+    font-size: 20px;
+    height: 200px;
+}
 .modal-footer{
     border: 0;
     padding:0px 0 20px;
-    text-align: center;
-}
-.modal-body {
-    border: 0;
-    padding:40px 0 30px;
     text-align: center;
 }
 .modal-body p{    
@@ -6787,18 +6809,52 @@ right: -1px;
     color: #fff;
     background-color: #10b129;
     border-color: #10b129;
-    padding: 8px 20px;
+    padding: 3px 10px;
     outline:0;
+    width: 100%;
+    border-radius:0;
+    font-size: 14px;
 }
 .cnlbtn{
     color: #fff;
     background-color: #f30505;
     border-color: #f30505;
-    padding: 8px 20px;
-    outline:0;    
+    padding: 11px 10px;
+    outline: 0;
+    width: 100%;
+    border-radius: 0;
+}
+ul.sidebar-menu li.active ul.sub { 
+    display:block !important;
 }
 
 
+
+.feebtn{
+    margin:30px 0;
+    background-color: #62aa07;
+    border-color: #62aa07;
+    padding:8px 60px;
+    outline:0;
+    border:0;    
+    float: right;
+}
+.feebtn:hover{
+    background-color: #000000;
+    border-color: #fff;
+}
+.feebtn a{
+    color: #fff;
+}
+#div_id_status input{
+    position: relative;
+    top: -3px;
+    left: 0;
+    margin-right: 13px;
+}
+#div_id_date_of_birth select, #div_id_fathers_date_of_birth select, #div_id_mothers_date_of_birth select, .aprov select, .startdt select, .enddt select{
+    width:33%;
+}
 
 
 
@@ -6838,19 +6894,4 @@ right: -1px;
     .cancel {
         margin-left: 0;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

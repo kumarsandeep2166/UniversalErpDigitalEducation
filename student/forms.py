@@ -1,6 +1,8 @@
 from django import forms
-from .models import (StudentEnquiry, Branch,Student,Employee)
+from .models import (StudentEnquiry, Branch,Student,Employee,Enrollment)
 from datetime import datetime
+
+
 #from django.views.generic.edit import FormView
 class StudentEnquiryForm(forms.ModelForm):
     
@@ -29,6 +31,10 @@ class StudentEnquiryForm(forms.ModelForm):
             self.fields['branch'].queryset=self.instance.department.branch_set.order_by('branch')
 
 class StudentForm(forms.ModelForm):
+    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    fathers_date_of_birth=forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1950,2010)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    mothers_date_of_birth=forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1950,2010)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    #date_of_admission=forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(2000,2020)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
     tenth_board=forms.CharField(label='')
     tenth_subjects=forms.CharField(label='')
     tenth_school=forms.CharField(label='')
@@ -85,6 +91,7 @@ class StudentForm(forms.ModelForm):
         #     'student_pic':forms.FileField(attrs={'onchange': "readURL(this);"})
         # }
 class EmployeeForm(forms.ModelForm):
+    date_of_birth=forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
     tenth_subjects=forms.CharField(label='')
     tenth_school=forms.CharField(label='')
     tenth_board=forms.CharField(label='')
@@ -117,3 +124,12 @@ class EmployeeForm(forms.ModelForm):
         model=Employee
         fields=('__all__')
         template_name='student/employeemanagement.html'
+    
+class EnrollmentForm(forms.ModelForm):
+    date_of_admission = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1920,2010)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    class Meta:
+        model=Enrollment
+        fields=('course','stream','batch','enrollment_number','date_of_admission')
+        
+   
+    

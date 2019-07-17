@@ -1,10 +1,20 @@
 {% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("strm").className += " active";
+        document.getElementById("strm1").className += " active";
+        document.getElementById("strm02").className += " active";        
+</script>
+<style>
+        #strm02 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
         <div class="wrapper">
-                <div class="col-sm-10 col-xs-12 col-sm-offset-1">
-                    <button type="submit" class="btn btn-info"><a href="{% url 'course_create' %}">Add a Course</a></button>
+                <div class="col-sm-12 col-xs-12">
+                    <button type="submit" class="btn btn-info feebtn"><a href="{% url 'course_create' %}">Add a Course</a></button>
                     <table class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr class="hdclr">
@@ -37,8 +47,20 @@
                                         <td>{{i.affiliated_body}}</td>
                                         <td>{{i.syllabus}}</td>
                                         <td>{{i.remark}}</td>
-                                        <td><a href="{% url 'course_detail' pk=i.pk %}">View</a>||<a href="{% url 'course_edit' pk=i.pk %}">Edit</a>||<a href="{% url 'course_delete' pk=i.pk %}">Delete</a></td>
-                                       
+                                        <td>
+                                        <a href="{% url 'course_detail' pk=i.pk %}" class="social-icon">
+                                                        <i class="fa fa-eye vieww"></i>
+                                                        <div class="tooltip">View</div>
+                                                    </a>
+                                                    <a href="{% url 'course_edit' pk=i.pk %}" class="social-icon">
+                                                        <i class="fa fa-pencil editt"></i>
+                                                        <div class="tooltip">Edit</div>
+                                                    </a>
+                                                    <a href="{% url 'course_delete' pk=i.pk %}" class="social-icon" id="delete">
+                                                        <i class="fa fa-trash-o deletee"></i>
+                                                        <div class="tooltip">Delete</div>
+                                                    </a>
+                                                </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

@@ -1,6 +1,16 @@
 ﻿{% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("emp").className += " active";
+        document.getElementById("emp1").className += " active";
+        document.getElementById("emp01").className += " active";        
+</script>
+<style>
+        #emp01 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -17,20 +27,20 @@
                     
                     <div class="row">
                          <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="form-group col-sm-3 col-xs-12">
-                                            {{ form.title| as_crispy_field}}
-                                    </div>
-                        <div class="form-group col-sm-3 col-xs-12">
-                                {{ form.first_name| as_crispy_field}}
-                        </div>
-                        <div class="form-group col-sm-3 col-xs-12">
-                                {{ form.middle_name| as_crispy_field}}
-                        </div>
-                        <div class="form-group col-sm-3 col-xs-12">
-                                {{ form.last_name| as_crispy_field}}
-                        </div>
-            </div>
+                          <div class="row">
+                                <div class="form-group col-sm-3 col-xs-12">
+                                        {{ form.title| as_crispy_field}}
+                                </div>
+                                <div class="form-group col-sm-3 col-xs-12">
+                                        {{ form.first_name| as_crispy_field}}
+                                </div>
+                                <div class="form-group col-sm-3 col-xs-12">
+                                        {{ form.middle_name| as_crispy_field}}
+                                </div>
+                                <div class="form-group col-sm-3 col-xs-12">
+                                        {{ form.last_name| as_crispy_field}}
+                                </div>
+                          </div>
             <div class="row">
                     <div class="form-group col-sm-3 col-xs-12">
                             {{ form.date_of_birth| as_crispy_field}}
@@ -47,10 +57,10 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-6 col-xs-12">
-                            {{ form.employee_department| as_crispy_field}}
+                         {{ form.employee_department| as_crispy_field}}
                     </div>
                 <div class="form-group col-sm-6 col-xs-12">
-                        {{ form.employee_designation| as_crispy_field}}
+                      {{ form.employee_designation| as_crispy_field}}
                 </div>
             </div>
            
@@ -66,7 +76,6 @@
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.epfo_no| as_crispy_field}}
                 </div>
-
         </div>
         <div class="row">
                 <div class="form-group col-sm-3 col-xs-12">
@@ -88,25 +97,12 @@
                 </div>
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.email| as_crispy_field}}
-                </div>
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.status| as_crispy_field}}
-                </div>
-
-        </div>
-        <div class="row">
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.communication_address| as_crispy_field}}
-                    </div>
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.communication_lane_address| as_crispy_field}}
-                </div>
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.landmark| as_crispy_field}}
-                </div>
+                </div>                
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.pin| as_crispy_field}}
                 </div>
+        </div>
+        <div class="row">
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.city| as_crispy_field}}
                 </div>
@@ -118,8 +114,16 @@
                 </div>
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.country| as_crispy_field}}
+                </div> 
+                <div class="form-group col-sm-3 col-xs-12">
+                        {{ form.landmark| as_crispy_field}}
                 </div>
-
+                <div class="form-group col-sm-3 col-xs-12">
+                        {{ form.communication_lane_address| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-6 col-xs-12">
+                    {{ form.communication_address| as_crispy_field}}
+                </div>        
         </div>
         <div class="row">
             <div class="col-sm-12 col-xs-12"><label>Qualification</label>
@@ -189,18 +193,8 @@
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.bank_branch| as_crispy_field}}
                 </div>
-
             </div>  
-            <div class="row">
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.teaching_experience| as_crispy_field}}
-                </div>
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.industry_experience| as_crispy_field}}
-                </div>
-                <div class="form-group col-sm-3 col-xs-12">
-                        {{ form.experience_details| as_crispy_field}}
-                </div>
+            <div class="row">               
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.last_appointment_type| as_crispy_field}}
                 </div>
@@ -224,10 +218,20 @@
                 </div>
                 <div class="form-group col-sm-3 col-xs-12">
                         {{ form.no_of_pg_projects| as_crispy_field}}
-                </div>
-                
+                </div>                
         </div>
         <div class="row">
+                <div class="form-group col-sm-3 col-xs-12">
+                        {{ form.teaching_experience| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-3 col-xs-12">
+                        {{ form.industry_experience| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-6 col-xs-12">
+                        {{ form.experience_details| as_crispy_field}}
+                </div>
+        </div>
+        <div class="row">                
             <div class="form-group col-sm-3 col-xs-12">
                     {{ form.national_journal_no| as_crispy_field}}
             </div>
@@ -248,6 +252,10 @@
             <div class="form-group col-sm-6 col-xs-12">
                     {{ form.conference_details| as_crispy_field}}
             </div>
+            
+            <div class="form-group col-sm-3 col-xs-12">
+                        {{ form.status| as_crispy_field}}
+                </div>
         </div>
         
     </div>

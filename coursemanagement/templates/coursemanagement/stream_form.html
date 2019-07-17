@@ -1,6 +1,16 @@
 {% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("strm").className += " active";
+        document.getElementById("strm1").className += " active";
+        document.getElementById("strm01").className += " active";        
+</script>
+<style>
+        #strm01 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
         <div class="row">

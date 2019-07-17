@@ -2,6 +2,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("stt").className += " active";
+        document.getElementById("stm1").className += " active";
+        document.getElementById("stm02").className += " active";
+ </script>
+ <style>
+     #stm02 a{
+         color:#fff !important;
+     }
+ </style>
         <section id="main-content">
             <div class="wrapper">
                 <div class="row">
@@ -12,13 +22,14 @@
                         <div class="col-sm-10 col-xs-12 col-sm-offset-1">
                             <div class="panel-body">
                                 <form role="form" class="stfrmdt1" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
                                     <div class="col-sm-10 col-xs-12 col-sm-offset-1">
-                                            {% csrf_token %}
+                                            
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="row">
-                                                <div class="row clrbg col-sm-9">
+                                              <!--   <div class="row clrbg col-sm-9">
                                                     <div class="subhdrt">
                                                         <h2>Enrollment Details</h2>
                                                     </div>
@@ -38,6 +49,58 @@
                                                         <label>Course</label>
                                                         <input type="text" class="form-control" placeholder="Course">
                                                     </div>
+                                                </div> --> 
+                                                    <div class="clrbg col-sm-9">
+                                                        <div class="row">
+                                                            <div class="subhdrt">
+                                                                <h2>Student Details</h2>
+                                                            </div>
+                                                            <div class="form-group col-sm-4 col-xs-12">
+                                                                {{ form.first_name | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-4 col-xs-12">
+                                                                    {{ form.middle_name | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-4 col-xs-12">
+                                                                    {{ form.last_name | as_crispy_field}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="form-group col-sm-4 col-xs-12">                                                       
+                                                                    {{ form.date_of_birth | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">                                                       
+                                                                    {{ form.phone_number | as_crispy_field}}
+                                                                </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">                                                       
+                                                                    {{ form.email | as_crispy_field}}
+                                                                </div>
+                                                            <div class="form-group col-sm-2 col-xs-12">                                                       
+                                                                    {{ form.blood_group | as_crispy_field}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                           
+                                                           
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.nationality | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.caste | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.sub_caste | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.place_of_birth | as_crispy_field}}
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.aadhar_number | as_crispy_field}}                                                                
+                                                            </div>
+                                                            <div class="form-group col-sm-3 col-xs-12">
+                                                                    {{ form.gender | as_crispy_field}}                                                                
+                                                            </div>                                                      
+                                                        </div>
                                                 </div>
                                                 <div class="form-group col-sm-3 col-xs-12">
                                                     <div class="file-upload">
@@ -55,52 +118,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="clrbg">
-                                                <div class="row">
-                                                    <div class="subhdrt">
-                                                        <h2>Student Details</h2>
-                                                    </div>
-                                                    <div class="form-group col-sm-4 col-xs-12">
-                                                        {{ form.first_name | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-4 col-xs-12">
-                                                            {{ form.middle_name | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-4 col-xs-12">
-                                                            {{ form.last_name | as_crispy_field}}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group col-sm-3 col-xs-12">                                                       
-                                                        {{ form.date_of_birth | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">                                                       
-                                                        {{ form.blood_group | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.nationality | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.caste | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.sub_caste | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.place_of_birth | as_crispy_field}}
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.aadhar_number | as_crispy_field}}
-                                                            
-                                                    </div>
-                                                    <div class="form-group col-sm-3 col-xs-12">
-                                                            {{ form.gender | as_crispy_field}}
-                                                            
-                                                    </div>
-                                                  
                                                 </div>
                                             </div>
 
@@ -232,9 +249,7 @@
                                                                 </td>
                                                                 <td class="numeric">{{ form.entrance_year}}</td>
                                                                 <td class="numeric">{{ form.entrance_score| as_crispy_field}}</td>
-                                                            </tr>
-                                                           
-                                                                
+                                                            </tr>                                                                                                                         
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -265,8 +280,7 @@
                                                     </div>
                                                     <div class="form-group col-sm-6 col-xs-12">
                                                             {{ form.present_country| as_crispy_field}}
-                                                    </div>
-                                                    
+                                                    </div>                                                    
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <div class="row subhdrt2">
@@ -294,7 +308,7 @@
                                                 </div>
                                                 
                                                 <div class="col-sm-12 col-xs-12 mngtop30">
-                                                    <label class="contnr">
+                                                    <label class="contnr chrgbl">
                                                             Check this box if Permanent Address and Present Address are the same.
                                                         <!-- <span class="checkmark"></span> -->
                                                     </label>
@@ -426,7 +440,7 @@
                                             </div>
 
                                             <h4 class="trem">Terms and Conditions</h4>
-                                            <label class="contnr">
+                                            <label class="contnr chrgbl">
                                                  I accept the terms and conditions for signing up to this service, and hereby confirm I have read the privacy policy.
                                                 
                                                 <!-- <span class="checkmark"></span> -->
@@ -484,4 +498,40 @@
             $('.image-upload-wrap').removeClass('image-dropping');
         });
     </script>
+    
+   <script>
+    $(document).ready(function () {
+        $("#id_present_same_address").on("change", function () {
+            if (this.checked) {
+                $("#id_permanent_house_no").val($("#id_present_house_no").val());
+                $("#id_permanent_Lane").val($("#id_present_Lane").val());
+                $("#id_permanent_pin").val($("#id_present_pin").val());
+
+            } else {
+                $('#id_permanent_house_no').val("");
+                $('#id_permanent_Lane').val("");
+                $('#id_permanent_pin').val("");
+            }
+        });
+    });
+
+
+    $('#id_present_same_address').click(function (e) {
+        if ($('#id_present_same_address').prop('checked')) {
+            $('#id_permanent_district').val($('#id_present_district option:selected').val())
+        }
+    });
+
+    $('#id_present_same_address').click(function (e) {
+        if ($('#id_present_same_address').prop('checked')) {
+            $('#id_permanent_state').val($('#id_present_state option:selected').val())
+        }
+    });
+
+    $('#id_present_same_address').click(function (e) {
+        if ($('#id_present_same_address').prop('checked')) {
+            $('#id_permanent_country').val($('#id_present_country option:selected').val())
+        }
+    });
+</script>
 {% endblock content %}

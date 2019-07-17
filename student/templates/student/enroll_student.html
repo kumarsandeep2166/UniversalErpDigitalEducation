@@ -1,0 +1,67 @@
+{% extends 'student/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<script>
+        document.getElementById("stt").className += " active";
+        document.getElementById("stm1").className += " active";
+        document.getElementById("stm03").className += " active";
+ </script>
+ <style>
+     #stm03 a{
+         color:#fff !important;
+     }
+ </style>
+<div class="wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-xs-10 col-sm-offset-3">
+                <form role="form" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-12 col-xs-12">
+                            
+                            <div class="form-group col-sm-6 col-xs-12">
+                                <label for="exampleInputPassword1">Enroll Course</label>
+                                {{form.stream}}                                
+                            </div>
+                            <div class="form-group col-sm-6 col-xs-12">
+                                    <label for="exampleInputEmail1">Enroll Department</label>
+                                    {{form.course}}                                
+                                </div>
+                            <div class="form-group col-sm-6 col-xs-12">
+                                <label for="exampleInputPassword1">Enroll Course</label>
+                                {{form.batch}}                                
+                            </div>
+                            <div class="form-group col-sm-6 col-xs-12">
+                                <label for="exampleInputEmail1">Enrollment Number</label>
+                                {{form.enrollment_number}}
+                                                              
+                            </div>
+                            <div class="form-group col-sm-6 col-xs-12" >
+                                <label for="exampleInputPassword1">Date Of Admission</label>
+                                {{form.date_of_admission}}
+                                                                
+                            </div> 
+                            <div class="form-group col-sm-6 col-xs-12" >
+                                <label for="exampleInputPassword1">Student Name</label>
+                                {{form.student_name}}
+                                                                
+                            </div> 
+                        </div>
+                            
+                            <button type="submit" class="btn btn-info subbtn">Submit</button>
+                        </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        $(function () {
+          $("#datetimepicker1").datetimepicker();
+        });
+      </script>
+</div>
+
+{% endblock content %}

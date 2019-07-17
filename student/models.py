@@ -1,10 +1,13 @@
-import os, time, uuid
+import os, time, uuid,string,random
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 import datetime
 from django.urls import reverse
+from coursemanagement.models import Course,Stream,Batch
+from django.db.models.signals import pre_save
+from .utils import unique_enrollment_number_generator
 
 
 def year_choices():
@@ -81,21 +84,21 @@ class PathAndRename(object):
         return os.path.join(self.path, renamed_filename)
 
 
-class AttachmentDetails(models.Model):    
-    image_path = time.strftime('attachments/%Y/%m/%d')    
-    student_image=models.ImageField(upload_to=PathAndRename(image_path))
-    tenth=models.ImageField(upload_to=PathAndRename(image_path))
-    twelth=models.ImageField(upload_to=PathAndRename(image_path))
-    degree=models.ImageField(upload_to=PathAndRename(image_path))
-    clc=models.ImageField(upload_to=PathAndRename(image_path))
-    conduct_certificate=models.ImageField(upload_to=PathAndRename(image_path))
-    migration=models.ImageField(upload_to=PathAndRename(image_path))
-    birth_certificate=models.ImageField(upload_to=PathAndRename(image_path))
-    address=models.ImageField(upload_to=PathAndRename(image_path))
-    thumb=models.ImageField(upload_to=PathAndRename(image_path))
-    signature=models.ImageField(upload_to=PathAndRename(image_path))
-    def __str__(self):
-        return "Images uploaded for:{}".format(self.student_image.name)
+# class AttachmentDetails(models.Model):    
+#     image_path = time.strftime('attachments/%Y/%m/%d')    
+#     student_image=models.ImageField(upload_to=PathAndRename(image_path))
+#     tenth=models.ImageField(upload_to=PathAndRename(image_path))
+#     twelth=models.ImageField(upload_to=PathAndRename(image_path))
+#     degree=models.ImageField(upload_to=PathAndRename(image_path))
+#     clc=models.ImageField(upload_to=PathAndRename(image_path))
+#     conduct_certificate=models.ImageField(upload_to=PathAndRename(image_path))
+#     migration=models.ImageField(upload_to=PathAndRename(image_path))
+#     birth_certificate=models.ImageField(upload_to=PathAndRename(image_path))
+#     address=models.ImageField(upload_to=PathAndRename(image_path))
+#     thumb=models.ImageField(upload_to=PathAndRename(image_path))
+#     signature=models.ImageField(upload_to=PathAndRename(image_path))
+#     def __str__(self):
+#         return "Images uploaded for:{}".format(self.student_image.name)
 
 
     
@@ -135,6 +138,8 @@ class Student(models.Model):
     caste=models.CharField(max_length=10,choices=CASTE,default='Others')
     sub_caste=models.CharField(max_length=10,choices=CASTE,default='Others')
     place_of_birth=models.CharField(max_length=20)
+    email=models.EmailField(blank=True)
+    phone_number=models.CharField(max_length=10,blank=True,validators=[RegexValidator('^[0-9]{10}$', message="Phone Number must be of 10 Digits")])
     aadhar_number=models.CharField(max_length=12,validators=[RegexValidator('^[0-9]{12}$', message="Aadhar Number must be of 12 Digits")])
     gender = models.CharField(choices=GENDER_CHOICES, max_length=10)
    
@@ -222,6 +227,8 @@ class Student(models.Model):
     degree_marksheet=models.ImageField(upload_to=PathAndRename(image_path),blank=True)
     term_and_condition=models.BooleanField(default=False)
 
+    
+    
     def __str__(self):
         return '{}-{}-{}'.format(self.first_name,self.middle_name,self.last_name)
 
@@ -229,6 +236,24 @@ class Student(models.Model):
         return reverse('student_detail', kwargs={
             'pk': self.pk
         })
+
+
+class Enrollment(models.Model):
+    enrollment_number=models.CharField(max_length=20, unique=True,blank=True)
+    stream=models.ForeignKey(Stream,on_delete=models.CASCADE,blank=True,null=True)
+    course=models.ForeignKey(Course,on_delete=models.CASCADE,blank=True,null=True)
+    batch=models.ForeignKey(Batch,on_delete=models.CASCADE,blank=True,null=True)     
+    date_of_admission=models.DateField(blank=True,null=True,default="2019-25-6")   
+    student_name=models.OneToOneField(Student,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.enrollment_number
+
+def pre_save_enrollment_number(sender, instance, *args, **kwargs):
+    if not instance.enrollment_number:
+        instance.enrollment_number = unique_enrollment_number_generator(instance)
+pre_save.connect(pre_save_enrollment_number,sender=Enrollment)
+
 class Employee_Department(models.Model):
     employee_department=models.CharField(max_length=100)
     def __str__(self):

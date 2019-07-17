@@ -1,6 +1,15 @@
 {% extends 'student/base.html' %}
 {% block content %}
-
+<script>
+        document.getElementById("emp").className += " active";
+        document.getElementById("emp1").className += " active";
+        document.getElementById("emp02").className += " active";
+</script>
+<style>
+        #emp02 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
            {% include 'student/empfilter.html' %}
@@ -45,7 +54,7 @@
                                             <i class="fa fa-pencil editt"></i>
                                             <div class="tooltip">Edit</div>
                                         </a>
-                                        <a href="{% url 'employee_delete' pk=emp.id %}" class="social-icon" id="delete"  data-toggle="modal" data-target="#myModal">
+                                        <a href="{% url 'employee_delete' pk=emp.id %}" class="social-icon" id="delete">
                                             <i class="fa fa-trash-o deletee"></i>
                                             <div class="tooltip">Delete</div>
                                         </a>
@@ -58,31 +67,37 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        <div class="modal fade" id="myModal" role="dialog" style="display: none;">
+                        <!-- <div class="modal fade deltemodalbox" id="myModal" role="dialog" style="display: none;">
                         <div class="modal-dialog">
-                            <!-- Modal content-->
+                           
                             <div class="modal-content">
                                 <div class="modal-body">
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post" enctype="multipart/form-data">                                        
                                         {% csrf_token %}
-                                        Are you sure you want to delete "{{ object }}" ?
-                                    <input type="submit" value="Submit" class="okbtn" />
-                                    <button type="button" class="btn btn-default cnlbtn" data-dismiss="modal">Cancel</button>                                                                    
+                                        <div class="col-sm-12 col-xs-12 mngbtm40"> 
+                                            Are you sure you want to delete {{ object }} ?
+                                        </div>
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <input type="submit" value="Submit" class="okbtn" />
+                                        </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn btn-default cnlbtn" data-dismiss="modal">Cancel</button>        
+                                    </div>                                                            
                                     </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
         </div>
     </div>
 </section>
-<script type="text/javascript">
-    $(document).ready(function(event){
-      $('#delete').click(function(){
-        return confirm("Are you sure to delete this post?");
-      });
-    });
-    </script>
+<script>
+        $(document).ready(function(event){
+         $('#delete').click(function(){
+             return confirm( "Are you sure to delete This");
+         });
+        });
+     </script>
 {% endblock content %}
 

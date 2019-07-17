@@ -2,6 +2,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("strm").className += " active";
+        document.getElementById("strm1").className += " active";
+        document.getElementById("strm02").className += " active";        
+</script>
+<style>
+        #strm02 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -37,11 +47,14 @@
                                                 <label>Course Alises</label>
                                                 {{ form.course_aliases  }}
                                         </div>
-                                        <div class="form-group col-sm-4 col-xs-12">
+                                        <div class="form-group col-sm-5 col-xs-12 aprov">
+                                            <div>
                                                 <label>Approved Date</label>
+                                            </div>
                                                 {{ form.approved_date  }}
                                         </div>
-                                        <div class="form-group col-sm-4 col-xs-12">
+                                      
+                                        <div class="form-group col-sm-3 col-xs-12">
                                                 <label>Exam Pattern</label>
                                                 {{ form.exam_pattern  }}
                                         </div>
@@ -50,6 +63,12 @@
                                             <div class="form-group col-sm-4 col-xs-12">
                                                     <label>Duration</label>
                                                     {{ form.duration  }}
+                                            </div>
+                                            <div class="form-group col-sm-4 col-xs-12 ">
+                                                
+                                                    <label>Total Seat</label>
+                                               
+                                                    {{ form.total_seats  }}
                                             </div>
                                             <div class="form-group col-sm-4 col-xs-12">
                                                     <label>Syllabus</label>

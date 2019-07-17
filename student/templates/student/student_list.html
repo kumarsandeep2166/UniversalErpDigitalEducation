@@ -1,6 +1,15 @@
 {% extends 'student/base.html' %}
 {% block content %}
-
+<script>
+        document.getElementById("stt").className += " active";
+        document.getElementById("stm1").className += " active";
+        document.getElementById("stm03").className += " active";
+ </script>
+ <style>
+     #stm03 a{
+         color:#fff !important;
+     }
+ </style>
 <section id="main-content">
     <div class="wrapper">
            {% include 'student/filter.html' %}
@@ -49,6 +58,7 @@
                                             <i class="fa fa-trash-o deletee"></i>
                                             <div class="tooltip">Delete</div>
                                         </a>
+
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -59,7 +69,29 @@
                             </tbody>
                         </table>
                 </div>
+                  <!-- Modal -->
+                  <!-- <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+                       
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <p>Are you sure, you want to delete?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-default okbtn">Ok</button>
+                                <button type="button" class="btn btn-default cnlbtn" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
         </div>
     </div>
 </section>
+<script>
+   $(document).ready(function(event){
+    $('#delete').click(function(){
+        return confirm( "Are you sure to delete This");
+    });
+   });
+</script>
 {% endblock content %}

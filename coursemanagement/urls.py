@@ -28,4 +28,14 @@ urlpatterns=[
     path('ajax_load_course/',views.load_course,name='ajax_load_course'),
     path('ajax_load_batch/',views.load_batch,name='ajax_load_batch'),
     path('ajax_load_section/',views.load_section,name='ajax_load_section'),
+    path('feetype/',views.feesmanagement,name='feesmanagement'),
+    path('feetype/list',views.FeesTypeView.as_view(),name='fees_list'),
+    path('feetype/feestype_delete/<int:pk>/',views.FeesTypeDeleteView.as_view(),name='fees_delete'),
+    path('feetype/feestype_edit/<int:pk>/',views.FeesTypeEditView.as_view(),name='feestype_edit'),
+    path('feetype/feesmanagement/',views.FeesManagementView,name='feesmanagement_create'),
+    path('feetype/feesmanagement_update/<int:pk>/',views.FeesManagementSettingUpdateView.as_view(),name='feesmanagement_update'),
+    path('feetype/feesmanagement_list/',views.FeesManagementSettingListView.as_view(),name='feesmanagement_list'),
+    path('feetype/feesmanagement_detail/<int:pk>/',views.FeesManagementSettingDetailView.as_view(),name='feesmanagement_detail'),
+    path('feetype/feesmanagement_delete/<int:pk>/',views.FeesManagementSettingDeleteView.as_view(),name='feesmanagement_delete'),
+    
 ]

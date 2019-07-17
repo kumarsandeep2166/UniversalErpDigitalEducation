@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'widget_tweaks',    
     'coursemanagement',
+    'feeplan',
+    'feemanagement',
+    #'bootstrap_datepicker_plus',
     #'course',
 ]
 

@@ -2,6 +2,16 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
+<script>
+        document.getElementById("strm").className += " active";
+        document.getElementById("strm1").className += " active";
+        document.getElementById("strm04").className += " active";        
+</script>
+<style>
+        #strm04 a{
+                color:#fff !important;
+        }
+</style>
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -43,7 +53,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-info cancel">Cancel</button>
+                            <button type="reset" class="btn btn-info cancel">Cancel</button>
                             <button type="submit" class="btn btn-info save">Create</button>
                         </form>
                     </div>
@@ -83,7 +93,7 @@ $("#id_course_name").change(function(event){
     }
     });
 
-});
+
     $("#id_batch_no").change(function(event){
         //event.preventDefault();
         var url=$("#mysectionForm").attr("data-section-url");
@@ -98,6 +108,6 @@ $("#id_course_name").change(function(event){
              }
         });
     });
-
+});
 </script>
 {% endblock content %}

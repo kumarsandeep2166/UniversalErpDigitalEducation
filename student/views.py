@@ -2,8 +2,8 @@ from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 #from django.views.generic.edit import FormView
-from .models import (Student,StudentEnquiry,Employee,Branch,Department)
-from .forms import (StudentForm,StudentEnquiryForm,EmployeeForm)
+from .models import (Student,StudentEnquiry,Employee,Branch,Department,Enrollment)
+from .forms import (StudentForm,StudentEnquiryForm,EmployeeForm,EnrollmentForm)
 from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView
 from django.views.generic.base import TemplateView
 from django.db.models import Q,Count
@@ -68,6 +68,7 @@ class StudentCreateView(CreateView):
         form=StudentForm(request.POST or None,request.FILES or None)
         if form.is_valid():
             form.save()
+            #return redirect('student_list')
         return render(request,'student/studentadmissionform.html',{'form':form})
 
 class StudentListView(ListView):
@@ -82,7 +83,7 @@ class StudentListView(ListView):
 
 class StudentDetailView(DetailView):
     context_object_name='student_list'
-    template_name='student/student_detail.html'
+    template_name='student/admissionfrm.html'
     queryset=Student.objects.all()
     
     def get_context_data(self,**kwargs):
@@ -116,6 +117,7 @@ def search_list(request):
     qs=Student.objects.all()
     exact_search=request.GET.get('anything')
     category_search=request.GET.get('category')
+    pass
 
 
 class EmployeeCreateView(CreateView):
@@ -163,3 +165,27 @@ class EmployeeUpdateView(UpdateView):
 class EmployeeDeleteView(DeleteView):
     model=Employee
     success_url=reverse_lazy('employee_list')
+
+class EnorllmentView(CreateView):
+    model=Enrollment
+    fields=('course','stream','batch','enrollment_number','date_of_admission','student_name')
+    template_name='student/enroll_student.html'
+    success_url=reverse_lazy('student_list')
+class EnrollmnetViewList(ListView):
+    model=Enrollment
+    template_name='student/enrollment_list.html'
+    queryset=Enrollment.objects.all()
+    ordering=('-id')
+
+    def get_context_data(self,**kwargs):
+        context = super(EnrollmnetViewList, self).get_context_data(**kwargs)       
+        return context
+class EnrollmnetViewDetail(DetailView):
+    model=Enrollment
+    template_name='student/enrollment_list.html'
+    queryset=Enrollment.objects.all()
+    
+
+    def get_context_data(self,**kwargs):
+        context = super(EnrollmnetViewDetail, self).get_context_data(**kwargs)       
+        return context

@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
-from .models import Section,Stream,Batch,Course
+from .models import Section,Stream,Batch,Course,Feestype,FeesManagementSetting
 from django.views.generic import ListView,CreateView,DeleteView,DetailView,UpdateView
-from .forms import SectionForm,StreamForm,BatchForm,CourseForm
+from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesManagementSettingForm
 from django.urls import reverse_lazy
+import string
 
 class StreamCreateView(CreateView):
     model=Stream
@@ -172,8 +173,8 @@ def load_course(request):
 
 def load_batch(request):
     stream_id=request.GET.get('stream')
-    course_id=request.GET.get('course_name')
-    batch=Batch.objects.filter(course_id=course_id,stream_id=stream_id).order_by('-id')
+    course=Course.objects.filter(stream_id=stream_id).order_by('-id')
+    batch=Batch.objects.filter(course_name=course).order_by('-id')
     context={'batch':batch}
     return render(request,'coursemanagement/includes/batch_ajax.html',context)
 
@@ -186,3 +187,71 @@ def load_section(request):
     context={'section':section}
     return render(request,'coursemanagement/includes/section_ajax.html',context)
 
+def feesmanagement(request):
+    form=FeesForm()
+    if request.method=="POST":
+        form=FeesForm(request.POST or None)
+        #fee_type=request.cleaned_data.get('fee_type')
+        if form.is_valid() :
+            
+            form.save()
+            return redirect('fees_list')
+    
+    return render(request,'coursemanagement/feessetting.html',{'form':form})
+class FeesTypeView(ListView):
+    template_name='coursemanagement/fees_list.html'
+    context_object_name='fees_list'
+    queryset=Feestype.objects.all()
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        return context
+    def get_queryset(self,*args):
+        return Feestype.objects.all()
+    
+class FeesTypeEditView(UpdateView):
+    model=Feestype
+    fields=('__all__')
+    template_name='coursemanagement/fees_edit.html'
+    success_url=reverse_lazy('fees_list')
+class FeesTypeDeleteView(DeleteView):
+    model=Feestype
+    template_name='coursemanagement/feestype_delete.html'
+    success_url=reverse_lazy('fees_list')
+
+def FeesManagementView(request):
+    form=FeesManagementSettingForm()
+    if request.method=="POST":
+        form=FeesManagementSettingForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('feesmanagement_list')
+    return render(request,'coursemanagement/feesmanagment_create.html',{'form':form})
+    
+class FeesManagementSettingUpdateView(UpdateView):
+    model=FeesManagementSetting
+    fields=('__all__')
+    template_name='coursemanagement/feesmanagement_edit.html'
+    success_url=reverse_lazy('feesmanagement_list')
+
+class FeesManagementSettingListView(ListView):
+    template_name='coursemanagement/feesmanagement_list.html'
+    context_object_name='feesmanagement_list'
+    queryset=FeesManagementSetting.objects.all()
+    
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        return context
+
+class FeesManagementSettingDetailView(DetailView):
+    context_object_name='feesmanagement_detail'
+    template_name='coursemanagement/feesmanagement_detail.html'
+    queryset=FeesManagementSetting.objects.all()
+    
+    def get_context_data(self,**kwargs):
+        context = super(FeesManagementSettingDetailView, self).get_context_data(**kwargs)       
+        return context 
+
+class FeesManagementSettingDeleteView(DeleteView):
+    model=FeesManagementSetting
+    template_name='coursemanagement/feesmanagement_delete.html'
+    success_url=reverse_lazy('feesmanagement_list')

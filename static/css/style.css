@@ -136,6 +136,12 @@ textarea{
 .checkboxinput{
     width: auto;
 }
+input[type=checkbox]{
+    height: 20px !important;
+    font-size: 10px;
+    float: left;
+    width: 30px;
+}
 #id_present_same_address,
 #id_term_and_condition{
     position: absolute;
