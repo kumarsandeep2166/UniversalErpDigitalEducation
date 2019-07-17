@@ -16,6 +16,7 @@ class Feestype(models.Model):
 
 class Stream(models.Model):
     name=models.CharField(max_length=50)
+    short_name = models.CharField(max_length=4)
 
     def __str__(self):
         return self.name

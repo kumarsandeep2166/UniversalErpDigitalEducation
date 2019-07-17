@@ -4,9 +4,13 @@ from django.shortcuts import get_object_or_404
 #from django.views.generic.edit import FormView
 from .models import (Student,StudentEnquiry,Employee,Branch,Department,Enrollment)
 from .forms import (StudentForm,StudentEnquiryForm,EmployeeForm,EnrollmentForm)
-from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView
+from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView,View
 from django.views.generic.base import TemplateView
 from django.db.models import Q,Count
+from coursemanagement.models import Stream, Course, Batch, Section
+from django.http import HttpResponse,HttpResponseRedirect
+import json
+
 
 def index(request):    
     return render(request,'student/index.html')
@@ -166,11 +170,36 @@ class EmployeeDeleteView(DeleteView):
     model=Employee
     success_url=reverse_lazy('employee_list')
 
-class EnorllmentView(CreateView):
-    model=Enrollment
-    fields=('course','stream','batch','enrollment_number','date_of_admission','student_name')
-    template_name='student/enroll_student.html'
-    success_url=reverse_lazy('student_list')
+class EnorllmentView(View):
+    # model=Enrollment
+    # form_class=EnrollmentForm    
+    # template_name='student/enroll_student.html'      
+    # context_object_name='student'
+
+    def get(self, request,pk, *args, **kwargs):
+        student_id = request.GET.get('pk')
+        print(pk)
+        stuid_obj = Student.objects.get(pk=pk)
+        try:
+            enr_obj = Enrollment.objects.get(student_name=stuid_obj)
+            enr_no = enr_obj.enrollment_number
+        except:
+            enr_no = ""
+        name = stuid_obj.first_name + " " + stuid_obj.middle_name + " " + stuid_obj.last_name
+        context={'form':EnrollmentForm(), 'name': name, "enr_no": enr_no}
+        return render(request,'student/enroll_student.html',context)
+    
+    def post(self, request, *args, **kwargs):
+        form=EnrollmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse_lazy('student_list'))
+        else:
+            print(form)
+        return render(request,'student/enroll_student.html',{'form':form})
+
+
+
 class EnrollmnetViewList(ListView):
     model=Enrollment
     template_name='student/enrollment_list.html'
@@ -180,6 +209,8 @@ class EnrollmnetViewList(ListView):
     def get_context_data(self,**kwargs):
         context = super(EnrollmnetViewList, self).get_context_data(**kwargs)       
         return context
+
+
 class EnrollmnetViewDetail(DetailView):
     model=Enrollment
     template_name='student/enrollment_list.html'
@@ -189,3 +220,48 @@ class EnrollmnetViewDetail(DetailView):
     def get_context_data(self,**kwargs):
         context = super(EnrollmnetViewDetail, self).get_context_data(**kwargs)       
         return context
+
+
+def ajax_load_enrollment(request):
+    stream_id=request.GET.get('stream_id')
+    course_id=request.GET.get('course_id')
+    batch_id=request.GET.get('batch_id')
+    student_id = request.GET.get('student_id')
+    student_obj = Student.objects.get(pk=student_id)
+    stream_obj = Stream.objects.get(pk=stream_id)
+    course_obj = Course.objects.get(pk=course_id)
+    batch_obj = Batch.objects.get(pk=batch_id) 
+    try:
+        stud_obj = Enrollment.objects.get(student_name=student_obj)
+        if stud_obj:
+            context={'msg':"student already enrolled"}
+            return HttpResponse(json.dumps(context), content_type="application/json")
+    except:
+        pass
+    enrl_obj = Enrollment.objects.filter(stream=stream_obj, course=course_obj, batch=batch_obj).order_by('-pk')
+    
+    try:
+        enrl_no = enrl_obj[0].enrollment_number
+        enr_arr = enrl_no.split('/')
+        enrl_no = int(enr_arr[-1])
+        enrl_no += 1
+        enrl_no = str(enrl_no)
+        stream_abb = enr_arr[0]
+        course_abb = enr_arr[1]
+        batch_abb = enr_arr[2]
+        sr_num = enrl_no.zfill(5)
+        enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
+        enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=student_obj)
+        enrl_obj.enrollment_number = enrl_no
+        enrl_obj.save()
+    except:
+        enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=student_obj)
+        stream_abb = stream_obj.short_name
+        course_abb = course_obj.course_aliases
+        batch_abb = batch_obj.batch_no
+        sr_num = '00001'
+        enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
+        enrl_obj.enrollment_number = enrl_no
+        enrl_obj.save()
+    context={'section':enrl_no, 'msg': ''}
+    return HttpResponse(json.dumps(context), content_type="application/json")

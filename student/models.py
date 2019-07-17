@@ -243,8 +243,8 @@ class Enrollment(models.Model):
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE,blank=True,null=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,blank=True,null=True)
     batch=models.ForeignKey(Batch,on_delete=models.CASCADE,blank=True,null=True)     
-    date_of_admission=models.DateField(blank=True,null=True,default="2019-25-6")   
-    student_name=models.OneToOneField(Student,on_delete=models.CASCADE)
+    date_of_admission=models.DateField(blank=True,null=True,default="2019-09-06")   
+    student_name=models.ForeignKey(Student,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.enrollment_number

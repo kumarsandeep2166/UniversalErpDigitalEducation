@@ -28,6 +28,7 @@ urlpatterns=[
     path('ajax_load_course/',views.load_course,name='ajax_load_course'),
     path('ajax_load_batch/',views.load_batch,name='ajax_load_batch'),
     path('ajax_load_section/',views.load_section,name='ajax_load_section'),
+    
     path('feetype/',views.feesmanagement,name='feesmanagement'),
     path('feetype/list',views.FeesTypeView.as_view(),name='fees_list'),
     path('feetype/feestype_delete/<int:pk>/',views.FeesTypeDeleteView.as_view(),name='fees_delete'),

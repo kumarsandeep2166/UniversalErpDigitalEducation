@@ -1,6 +1,9 @@
 from django.db import models
 from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream,Batch,Section
 from student.models import Student,Enrollment
+
+
+
 class FeesPlanType(models.Model):    
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE)
     course=models.ForeignKey(Course,on_delete=models.CASCADE)
@@ -10,6 +13,8 @@ class FeesPlanType(models.Model):
 
     def __str__(self):
         return self.fees_type
+
+
 class ApproveFeeplanType(models.Model):
     enrollment_num=models.ForeignKey(Enrollment,on_delete=models.CASCADE)
     course=models.ForeignKey(Course,on_delete=models.CASCADE)

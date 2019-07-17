@@ -172,8 +172,8 @@ def load_course(request):
     return render(request,'coursemanagement/includes/course_ajax.html',context)
 
 def load_batch(request):
-    stream_id=request.GET.get('stream')
-    course=Course.objects.filter(stream_id=stream_id).order_by('-id')
+    stream_id=request.GET.get('course')
+    course=Course.objects.get(pk=stream_id)
     batch=Batch.objects.filter(course_name=course).order_by('-id')
     context={'batch':batch}
     return render(request,'coursemanagement/includes/batch_ajax.html',context)

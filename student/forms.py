@@ -91,9 +91,9 @@ class StudentForm(forms.ModelForm):
         #     'student_pic':forms.FileField(attrs={'onchange': "readURL(this);"})
         # }
 class EmployeeForm(forms.ModelForm):
-    date_of_birth=forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
-    tenth_subjects=forms.CharField(label='')
-    tenth_school=forms.CharField(label='')
+    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    tenth_subjects = forms.CharField(label='')
+    tenth_school = forms.CharField(label='')
     tenth_board=forms.CharField(label='')
     tenth_full_mark=forms.IntegerField(label='')
     tenth_secured_mark=forms.IntegerField(label='')
@@ -126,10 +126,9 @@ class EmployeeForm(forms.ModelForm):
         template_name='student/employeemanagement.html'
     
 class EnrollmentForm(forms.ModelForm):
+    student_name=forms.CharField(max_length=50)
     date_of_admission = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1920,2010)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
     class Meta:
         model=Enrollment
         fields=('course','stream','batch','enrollment_number','date_of_admission')
         
-   
-    
