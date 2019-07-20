@@ -1,0 +1,74 @@
+{% extends 'student/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div class="wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-xs-10 col-sm-offset-3">
+                <form action="" method="POST" id="mysectionForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-fee-url="{% url 'ajax_load_feeplan' %}">
+                    {% csrf_token %}
+                    {{form}}
+                    <button type="submit" class="btn btn-info subbtn">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript">
+$("#id_stream").change(function(event){
+            console.log("Hello");
+            event.preventDefault();
+            var url=$("#mysectionForm").attr("data-course-url");
+            var stream_id=$(this).val();
+            $.ajax({
+                url:url,
+            data:{
+                'stream':stream_id,
+            },
+            success:function(data){
+                $("#id_course").html(data);
+            }
+            });
+
+        });
+    $("#id_course").change(function(event){
+        event.preventDefault();
+        var url=$("#mysectionForm").attr("data-batch-url");
+        var course_id=$(this).val();
+        $.ajax({
+            url:url,
+        data:{
+            'course':course_id,
+        },
+        success:function(data){
+            $("#id_batch").html(data);
+        }
+        });
+    });
+
+    $("#id_batch").change(function(event){
+        event.preventDefault();
+        var url=$("#mysectionForm").attr("data-fee-url");
+        console.log(url);
+        var stream_id=$("#id_stream").val();
+        var course_id=$("#id_course").val();
+        var batch_id=$(this).val();
+        console.log();
+        var current_url=$(location).attr('href');
+    $.ajax({
+        url:url,
+        data:{
+        'course_id':course_id,
+        'stream_id':stream_id,
+        'batch_id':batch_id,
+        },
+        success:function(data){
+                $("#id_fees_type").html(data);
+             }
+        });
+    });
+
+</script>
+{% endblock content %}

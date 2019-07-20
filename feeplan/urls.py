@@ -3,6 +3,10 @@ from . import views
 
 
 urlpatterns=[
-    path('home/',views.index,name='fees'),
-    path('home/<fee_id>',views.homefee,name='homefees'),
+   
+    path('feeplan_create/', views.FeesPlanTypeCreate.as_view(), name='feeplan_create'),
+    path('feeplan_list/', views.FeesPlanTypeView.as_view(), name='feeplan_list'),
+    path('ajax_load_list_data/', views.ajax_load_list_data, name="ajax_load_list_data"),
+    path('feecollection/', views.feecollection, name="feecollection"),
+    path('approve_collection/',views.ApproveFeePlanCreate.as_view(), name='approve_collection')
 ]

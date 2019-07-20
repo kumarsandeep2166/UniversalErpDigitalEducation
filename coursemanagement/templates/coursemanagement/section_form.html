@@ -79,19 +79,19 @@ $("#id_stream").change(function(event){
             });
 
         });
-$("#id_course_name").change(function(event){
-    event.preventDefault();
-    var url=$("#mysectionForm").attr("data-batch-url");
-    var course_id=$(this).val();
-    $.ajax({
-        url:url,
-    data:{
-        'course':course_id,
-    },
-    success:function(data){
-        $("#id_batch_no").html(data);
-    }
-    });
+    $("#id_course_name").change(function(event){
+        event.preventDefault();
+        var url=$("#mysectionForm").attr("data-batch-url");
+        var course_id=$(this).val();
+        $.ajax({
+            url:url,
+        data:{
+            'course':course_id,
+        },
+        success:function(data){
+            $("#id_batch_no").html(data);
+        }
+        });
 
 
     $("#id_batch_no").change(function(event){

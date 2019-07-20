@@ -857,7 +857,42 @@ ul, li{
 
 
 
-
+.vwe {
+    background-color: #1fb5ad;
+    color: #fff;
+    border: 0;
+    outline: 0;
+    padding: 8px 30px;
+    font-size: 15px;
+    margin-top:5px;
+}
+.vwert {
+    background-color: #1fb5ad;
+    color: #fff;
+    border: 0;
+    outline: 0;
+    padding: 8px 30px;
+    font-size: 15px;
+}
+.hdln{
+    font-family: 'Open Sans',sans-serif;
+    font-size: 21px;
+    text-transform: capitalize;
+    margin: 0;
+    margin-top: 5px;
+}
+.vwert2rg {
+    background-color: #28282e;
+    color: #fff;
+    border: 0;
+    outline: 0;
+    padding: 8px 30px;
+    font-size: 15px;
+}
+.trm {
+    text-align: left;
+    display: block;
+}
 
 
 

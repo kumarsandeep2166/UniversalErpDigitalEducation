@@ -4,7 +4,7 @@ from django.views.generic import ListView,CreateView,DeleteView,DetailView,Updat
 from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesManagementSettingForm
 from django.urls import reverse_lazy
 import string
-
+from feeplan.models import FeesPlanType
 class StreamCreateView(CreateView):
     model=Stream
     form_class=StreamForm
@@ -186,6 +186,19 @@ def load_section(request):
     section=Section.objects.filter(course_id=course_id,stream_id=stream_id,batch_id=batch_id).order_by('-id')
     context={'section':section}
     return render(request,'coursemanagement/includes/section_ajax.html',context)
+
+def load_fee_selection(request):
+    stream_id=request.GET.get('stream_id')
+    course_id=request.GET.get('course_id')
+    batch_id=request.GET.get('batch_id')
+    print(stream_id, course_id, batch_id)
+    feeplan=FeesPlanType.objects.values_list('fees_type').filter(course=course_id,stream=stream_id,batch=batch_id)
+    feetype_list = [i[0] for i in feeplan]
+    feetype_obj = Feestype.objects.all().exclude(pk__in=feetype_list)
+    print(feetype_obj.count())
+    context={'section':feetype_obj}
+    return render(request,'coursemanagement/includes/fee_ajax.html',context)
+
 
 def feesmanagement(request):
     form=FeesForm()
