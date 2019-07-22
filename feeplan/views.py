@@ -1,13 +1,11 @@
 from django.shortcuts import render,redirect
 from .models import FeesPlanType,ApproveFeeplanType
-#from django.forms import modelformset_factory,inlineformset_factory
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView,View
 from .forms import FeesPlanTypeForm
 from coursemanagement.models import Stream, Course, Batch
 from django.db.models import Q
 from student.models import Enrollment, Student
 from coursemanagement.models import Course, Batch, Stream
-
 import datetime
 import calendar
 
@@ -17,23 +15,6 @@ def add_months(sourcedate, months):
     month = month % 12 + 1
     day = min(sourcedate.day, calendar.monthrange(year,month)[1])
     return datetime.date(year, month, day)
-
-
-# def index(request):
-#     ExampleFormSet=modelformset_factory(FeesPlanType,fields=('stream','course','batch','fees_type','actual_fees',),extra=1)    
-#     if request.method=="POST":        
-#         form=ExampleFormSet(request.POST or None,request.FILES or None) 
-#         if form.is_valid():       
-#             instances=form.save(commit=False)
-#             for instance in instances:
-#                 instance.save()
-#     else:
-#         form=ExampleFormSet() 
-#     return render(request,'feeplan/index.html',{'form':form})
-
-# def homefee(request,fee_id):
-#     fees_id=FeesPlanType.objects.get(pk=fee_id)
-#     return render(request,'feeplan/index.html',{})
 
 class FeesPlanTypeCreate(CreateView):
     model=FeesPlanType
@@ -52,7 +33,6 @@ class FeesPlanTypeCreate(CreateView):
                 return redirect("feeplan_list")
         return render(request, 'feeplan/feeplan_create.html', {'form':form})
 
-
 class FeesPlanTypeView(ListView):
     model=FeesPlanType
     template_name='feeplan/feeplan_list.html'
@@ -66,9 +46,7 @@ class FeesPlanTypeView(ListView):
         context['stream_object'] = self.stream_object
         context['course_object'] = self.course_object
         context['batch_obj'] = self.batch_obj
-
         return context
-
 
 def ajax_load_list_data(request):
     stream_id=request.GET.get('stream_id')
@@ -78,31 +56,6 @@ def ajax_load_list_data(request):
     objects=FeesPlanType.objects.filter(course=course_id,stream=stream_id,batch=batch_id)
     context={'objects': objects}
     return render(request,'feeplan/includes/data.html',context)
-    
-def feecollection(request):
-    enrollment_number=request.GET.get('enrollment_number')
-    
-    #qs=ApproveFeeplanType.objects.filter(enrollment_num=enrollment_number)
-    qs=Enrollment.objects.filter(enrollment_number=enrollment_number)
-    print(qs)
-    course_obj=Course.objects.all()
-    batch_obj=Batch.objects.all()
-    print(course_obj)
-    print(batch_obj)
-    
-    #print(qs)
-    # stream_id=request.GET.get('stream_id')
-    # course_id=request.GET.get('course_id')
-    # batch_id=request.GET.get('batch_id')
-    # print(stream_id, course_id, batch_id)
-    
-
-    try:
-        pass
-    except:
-        pass
-    return render(request,'feeplan/feecollection.html',{'qs':qs})
-
 """
 feeplanType
 stores information of current Course, Stream and Batch after submitting and the view shows
@@ -132,11 +85,8 @@ Stores information of a student by selecting enrollment number
                         2. Date
                     And so on for each no of installments but the maximum limit is 3
 """
-
-class ApproveFeePlanCreate(View):
-    
+class ApproveFeePlanCreate(View):    
     template_name='feeplan/feecollection.html'
-
     def get(self, request, id, *args, **kwargs):
         stuid_obj = Student.objects.get(pk=id)
         enr_obj = Enrollment.objects.get(student_name=stuid_obj)
@@ -195,12 +145,8 @@ class ApproveFeePlanCreate(View):
         course_obj = enr_obj.course
         batch_obj = enr_obj.batch
         print(counter)
-        for i in range(int(counter)):
-            
-            fee_type_id = request.POST.get('fee_type_id'+str(i))
-            
-           
-            
+        for i in range(int(counter)):            
+            fee_type_id = request.POST.get('fee_type_id'+str(i))            
             fee_plan_obj = FeesPlanType.objects.get(pk=fee_type_id)
             approved_installment = request.POST.get('approved_installment'+str(i))
             approved_fee = float(request.POST.get('approved_fee'+str(i)))

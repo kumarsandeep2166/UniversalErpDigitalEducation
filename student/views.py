@@ -124,51 +124,51 @@ def search_list(request):
     pass
 
 
-class EmployeeCreateView(CreateView):
-    model=Employee
-    form_class=EmployeeForm
-    template_name='student/employeemanagement.html'
+# class EmployeeCreateView(CreateView):
+#     model=Employee
+#     form_class=EmployeeForm
+#     template_name='student/employeemanagement.html'
 
-    def get_context_data(self,**kwargs):
-        context=super(EmployeeCreateView,self).get_context_data(**kwargs)
-        return context
-    def get(self,request,*args,**kwargs):
-        context={'form':EmployeeForm(),}
-        return render(request,'student/employeemanagement.html',context)
-    def post(self,request,*args,**kwargs):
-        form=EmployeeForm(request.POST or None,request.FILES or None)
-        if form.is_valid():
-            form.save()
-        return render(request,'student/employeemanagement.html',{'form':form})
+#     def get_context_data(self,**kwargs):
+#         context=super(EmployeeCreateView,self).get_context_data(**kwargs)
+#         return context
+#     def get(self,request,*args,**kwargs):
+#         context={'form':EmployeeForm(),}
+#         return render(request,'student/employeemanagement.html',context)
+#     def post(self,request,*args,**kwargs):
+#         form=EmployeeForm(request.POST or None,request.FILES or None)
+#         if form.is_valid():
+#             form.save()
+#         return render(request,'student/employeemanagement.html',{'form':form})
 
 
-class EmployeeListView(ListView):
-    model=Employee
-    template_name='student/employee_list.html'
-    queryset=Employee.objects.all()
-    ordering=('-id')
+# class EmployeeListView(ListView):
+#     model=Employee
+#     template_name='student/employee_list.html'
+#     queryset=Employee.objects.all()
+#     ordering=('-id')
 
-    def get_context_data(self,**kwargs):
-        context = super(EmployeeListView, self).get_context_data(**kwargs)       
-        return context 
+#     def get_context_data(self,**kwargs):
+#         context = super(EmployeeListView, self).get_context_data(**kwargs)       
+#         return context 
 
-class EmployeeDetailView(DetailView):
-    context_object_name='employee_list'
-    template_name='student/employee_detail.html'
-    queryset=Employee.objects.all()
+# class EmployeeDetailView(DetailView):
+#     context_object_name='employee_list'
+#     template_name='student/employee_detail.html'
+#     queryset=Employee.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(EmployeeDetailView, self).get_context_data(**kwargs)       
-        return context
+#     def get_context_data(self,**kwargs):
+#         context = super(EmployeeDetailView, self).get_context_data(**kwargs)       
+#         return context
     
-class EmployeeUpdateView(UpdateView):
-    model=Employee
-    fields='__all__'
-    template_name='student/employeemanagement.html'
-    success_url=reverse_lazy('employee_list')
-class EmployeeDeleteView(DeleteView):
-    model=Employee
-    success_url=reverse_lazy('employee_list')
+# class EmployeeUpdateView(UpdateView):
+#     model=Employee
+#     fields='__all__'
+#     template_name='student/employeemanagement.html'
+#     success_url=reverse_lazy('employee_list')
+# class EmployeeDeleteView(DeleteView):
+#     model=Employee
+#     success_url=reverse_lazy('employee_list')
 
 class EnorllmentView(View):
     # model=Enrollment

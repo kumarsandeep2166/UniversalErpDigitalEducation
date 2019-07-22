@@ -7,7 +7,8 @@ urlpatterns = [
     path('',include('student.urls')),
     #path('',include('course.urls')),
     path('',include('coursemanagement.urls')),
-    path('',include('feeplan.urls'))
+    path('',include('feeplan.urls')),
+    path('',include('employee.urls')),
 ]
 
 if settings.DEBUG:
