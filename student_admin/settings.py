@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'feemanagement',
     #'bootstrap_datepicker_plus',
     #'course',
-     'django_filters',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

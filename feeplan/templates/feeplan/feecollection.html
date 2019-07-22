@@ -8,42 +8,41 @@
                 <div class="panel">
                     <header class="panel-heading clearfix col-sm-12">
                         <div class="col-sm-3 col-xs-12">
-                            <h1 class="hdln">Enter Enrollment No.</h1>
+                            <h1 class="hdln">Fees Planning Dashborad</h1>
                         </div>
                         <div class="col-sm-3 col-xs-12">
                             <div class="input-group" style="width: 100%;">
-                                <form class="form-horizontal" role="form" id="anything">
-                                    <input class="form-control" type="search" name="enrollment_number" >                                
-                            </div>
-                        </div>
-                        <div class="col-sm-1 col-xs-12">
-                            <button type="submit" value="View"  class="vwert">Submit</button>
-                        </div>
-                    </form>
+                                
                     </header>
                     <form action="." method="POST">
                             {% csrf_token %}
-                     
-                    <div class="panel-body" style="overflow-x:auto;" id="showresults">
-                        <h4>Enrollment Number</h4> 
-                        <input class="form-control" type="text" name="enrollment_number" value="{{qs}}"> 
-                        {{ form.enrollment_num }}
-                        <h4>Course</h4>
-                        {{ form.course }}
-                        <h4>Batch</h4>
-                        {{ form.batch }}
-                        <h4>Fees Type</h4>
-                        {{ form.fees_node }}
-                        
+                     <div class="col-sm-12 col-xs-12">
+                        <div class="panel-body" style="overflow-x:auto;" id="showresults">
+                            <div class="form-group col-sm-6 col-xs-12">
+                                <label>Enrollment Number</label> 
+                                <input class="form-control" type="search" name="enrollment_number" value="{{enr_no}}">
+                            </div>
+                            <div class="form-group col-sm-3 col-xs-12">
+                                <label>Course</label>
+                                <input class="form-control" type="search" name="course" value="{{course_name}}">
+                            </div>
+                            <div class="form-group col-sm-3 col-xs-12">
+                                <label>Batch</label>
+                                <input class="form-control" type="search" name="batch" value="{{batch_no}}">
+                            </div>
+                            <div class="form-group col-sm-3 col-xs-12">
+                                <label>Fees Type</label>                               
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-body" style="overflow-x:auto;" id="feecollection">
+                    <div class="panel-body col-sm-12 col-xs-12" style="overflow-x:auto;" id="feecollection">
                     
                         <table class="table table-bordered table-striped table-condensed">
                             <thead>
                                 <tr class="hdclr">
                                     <th>Fee Type</th>
                                     <th colspan="2">Actual Fee</th>
-                                    <th colspan="2">Approved Fee</th>
+                                    <th colspan="2">Plan Fee</th>
                                     <th>Action</th>
                                     <th>Action</th>
                                     <th>Action</th>
@@ -60,162 +59,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>01</td>
-                                    <td>Akash</td>
-                                    <td>7657893452</td>                                   
-                                    <td>                                        
-                                        <div class="form-group col-sm-12 col-xs-12" style="width: 150px;">
-                                            <input type="text"  class="form-control" placeholder="Approval Amount" name="approve" > 
-                                            {{ form.approve_fees }}                                          
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group col-sm-12 col-xs-12">
-                                            <input type="text" class="form-control" placeholder="installments" >   
-                                            {{ form.no_of_installments }}                                                                               
-                                        </div>
-                                    </td>                                    
-                                    <td>
-                                        <div class="form-group col-sm-12 col-xs-12">
-                                            <input type="text" class="form-control" placeholder="1st Installment">
-                                            <input type="date" class="form-control" placeholder="date">
-                                            <!-- <button type="submit" class="btn btn-default okbtn">Save</button> -->
-                                            {{ form.first_installment }}                                        
-                                            {{ form.due_date_first_installment }}                                        
-                                        </div>
-                                         
-                                        <!-- <div class="panel-body collapse cls1" id="demo" aria-expanded="false">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                        <input type="text" class="form-control" placeholder="Fee Type">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Date</label>
-                                                        <input type="text" class="form-control" placeholder="Date">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                    <button type="button" class="btn btn-default cnlbtn" data-toggle="collapse">Cancel</button>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                        <!-- <div class="panel-body collapse cls2" id="demo2" aria-expanded="false">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                        <input type="text" class="form-control" placeholder="Fee Type">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Date</label>
-                                                        <input type="text" class="form-control" placeholder="Date">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                    <button type="button" class="btn btn-default cnlbtn cnl2" data-toggle="collapse">Cancel</button>
-                                                </div>
-                                            </div>                                   
-                                        </div> -->
-                                    </td>
-                                    <td>
-                                        <div class="form-group col-sm-12 col-xs-12">
-                                            <input type="text" class="form-control" placeholder="2nd Installment"> 
-                                            <input type="date" class="form-control" placeholder="date"> 
-                                            {{ form.second_installment }}                                                                                     
-                                            {{ form.due_date_second_installment }}                                                                                     
-                                        </div>
-                                        <!-- <div class="panel-body collapse cls1" id="demo" aria-expanded="false">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                        <input type="text" class="form-control" placeholder="Fee Type">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Date</label>
-                                                        <input type="text" class="form-control" placeholder="Date">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                    <button type="button" class="btn btn-default cnlbtn" data-toggle="collapse">Cancel</button>
-                                                </div>
-                                            </div>
-                                        </div> -->
-                                        <!-- <div class="panel-body collapse cls2" id="demo2" aria-expanded="false">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                        <input type="text" class="form-control" placeholder="Fee Type">
-                                                    </div>
-                                                    <div class="form-group col-sm-6 col-xs-12">
-                                                        <label for="exampleInputEmail1" class="trm">Date</label>
-                                                        <input type="text" class="form-control" placeholder="Date">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                    <button type="button" class="btn btn-default cnlbtn cnl2" data-toggle="collapse">Cancel</button>
-                                                </div>
-                                            </div>                                   
-                                        </div> -->
-                                    </td>
-                                    <td>
-                                            <div class="form-group col-sm-12 col-xs-12">
-                                                <input type="text" class="form-control" placeholder="3rd Installment">  
-                                                <input type="date" class="form-control" placeholder="date">      
-                                                {{ form.third_installment }}                                                                                     
-                                                {{ form.due_date_third_installment }}                                                                            
-                                            </div>
-                                            <!-- <div class="panel-body collapse cls1" id="demo" aria-expanded="false">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="form-group col-sm-6 col-xs-12">
-                                                            <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                            <input type="text" class="form-control" placeholder="Fee Type">
-                                                        </div>
-                                                        <div class="form-group col-sm-6 col-xs-12">
-                                                            <label for="exampleInputEmail1" class="trm">Date</label>
-                                                            <input type="text" class="form-control" placeholder="Date">
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                        <button type="button" class="btn btn-default cnlbtn" data-toggle="collapse">Cancel</button>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-                                            <!-- <div class="panel-body collapse cls2" id="demo2" aria-expanded="false">
-                                                <div class="modal-content">
-                                                    <div class="modal-body">
-                                                        <div class="form-group col-sm-6 col-xs-12">
-                                                            <label for="exampleInputEmail1" class="trm">Fee Type</label>
-                                                            <input type="text" class="form-control" placeholder="Fee Type">
-                                                        </div>
-                                                        <div class="form-group col-sm-6 col-xs-12">
-                                                            <label for="exampleInputEmail1" class="trm">Date</label>
-                                                            <input type="text" class="form-control" placeholder="Date">
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-default okbtn">Ok</button>
-                                                        <button type="button" class="btn btn-default cnlbtn cnl2" data-toggle="collapse">Cancel</button>
-                                                    </div>
-                                                </div>                                   
-                                            </div> -->
+                                {% for feetype_obj in feetype_list %}
+                                    <tr>
+                                        <td>
+                                            {{ feetype_obj.fee_type }}
+                                            <input type="text" name="fee_type_id{{ forloop.counter0 }}" value="{{ feetype_obj.fee_type_id }}" hidden>
                                         </td>
-                                </tr> 
-                                                                   
-                            </tbody>
-                            
-                            
-                        
+                                        <td>
+                                            {{ feetype_obj.actual_fees }}
+                                        </td>
+                                        <td>
+                                            {{ feetype_obj.default_installment }}
+                                        </td>
+                                        <td>
+                                                <input class="form-control" type="text" name="approved_fee{{ forloop.counter0 }}" value=" {{ feetype_obj.approved_amt }}">
+                                        </td>
+                                        <td>
+                                                <input class="form-control" type="number" name="approved_installment{{ forloop.counter0 }}"  value="{{ feetype_obj.approved_installment }}">
+                                        </td>
+                                        <td>
+                                                {{ feetype_obj.first_installment_amt }}<br>{{ feetype_obj.first_installment_date }}
+                                        </td>
+                                        <td>
+                                                {{ feetype_obj.sec_installment_amt }}<br>{{ feetype_obj.sec_installment_date }}
+                                        </td>
+                                        <td>
+                                                {{ feetype_obj.third_installment_amt }}<br>{{ feetype_obj.third_installment_date }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                <input type="text" name="total" value="{{ total }}" hidden>
+                                                              
+                            </tbody>      
                         </table>
                         <div class="form-group col-sm-2 col-xs-2">
                                 <button type="submit" class="btn btn-default okbtn">Submit</button>

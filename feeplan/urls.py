@@ -8,5 +8,5 @@ urlpatterns=[
     path('feeplan_list/', views.FeesPlanTypeView.as_view(), name='feeplan_list'),
     path('ajax_load_list_data/', views.ajax_load_list_data, name="ajax_load_list_data"),
     path('feecollection/', views.feecollection, name="feecollection"),
-    path('approve_collection/',views.ApproveFeePlanCreate.as_view(), name='approve_collection')
+    path('approvecollection/<int:id>/',views.ApproveFeePlanCreate.as_view(), name='approve_collection')
 ]

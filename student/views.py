@@ -178,7 +178,6 @@ class EnorllmentView(View):
 
     def get(self, request,pk, *args, **kwargs):
         student_id = request.GET.get('pk')
-        print(pk)
         stuid_obj = Student.objects.get(pk=pk)
         try:
             enr_obj = Enrollment.objects.get(student_name=stuid_obj)
@@ -186,7 +185,7 @@ class EnorllmentView(View):
         except:
             enr_no = ""
         name = stuid_obj.first_name + " " + stuid_obj.middle_name + " " + stuid_obj.last_name
-        context={'form':EnrollmentForm(), 'name': name, "enr_no": enr_no}
+        context={'form':EnrollmentForm(), 'name': name, "enr_no": enr_no, 'id': stuid_obj.pk}
         return render(request,'student/enroll_student.html',context)
     
     def post(self, request, *args, **kwargs):
