@@ -53,8 +53,8 @@ def studentadmissionlist(request):
 
 
 def load_branches(request):
-    department_id=request.GET.get('department')
-    branches=Branch.objects.filter(department_id=department_id).order_by('branch')
+    stream_id=request.GET.get('department')
+    branches=Course.objects.filter(stream=stream_id).order_by('course_name')
     return render(request,'student/department_options.html',{'branches':branches})
    
 class StudentCreateView(CreateView):
