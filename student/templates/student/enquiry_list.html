@@ -5,6 +5,8 @@
         document.getElementById("enqry1").className += " active";
         document.getElementById("enqry01").className += " active";        
 </script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 <style>
         #enqry01 a{
                 color:#fff !important;
@@ -14,7 +16,7 @@
     <div class="wrapper">
         <div class="row">
                 <div class="panel-body" style="overflow-x:auto;">
-                        <table class="table table-bordered table-striped table-condensed">
+                        <table class="table table-bordered table-striped table-condensed" id="table_id">
                             <thead>
                                 <tr class="hdclr">
                                     <th>Sl No.</th>
@@ -28,7 +30,8 @@
                                     <th>Last Education</th>  
                                     <th>Entrance</th>  
                                     <th>Year</th>  
-                                    <th>Score</th>  
+                                    <th>Score</th>
+                                    <th>Action</th> 
 
                                     <!-- <th>Father's Name</th>
                                     <th>Father's Occupation</th> 
@@ -60,7 +63,7 @@
                                         <td>{{enq.entrance}}</td>      
                                         <td>{{enq.year}}</td>      
                                         <td>{{enq.score}}</td>      
-                                    
+                                        <td><a href="/start_admission/{{enq.id}}">Admission</a></td>
                                     
                                 </tr>
                                 {% endfor %}
@@ -70,4 +73,9 @@
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function(){
+        $("#table_id").dataTable();
+         });
+</script>
 {% endblock content %}
