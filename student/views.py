@@ -264,3 +264,21 @@ def ajax_load_enrollment(request):
         enrl_obj.save()
     context={'section':enrl_no, 'msg': ''}
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+def start_admission(request, id):
+    if request.method == "POST":
+        pass
+    else:
+        stud_obj = StudentEnquiry.objects.get(pk=id)
+        form = StudentForm()
+        form.fields["first_name"].initial = stud_obj.first_name
+        form.fields["middle_name"].initial = stud_obj.middle_name
+        form.fields["last_name"].initial = stud_obj.last_name
+        form.fields["date_of_birth"].initial = "2019-01-01"#stud_obj.date_of_birth
+        form.fields["phone_number"].initial = stud_obj.phone_no
+        form.fields["email"].initial = stud_obj.email_id
+        form.fields["entrance_name"].initial = stud_obj.entrance
+        form.fields["entrance_year"].initial = stud_obj.year
+        form.fields["entrance_score"].initial = stud_obj.score
+        return render(request,'student/studentadmissionform.html',{'form':form})

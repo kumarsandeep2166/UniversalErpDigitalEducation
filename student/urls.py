@@ -23,7 +23,7 @@ urlpatterns=[
     path('enroll/<int:pk>',views.EnorllmentView.as_view(),name='enrollment'),
     path('enroll_detail/<int:pk>',views.EnrollmnetViewDetail.as_view(),name='enrollment_detail'),
     path('ajax_load_enrollment/', views.ajax_load_enrollment, name='ajax_load_enrollment'),
-    
+    path('start_admission/<int:id>/', views.start_admission, name='start_admission'),
 
 
 ]
