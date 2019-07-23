@@ -6,3 +6,5 @@ student/migrations/*.*
 employee/migrations/*.*
 feeplan/migrations/*.*
 feemanagement/migrations/*.*
+db.sqlite3
+media/
