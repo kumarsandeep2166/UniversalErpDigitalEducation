@@ -55,13 +55,13 @@
                                    <div class="row">
                                         <div class="form-group col-sm-4 col-xs-12">
                                                 
-                                                {{ form.department| as_crispy_field}}
+                                                {{ form.stream| as_crispy_field}}
                                             </div>
                                                 
                                     
                                         <div class="form-group col-sm-4 col-xs-12">
                                             
-                                            {{ form.branch| as_crispy_field}}
+                                            {{ form.course| as_crispy_field}}
                                                 
                                         </div>
     
@@ -102,9 +102,23 @@
         </div>
     </section>
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
     <script type="text/javascript">
-     $("#id_department").change(function(event){
+    var $j = jQuery.noConflict();
+    $j("#datepicker").datepicker();
+    $(function() {
+    $j( ".datepicker" ).datepicker({
+      changeMonth: true,
+      changeYear: true,
+      yearRange: "1900:2012",
+      dateFormat: 'yy-mm-dd',
+      // You can put more options here.
+
+    });
+  });
+     $("#id_stream").change(function(event){
         event.preventDefault();
         var url=$("#studentForm").attr("data-branch-url");
         var department_id=$(this).val();
@@ -115,10 +129,11 @@
                 'department':department_id,
             },
             success:function(data){
-                $("#id_branch").html(data);
+                $("#id_course").html(data);
             }
         });
      });
     </script>
+
 
   {% endblock content %}

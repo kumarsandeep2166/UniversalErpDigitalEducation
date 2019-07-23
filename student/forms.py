@@ -1,6 +1,7 @@
 from django import forms
 from .models import (StudentEnquiry, Branch,Student,Employee,Enrollment)
 from datetime import datetime
+from coursemanagement.models import Course, Stream, Batch, Section
 
 
 #from django.views.generic.edit import FormView
@@ -8,27 +9,28 @@ class StudentEnquiryForm(forms.ModelForm):
     
     class Meta:
         model=StudentEnquiry
-        fields=('first_name','middle_name','last_name','date_of_birth','phone_no','email_id','department','branch','shift','last_education','entrance','year','score')
+        fields=('first_name','middle_name','last_name','date_of_birth','phone_no','email_id','stream','course','shift','last_education','entrance','year','score')
         ordering_by=['-id']
         SHIFT_CHOICES=(("First Shift","First Shift"),("Second Shift","Second Shift")
         )
         
         widgets={
             'shift':forms.Select(choices=SHIFT_CHOICES,attrs={'class': 'form-control'}),
+            'date_of_birth': forms.DateInput(attrs={'class':'datepicker'}),
         }
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        self.fields['branch'].queryset=Branch.objects.none()   
+        self.fields['course'].queryset=Course.objects.none()   
     
-        if 'department' in self.data:
+        if 'stream' in self.data:
             try:
-                department_id=int(self.data.get('department'))
-                self.fields['branch'].queryset=Branch.objects.filter(department_id=department_id).order_by('branch')
+                stream_id=int(self.data.get('stream'))
+                self.fields['course'].queryset=Course.objects.filter(stream=stream_id).order_by('course_name')
                 
             except(ValueError,TypeError):
                 pass
         elif self.instance.pk:
-            self.fields['branch'].queryset=self.instance.department.branch_set.order_by('branch')
+            self.fields['course'].queryset=self.instance.department.branch_set.order_by('course_name')
 
 class StudentForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])

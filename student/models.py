@@ -8,6 +8,7 @@ from django.urls import reverse
 from coursemanagement.models import Course,Stream,Batch
 from django.db.models.signals import pre_save
 from .utils import unique_enrollment_number_generator
+from coursemanagement.models import Course, Stream, Batch, Section
 
 
 def year_choices():
@@ -48,15 +49,15 @@ class StudentEnquiry(models.Model):
     )
     YEAR_CHOICES = [(r,r) for r in range(1984, datetime.date.today().year+1)]
     first_name=models.CharField(max_length=20)
-    middle_name=models.CharField(max_length=20)
+    middle_name=models.CharField(max_length=20, blank= True)
     last_name=models.CharField(max_length=20)
     date_of_birth=models.DateField()
     phone_no=models.CharField(max_length=10, validators=[RegexValidator('^[0-9]{10}$', message="Phone number must be of 10 digit!!")])
     email_id=models.EmailField()
-    department=models.ForeignKey(Department,on_delete=models.SET_NULL,null=True,blank=False)
-    branch=models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,blank=False)
+    stream=models.ForeignKey(Stream,on_delete=models.SET_NULL,null=True,blank=False)
+    course=models.ForeignKey(Course,on_delete=models.SET_NULL,null=True,blank=False)
     shift=models.CharField(max_length=26, choices=SHIFT_CHOICES, default='First Shift')
-    last_education=models.TextField()
+    last_education=models.CharField(max_length=26)
     entrance=models.CharField(max_length=40)
     year = models.IntegerField(('year'), choices=year_choices(), default=current_year())
     score=models.IntegerField()
@@ -130,7 +131,7 @@ class Student(models.Model):
     n=(('india','India'),
         ('others','others'),)
     first_name=models.CharField(max_length=20)
-    middle_name=models.CharField(max_length=20)
+    middle_name=models.CharField(max_length=20, blank=True)
     last_name=models.CharField(max_length=20)
     date_of_birth=models.DateField()
     blood_group=models.CharField(max_length=5,choices=BLOOD_GROUP,default='O+ve')
