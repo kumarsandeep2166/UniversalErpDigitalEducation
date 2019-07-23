@@ -1,4 +1,6 @@
 *.pyc
+*~
+*.swp
 student_admin/settings.py
 student/migrations/*.*
 employee/migrations/*.*
