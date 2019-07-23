@@ -1,1 +1,6 @@
 *.pyc
+student_admin/settings.py
+student/migrations/*.*
+employee/migrations/*.*
+feeplan/migrations/*.*
+feemanagement/migrations/*.*
