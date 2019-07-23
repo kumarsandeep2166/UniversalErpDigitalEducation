@@ -14,7 +14,7 @@ class FeesPlanType(models.Model):
 
 
 class ApproveFeeplanType(models.Model):
-    enrollment_num=models.ForeignKey(Enrollment,on_delete=models.CASCADE)
+    student=models.ForeignKey(Student,on_delete=models.CASCADE, null=True, blank=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE)
     batch=models.ForeignKey(Batch,on_delete=models.CASCADE) 
     fees_node=models.ForeignKey(FeesPlanType,on_delete=models.CASCADE)

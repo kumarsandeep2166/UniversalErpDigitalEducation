@@ -21,7 +21,7 @@
                         </h1>
                         <div class="col-sm-10 col-xs-12 col-sm-offset-1">
                             <div class="panel-body">
-                                <form role="form" class="stfrmdt1" method="POST" enctype="multipart/form-data">
+                                <form role="form" class="stfrmdt1" action="/studentadmissionform/" method="POST" enctype="multipart/form-data" data-course-url="{% url 'ajax_load_course' %}" id="myadmissionForm" data-batch-url="{% url 'ajax_load_batch' %}" data-section-url="{% url 'ajax_load_section' %}">
                                     {% csrf_token %}
                                     <div class="col-sm-10 col-xs-12 col-sm-offset-1">
                                             
@@ -255,6 +255,23 @@
                                                     </table>
                                                 </div>
                                             </div>
+                                            <div class="row clrbg">
+                                                    <div class="subhdrt">
+                                                        <h2>Course Details</h2>
+                                                    </div>
+                                                    <div class="col-sm-12 col-xs-12">
+                                                        <table class="table table-bordered table-striped cf">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>{{ form.stream| as_crispy_field}}</td>                                                                    </td>
+                                                                    <td>{{ form.course | as_crispy_field}}</td>
+                                                                    <td>{{ form.batch| as_crispy_field}}</td>
+                                                                </tr>                                                                                                                         
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             <div class="row clrbg">
                                                 <div class="subhdrt">
                                                     <h2>Contact Details</h2>
@@ -534,4 +551,35 @@
         }
     });
 </script>
+<script type="text/javascript">
+    $("#id_stream").change(function(event){
+                event.preventDefault();
+                var url=$("#myadmissionForm").attr("data-course-url");
+                var stream_id=$(this).val();
+                $.ajax({
+                    url:url,
+                data:{
+                    'stream':stream_id,
+                },
+                success:function(data){
+                    $("#id_course").html(data);
+                }
+                });
+    
+            });
+        $("#id_course").change(function(event){
+            event.preventDefault();
+            var url=$("#myadmissionForm").attr("data-batch-url");
+            var course_id=$(this).val();
+            $.ajax({
+                url:url,
+            data:{
+                'course':course_id,
+            },
+            success:function(data){
+                $("#id_batch").html(data);
+            }
+            });      
+    });
+    </script>
 {% endblock content %}

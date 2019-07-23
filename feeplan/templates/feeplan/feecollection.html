@@ -19,8 +19,8 @@
                      <div class="col-sm-12 col-xs-12">
                         <div class="panel-body" style="overflow-x:auto;" id="showresults">
                             <div class="form-group col-sm-6 col-xs-12">
-                                <label>Enrollment Number</label> 
-                                <input class="form-control" type="search" name="enrollment_number" value="{{enr_no}}">
+                                <label>Student Name</label> 
+                                <input class="form-control" type="search" name="enrollment_number" value="{{stud_obj}}">
                             </div>
                             <div class="form-group col-sm-3 col-xs-12">
                                 <label>Course</label>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="panel-body col-sm-12 col-xs-12" style="overflow-x:auto;" id="feecollection">
                     
-                        <table class="table table-bordered table-striped table-condensed">
+                        <table class="table table-bordered table-striped table-condensed table-responsive">
                             <thead>
                                 <tr class="hdclr">
                                     <th>Fee Type</th>
@@ -49,9 +49,9 @@
                                 </tr>
                                 <tr class="hdclr">
                                     <th></th>
-                                    <th>Amount</th>
+                                    <th>Default Amount</th>
                                     <th>Installment</th>
-                                    <th>Amount</th>
+                                    <th>Plan Amount</th>
                                     <th>Installment</th>
                                     <th>First Installment</th>
                                     <th>Second Installment</th>
@@ -72,19 +72,22 @@
                                             {{ feetype_obj.default_installment }}
                                         </td>
                                         <td>
-                                                <input class="form-control" type="text" name="approved_fee{{ forloop.counter0 }}" value=" {{ feetype_obj.approved_amt }}">
+                                                <input class="form-control" type="text" name="approved_fee{{ forloop.counter0 }}" value=" {{ feetype_obj.approved_amt }}" style="width:100px;">
                                         </td>
                                         <td>
                                                 <input class="form-control" type="number" name="approved_installment{{ forloop.counter0 }}"  value="{{ feetype_obj.approved_installment }}">
                                         </td>
                                         <td>
-                                                {{ feetype_obj.first_installment_amt }}<br>{{ feetype_obj.first_installment_date }}
+                                                <input class="form-control" type="text" name="first_installment_amt{{ forloop.counter0 }}"  value="{{ feetype_obj.first_installment_amt }}">
+                                                <input class="form-control" type="date" name="first_installment_date{{ forloop.counter0 }}"  value="{{ feetype_obj.first_installment_date }}">
                                         </td>
                                         <td>
-                                                {{ feetype_obj.sec_installment_amt }}<br>{{ feetype_obj.sec_installment_date }}
+                                                <input class="form-control" type="text" name="sec_installment_amt{{ forloop.counter0 }}"  value="{{ feetype_obj.sec_installment_amt }}">
+                                                <input class="form-control" type="date" name="sec_installment_date{{ forloop.counter0 }}"  value="{{ feetype_obj.sec_installment_date }}">
                                         </td>
                                         <td>
-                                                {{ feetype_obj.third_installment_amt }}<br>{{ feetype_obj.third_installment_date }}
+                                                <input class="form-control" type="text" name="third_installment_amt{{ forloop.counter0 }}"  value="{{ feetype_obj.third_installment_amt }}">
+                                                <input class="form-control" type="date" name="third_installment_date{{ forloop.counter0 }}"  value="{{ feetype_obj.third_installment_date }}">
                                         </td>
                                     </tr>
                                 {% endfor %}

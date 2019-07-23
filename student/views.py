@@ -71,8 +71,10 @@ class StudentCreateView(CreateView):
     def post(self,request,*args,**kwargs):
         form=StudentForm(request.POST or None,request.FILES or None)
         if form.is_valid():
-            form.save()
-            #return redirect('student_list')
+            stud_obj = form.save()
+            print(stud_obj)
+            print(stud_obj.pk)
+            return redirect('student_list')
         return render(request,'student/studentadmissionform.html',{'form':form})
 
 class StudentListView(ListView):
@@ -281,4 +283,5 @@ def start_admission(request, id):
         form.fields["entrance_name"].initial = stud_obj.entrance
         form.fields["entrance_year"].initial = stud_obj.year
         form.fields["entrance_score"].initial = stud_obj.score
+
         return render(request,'student/studentadmissionform.html',{'form':form})

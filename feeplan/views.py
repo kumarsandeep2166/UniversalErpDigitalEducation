@@ -88,12 +88,10 @@ Stores information of a student by selecting enrollment number
 class ApproveFeePlanCreate(View):    
     template_name='feeplan/feecollection.html'
     def get(self, request, id, *args, **kwargs):
-        stuid_obj = Student.objects.get(pk=id)
-        enr_obj = Enrollment.objects.get(student_name=stuid_obj)
-        enr_no = enr_obj.enrollment_number
-        course_name=enr_obj.course.course_name
-        batch_no=enr_obj.batch.batch_no
-        approved_fee_objs = ApproveFeeplanType.objects.filter(enrollment_num=enr_obj)
+        stud_obj = Student.objects.get(pk=id)
+        course_name=stud_obj.course.course_name
+        batch_no=stud_obj.batch.batch_no
+        approved_fee_objs = ApproveFeeplanType.objects.filter(student=stud_obj)
         fee_list = []
         feetype_list = []
         if approved_fee_objs:
@@ -106,21 +104,21 @@ class ApproveFeePlanCreate(View):
                 feetype_dic['default_installment'] = feeplan_obj.fees_node.default_installment
                 feetype_dic['approved_amt'] = feeplan_obj.approve_fees
                 feetype_dic['approved_installment'] = feeplan_obj.no_of_installments
-                feetype_dic['first_installment_date'] = feeplan_obj.due_date_first_installment.strftime("%m/%d/%Y")
+                feetype_dic['first_installment_date'] = feeplan_obj.due_date_first_installment.strftime("%Y-%m-%d")
                 feetype_dic['first_installment_amt'] = feeplan_obj.first_installment
                 if feeplan_obj.second_installment is not None:
-                    feetype_dic['sec_installment_date'] = feeplan_obj.due_date_second_installment.strftime("%m/%d/%Y")
+                    feetype_dic['sec_installment_date'] = feeplan_obj.due_date_second_installment.strftime("%Y-%m-%d")
                     feetype_dic['sec_installment_amt'] = feeplan_obj.second_installment
                 if feeplan_obj.third_installment is not None:
-                    feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%m/%d/%Y")
+                    feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%Y-%m-%d")
                     feetype_dic['third_installment_amt'] = feeplan_obj.third_installment
                 feetype_list.append(feetype_dic)
             print(fee_list)
         
         feeplan_objs = FeesPlanType.objects.filter(
-            stream=enr_obj.stream,
-            course=enr_obj.course,
-            batch=enr_obj.batch).exclude(fees_type__in=fee_list)
+            stream=stud_obj.stream,
+            course=stud_obj.course,
+            batch=stud_obj.batch).exclude(fees_type__in=fee_list)
         
         for feeplan_obj in feeplan_objs:
             feetype_dic = {}
@@ -129,8 +127,8 @@ class ApproveFeePlanCreate(View):
             feetype_dic['actual_fees'] = feeplan_obj.actual_fees
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
-        print(feetype_list)
-        context={ 'enr_no':enr_no,
+        
+        context={ 'stud_obj':stud_obj.pk,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
@@ -140,58 +138,58 @@ class ApproveFeePlanCreate(View):
     def post(self, request, id, *args, **kwargs):
         counter = request.POST.get('total')
          
-        stuid_obj = Student.objects.get(pk=id)
-        enr_obj = Enrollment.objects.get(student_name=stuid_obj)
-        course_obj = enr_obj.course
-        batch_obj = enr_obj.batch
-        print(counter)
-        for i in range(int(counter)):            
-            fee_type_id = request.POST.get('fee_type_id'+str(i))            
-            fee_plan_obj = FeesPlanType.objects.get(pk=fee_type_id)
-            approved_installment = request.POST.get('approved_installment'+str(i))
-            approved_fee = float(request.POST.get('approved_fee'+str(i)))
-            total_installment = int(approved_installment)
-            appr_fee_plan_obj, created = ApproveFeeplanType.objects.get_or_create(
-                enrollment_num=enr_obj,
-                fees_node=fee_plan_obj,
-                batch=batch_obj,
-                course=course_obj)
-            appr_fee_plan_obj.approve_fees = approved_fee
-            appr_fee_plan_obj.no_of_installments = total_installment
-            somedate = datetime.date.today()
-            if total_installment == 1:
-                first_amt = approved_fee
-                first_date = somedate
-                appr_fee_plan_obj.first_installment = first_amt
-                appr_fee_plan_obj.due_date_first_installment = first_date
-            elif total_installment == 2 :
-                first_amt = sec_amt = approved_fee/2
-                first_date = somedate
-                sec_date = add_months(somedate,6)
-                first_amt = approved_fee/3
-                first_date = somedate
-                sec_date = add_months(somedate, 4)
-                third_date = add_months(somedate, 4)
-                appr_fee_plan_obj.first_installment = first_amt
-                appr_fee_plan_obj.second_installment = first_amt
-                appr_fee_plan_obj.due_date_first_installment = first_date
-                appr_fee_plan_obj.due_date_second_installment = sec_date
-            elif total_installment == 3:
-                first_amt = approved_fee/3
-                first_date = somedate
-                sec_date = add_months(somedate, 4)
-                third_date = add_months(somedate, 4)
-                appr_fee_plan_obj.first_installment = first_amt
-                appr_fee_plan_obj.second_installment = first_amt
-                appr_fee_plan_obj.third_installment = first_amt
-                appr_fee_plan_obj.due_date_first_installment = first_date
-                appr_fee_plan_obj.due_date_second_installment = sec_date
-                appr_fee_plan_obj.due_date_third_installment = third_date
-            appr_fee_plan_obj.save()
-        enr_no = enr_obj.enrollment_number
-        course_name=enr_obj.course.course_name
-        batch_no=enr_obj.batch.batch_no
-        approved_fee_objs = ApproveFeeplanType.objects.filter(enrollment_num=enr_obj)
+        stud_obj = Student.objects.get(pk=id)
+        course_obj = stud_obj.course
+        batch_obj = stud_obj.batch
+        
+        for i in range(int(counter)):
+            try:        
+                fee_type_id = request.POST.get('fee_type_id'+str(i))            
+                fee_plan_obj = FeesPlanType.objects.get(pk=fee_type_id)
+                approved_installment = request.POST.get('approved_installment'+str(i))
+                approved_fee = float(request.POST.get('approved_fee'+str(i)))
+                total_installment = int(approved_installment)
+                appr_fee_plan_obj, created = ApproveFeeplanType.objects.get_or_create(
+                    student=stud_obj,
+                    fees_node=fee_plan_obj,
+                    batch=batch_obj,
+                    course=course_obj)
+                appr_fee_plan_obj.approve_fees = approved_fee
+                appr_fee_plan_obj.no_of_installments = total_installment
+                somedate = datetime.date.today()
+                if total_installment == 1:
+                    first_amt =float( request.POST.get('first_installment_amt'+str(i)))
+                    first_date =int( request.POST.get('first_installment_date'+str(i)))
+                    appr_fee_plan_obj.first_installment = first_amt
+                    appr_fee_plan_obj.due_date_first_installment = first_date
+                elif total_installment == 2 :
+                    first_amt =float( request.POST.get('first_installment_amt'+str(i)))
+                    first_date =int( request.POST.get('first_installment_date'+str(i)))
+                    sec_amt =float( request.POST.get('sec_installment_amt'+str(i)))
+                    sec_date =int( request.POST.get('sec_installment_date'+str(i)))
+                    appr_fee_plan_obj.first_installment = first_amt
+                    appr_fee_plan_obj.second_installment = sec_amt
+                    appr_fee_plan_obj.due_date_first_installment = first_date
+                    appr_fee_plan_obj.due_date_second_installment = sec_date
+                elif total_installment == 3:
+                    first_amt =float( request.POST.get('first_installment_amt'+str(i)))
+                    first_date =request.POST.get('first_installment_date'+str(i))
+                    sec_amt =float( request.POST.get('sec_installment_amt'+str(i)))
+                    sec_date =request.POST.get('sec_installment_date'+str(i))
+                    third_amt =float( request.POST.get('third_installment_amt'+str(i)))
+                    third_date =request.POST.get('third_installment_date'+str(i))
+                    appr_fee_plan_obj.first_installment = first_amt
+                    appr_fee_plan_obj.second_installment = sec_amt
+                    appr_fee_plan_obj.third_installment = third_amt
+                    appr_fee_plan_obj.due_date_first_installment = first_date
+                    appr_fee_plan_obj.due_date_second_installment = sec_date
+                    appr_fee_plan_obj.due_date_third_installment = third_date
+                appr_fee_plan_obj.save()
+            except Exception as e:
+                print(e)
+        course_name=stud_obj.course.course_name
+        batch_no=stud_obj.batch.batch_no
+        approved_fee_objs = ApproveFeeplanType.objects.filter(student=stud_obj)
         fee_list = []
         feetype_list = []
         if approved_fee_objs:
@@ -204,21 +202,21 @@ class ApproveFeePlanCreate(View):
                 feetype_dic['default_installment'] = feeplan_obj.fees_node.default_installment
                 feetype_dic['approved_amt'] = feeplan_obj.approve_fees
                 feetype_dic['approved_installment'] = feeplan_obj.no_of_installments
-                feetype_dic['first_installment_date'] = feeplan_obj.due_date_first_installment.strftime("%m/%d/%Y")
+                feetype_dic['first_installment_date'] = feeplan_obj.due_date_first_installment.strftime("%Y-%m-%d")
                 feetype_dic['first_installment_amt'] = feeplan_obj.first_installment
                 if feeplan_obj.second_installment is not None:
-                    feetype_dic['sec_installment_date'] = feeplan_obj.due_date_second_installment.strftime("%m/%d/%Y")
+                    feetype_dic['sec_installment_date'] = feeplan_obj.due_date_second_installment.strftime("%Y-%m-%d")
                     feetype_dic['sec_installment_amt'] = feeplan_obj.second_installment
                 if feeplan_obj.third_installment is not None:
-                    feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%m/%d/%Y")
+                    feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%Y-%m-%d")
                     feetype_dic['third_installment_amt'] = feeplan_obj.third_installment
                 feetype_list.append(feetype_dic)
             print(fee_list)
         
         feeplan_objs = FeesPlanType.objects.filter(
-            stream=enr_obj.stream,
-            course=enr_obj.course,
-            batch=enr_obj.batch).exclude(fees_type__in=fee_list)
+            stream=stud_obj.stream,
+            course=stud_obj.course,
+            batch=stud_obj.batch).exclude(fees_type__in=fee_list)
         
         for feeplan_obj in feeplan_objs:
             feetype_dic = {}
@@ -227,13 +225,12 @@ class ApproveFeePlanCreate(View):
             feetype_dic['actual_fees'] = feeplan_obj.actual_fees
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
-        print(feetype_list)
-        context={ 'enr_no':enr_no,
+        
+        context={ 'stud_obj':stud_obj.pk,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
                     'total':len(feetype_list)}
-        if request.method=="POST":
-            print(request)
+        
         return render(request, 'feeplan/feecollection.html', context)
 
