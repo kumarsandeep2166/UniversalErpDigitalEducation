@@ -10,6 +10,7 @@ from django.db.models import Q,Count
 from coursemanagement.models import Stream, Course, Batch, Section
 from django.http import HttpResponse,HttpResponseRedirect
 import json
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):    
@@ -21,12 +22,13 @@ def admissionfrm(request):
 
 def applicantfrm(request):
     form=StudentEnquiryForm()
+    username = request.session['username']
     if request.method=="POST":
         form=StudentEnquiryForm(request.POST or None)
         if form.is_valid():
             form.save()
             #return redirect('admissionfrm')
-        return render(request,'student/applicantfrm.html',{'form':form})
+        return render(request,'student/applicantfrm.html',{'form':form, 'username': username})
 
     # if request.method=='POST':
     #     fname=request.POST.get('fname')
@@ -47,15 +49,16 @@ def applicantfrm(request):
         
     else:
         form=StudentEnquiryForm()
-        return render(request,'student/applicantfrm.html',{'form':form})
+        return render(request,'student/applicantfrm.html',{'form':form, 'username': username})
 def studentadmissionlist(request):
     return render(request,'student/studentadmissionlist.html',{})
 
 
 def load_branches(request):
+    username = request.session['username']
     stream_id=request.GET.get('department')
     branches=Course.objects.filter(stream=stream_id).order_by('course_name')
-    return render(request,'student/department_options.html',{'branches':branches})
+    return render(request,'student/department_options.html',{'branches':branches, 'username': username})
    
 class StudentCreateView(CreateView):
     model=Student
@@ -66,25 +69,29 @@ class StudentCreateView(CreateView):
         context=super(StudentCreateView,self).get_context_data(**kwargs)
         return context
     def get(self,request,*args,**kwargs):
-        context={'form':StudentForm(),}
+        username = request.session['username']
+        context={'form':StudentForm(), 'username': username}
         return render(request,'student/studentadmissionform.html',context)
     def post(self,request,*args,**kwargs):
         form=StudentForm(request.POST or None,request.FILES or None)
+        username = request.session['username']
         if form.is_valid():
             stud_obj = form.save()
             print(stud_obj)
             print(stud_obj.pk)
             return redirect('student_list')
-        return render(request,'student/studentadmissionform.html',{'form':form})
+        return render(request,'student/studentadmissionform.html',{'form':form, 'username': username})
 
 class StudentListView(ListView):
     context_object_name='student_list'
     template_name='student/student_list.html'
     queryset=Student.objects.all()
     ordering=('-id')
+    
 
-    def get_context_data(self,**kwargs):
-        context = super(StudentListView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args, **kwargs):
+        context = super(StudentListView, self).get_context_data(**kwargs) 
+        context['username'] = self.request.session['username']      
         return context       
 
 class StudentDetailView(DetailView):
@@ -92,8 +99,9 @@ class StudentDetailView(DetailView):
     template_name='student/admissionfrm.html'
     queryset=Student.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(StudentDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(StudentDetailView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']     
         return context
     
 class StudentUpdateView(UpdateView):
@@ -112,8 +120,9 @@ class EnquiryListView(ListView):
     queryset=StudentEnquiry.objects.all()
     ordering=('-id')
 
-    def get_context_data(self,**kwargs):
-        context = super(EnquiryListView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(EnquiryListView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']   
         return context
 
 def is_valid_queryparam(param):
@@ -179,6 +188,7 @@ class EnorllmentView(View):
     # context_object_name='student'
 
     def get(self, request,pk, *args, **kwargs):
+        username = request.session['username']
         student_id = request.GET.get('pk')
         stuid_obj = Student.objects.get(pk=pk)
         try:
@@ -187,17 +197,18 @@ class EnorllmentView(View):
         except:
             enr_no = ""
         name = stuid_obj.first_name + " " + stuid_obj.middle_name + " " + stuid_obj.last_name
-        context={'form':EnrollmentForm(), 'name': name, "enr_no": enr_no, 'id': stuid_obj.pk}
+        context={'form':EnrollmentForm(), 'name': name, "enr_no": enr_no, 'id': stuid_obj.pk, 'username':username}
         return render(request,'student/enroll_student.html',context)
     
     def post(self, request, *args, **kwargs):
+        username = request.session['username']
         form=EnrollmentForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse_lazy('student_list'))
         else:
             print(form)
-        return render(request,'student/enroll_student.html',{'form':form})
+        return render(request,'student/enroll_student.html',{'form':form, 'username':username})
 
 
 
@@ -207,8 +218,9 @@ class EnrollmnetViewList(ListView):
     queryset=Enrollment.objects.all()
     ordering=('-id')
 
-    def get_context_data(self,**kwargs):
-        context = super(EnrollmnetViewList, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(EnrollmnetViewList, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']     
         return context
 
 
@@ -218,12 +230,14 @@ class EnrollmnetViewDetail(DetailView):
     queryset=Enrollment.objects.all()
     
 
-    def get_context_data(self,**kwargs):
-        context = super(EnrollmnetViewDetail, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(EnrollmnetViewDetail, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 
 
 def ajax_load_enrollment(request):
+    username = request.session['username']
     stream_id=request.GET.get('stream_id')
     course_id=request.GET.get('course_id')
     batch_id=request.GET.get('batch_id')
@@ -264,11 +278,12 @@ def ajax_load_enrollment(request):
         enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
         enrl_obj.enrollment_number = enrl_no
         enrl_obj.save()
-    context={'section':enrl_no, 'msg': ''}
+    context={'section':enrl_no, 'msg': '' , 'username':username}
     return HttpResponse(json.dumps(context), content_type="application/json")
 
 
 def start_admission(request, id):
+    username = request.session['username']
     if request.method == "POST":
         pass
     else:
@@ -284,4 +299,4 @@ def start_admission(request, id):
         form.fields["entrance_year"].initial = stud_obj.year
         form.fields["entrance_score"].initial = stud_obj.score
 
-        return render(request,'student/studentadmissionform.html',{'form':form})
+        return render(request,'student/studentadmissionform.html',{'form':form, 'username': username})

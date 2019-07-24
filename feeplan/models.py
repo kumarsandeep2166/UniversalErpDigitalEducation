@@ -3,6 +3,7 @@ from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream
 from student.models import Student,Enrollment
 from coursemanagement.models import Feestype
 import datetime
+from django.contrib.auth.models import User
 
 class FeesPlanType(models.Model):    
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE)
@@ -27,3 +28,14 @@ class ApproveFeeplanType(models.Model):
     third_installment = models.DecimalField(max_digits=10,decimal_places=2, blank=True, null=True)
     due_date_third_installment = models.DateField(default=datetime.date.today, blank=True, null=True)
     status = models.IntegerField(default=1)
+
+class Note(models.Model):
+    note=models.TextField()
+    student_admission_id=models.ForeignKey(Student, on_delete=models.SET_NULL, null = True, blank = True)
+    user_id=models.ForeignKey(User, on_delete=models.CASCADE)
+    note_type= models.IntegerField(default=1)
+    is_pin=models.BooleanField(default=False)
+    is_active=models.BooleanField(default=True)
+    
+
+

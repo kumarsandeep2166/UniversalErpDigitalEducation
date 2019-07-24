@@ -6930,3 +6930,73 @@ ul.sidebar-menu li.active ul.sub {
         margin-left: 0;
     }
 }
+
+
+.noteImgDiv {
+    position: relative;
+    padding: 0!important;
+}
+
+.pinnedTD {
+    background-color: orange !important;
+    width: 16px !important;
+    padding: 1px !important;
+}
+
+.unPinnedTD {
+    width: 16px !important;
+    padding: 1px !important;
+}
+
+.noteUserGoalSheetLink {
+    position: absolute;
+    top: 0;
+    left: 43px;
+}
+
+.noteUserSkypeLink {
+    position: absolute;
+    bottom: 0;
+    left: 3px;
+}
+
+.noteUserEmailLink {
+    position: absolute;
+    top: 0;
+    left: 3px;
+}
+
+.imgTD {
+    width: 80px;
+}
+
+.tableNotesTD p {
+    white-space: pre-wrap; / css-3 /
+    white-space: -moz-pre-wrap; / Mozilla, since 1999 /
+    white-space: -pre-wrap; / Opera 4-6 /
+    white-space: -o-pre-wrap; / Opera 7 /
+    word-wrap: break-word;
+}
+
+@media screen and (max-width: 350px) {
+    .tableNotesTD p {
+        max-width: 250px;
+    }
+}
+
+@media screen and (min-width: 351px, max-width: 500px) {
+    .tableNotesTD p {
+        max-width: 400px;
+    }
+}
+
+@media screen and (min-width: 501px, max-width: 767px) {
+    .tableNotesTD p {
+        max-width: 700px;
+    }
+}
+
+#notesPagination {
+    margin-top: 0;
+    margin-bottom: 0;
+}

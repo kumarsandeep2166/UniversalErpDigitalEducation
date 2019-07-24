@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     #'bootstrap_datepicker_plus',
     #'course',
     'django_filters',
+    'user',
 ]
 
 MIDDLEWARE = [

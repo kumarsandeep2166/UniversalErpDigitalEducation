@@ -13,13 +13,15 @@ class EmployeeCreateView(CreateView):
         context=super(EmployeeCreateView,self).get_context_data(**kwargs)
         return context
     def get(self,request,*args,**kwargs):
-        context={'form':EmployeeForm(),}
+        username = request.session['username']
+        context={'form':EmployeeForm(),'username':username}
         return render(request,'student/employeemanagement.html',context)
     def post(self,request,*args,**kwargs):
         form=EmployeeForm(request.POST or None,request.FILES or None)
+        username = request.session['username']
         if form.is_valid():
             form.save()
-        return render(request,'student/employeemanagement.html',{'form':form})
+        return render(request,'student/employeemanagement.html',{'form':form, 'username':username})
 
 
 class EmployeeListView(ListView):
@@ -28,8 +30,9 @@ class EmployeeListView(ListView):
     queryset=Employee.objects.all()
     ordering=('-id')
 
-    def get_context_data(self,**kwargs):
-        context = super(EmployeeListView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(EmployeeListView, self).get_context_data(**kwargs)    
+        context['username'] = self.request.session['username']   
         return context 
 
 class EmployeeDetailView(DetailView):
@@ -37,8 +40,9 @@ class EmployeeDetailView(DetailView):
     template_name='student/employee_detail.html'
     queryset = Employee.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(EmployeeDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args,**kwargs):
+        context = super(EmployeeDetailView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']     
         return context
     
 class EmployeeUpdateView(UpdateView):

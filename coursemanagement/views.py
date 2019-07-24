@@ -5,30 +5,37 @@ from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesMana
 from django.urls import reverse_lazy
 import string
 from feeplan.models import FeesPlanType
+
 class StreamCreateView(CreateView):
     model=Stream
     form_class=StreamForm
     template_name='coursemanagement/stream_form.html'
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, *args ,**kwargs):
         context=super(StreamCreateView,self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 
     def get(self,request,*args,**kwargs):
-        context={'form':StreamForm()}
+        username = request.session['username']
+        context={'form':StreamForm(), 'username':username}
         return render(request,'coursemanagement/stream_form.html',context)
+    
     def post(self,request,*args,**kwargs):
         form=StreamForm(request.POST or None,request.FILES or None)
+        username = request.session['username']
         if form.is_valid():
             form.save()
             return redirect('stream_list')
-        return render(request,'coursemanagement/stream_form.html',{'form':form})
+        return render(request,'coursemanagement/stream_form.html',{'form':form, 'username':username})
 
 class StreamListView(ListView):
     template_name='coursemanagement/stream_list.html'    
     queryset=Stream.objects.all()
     context_object_name='stream_list'
-    def get_context_data(self,**kwargs):
+    
+    def get_context_data(self, *args ,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 
 class CourseCreateView(CreateView):
@@ -40,14 +47,16 @@ class CourseCreateView(CreateView):
         context=super(CourseCreateView,self).get_context_data(**kwargs)
         return context
     def get(self,request,*args,**kwargs):
-        context={'form':CourseForm()}
+        username = request.session['username']
+        context={'form':CourseForm(), 'username':username}
         return render(request,'coursemanagement/course_form.html',context)
     def post(self,request,*args,**kwargs):
+        username = request.session['username']
         form=CourseForm(request.POST or None,request.FILES or None)
         if form.is_valid():
             form.save()     
             return redirect('course_list')   
-        return render(request,'coursemanagement/course_form.html',{'form':form})
+        return render(request,'coursemanagement/course_form.html',{'form':form, 'username':username})
 
 class BatchCreateView(CreateView):
     model=Batch
@@ -58,14 +67,16 @@ class BatchCreateView(CreateView):
         context=super(BatchCreateView,self).get_context_data(**kwargs)
         return context
     def get(self,request,*args,**kwargs):
-        context={'form':BatchForm()}
+        username = request.session['username']
+        context={'form':BatchForm(), 'username':username}
         return render(request,'coursemanagement/batch_form.html',context)
     def post(self,request,*args,**kwargs):
+        username = request.session['username']
         form=BatchForm(request.POST or None,request.FILES or None)
         if form.is_valid():
             form.save()  
             return redirect('batch_list')      
-        return render(request,'coursemanagement/batch_form.html',{'form':form})
+        return render(request,'coursemanagement/batch_form.html',{'form':form, 'username':username})
 
 
 class SectionCreateView(CreateView):
@@ -77,15 +88,17 @@ class SectionCreateView(CreateView):
         context=super(SectionCreateView,self).get_context_data(**kwargs)
         return context
     def get(self,request,*args,**kwargs):
-        context={'form':SectionForm()}
+        username = request.session['username']
+        context={'form':SectionForm(), 'username':username}
         return render(request,'coursemanagement/section_form.html',context)
         
     def post(self,request,*args,**kwargs):
+        username = request.session['username']
         form=SectionForm(request.POST or None,request.FILES or None)
         if form.is_valid():
             form.save()
             return redirect('section_list')
-        return render(request,'coursemanagement/section_form.html',{'form':form})
+        return render(request,'coursemanagement/section_form.html',{'form':form, 'username':username})
 class CourseUpdateView(UpdateView):
     model=Course
     fields='__all__'
@@ -96,16 +109,18 @@ class CourseListView(ListView):
     context_object_name='courses'
     queryset=Course.objects.all()
 
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, *args ,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 class CourseDetailView(DetailView):
     context_object_name='course_list'
     template_name='coursemanagement/course_detail.html'
     queryset=Course.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(CourseDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(CourseDetailView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']    
         return context
 class CourseDeleteView(DeleteView):
     model=Course
@@ -115,16 +130,20 @@ class BatchListView(ListView):
     template_name='coursemanagement/batch_list.html'
     context_object_name='batch'
     queryset=Batch.objects.all()
+    
     def get_context_data(self,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
+
 class BatchDetailView(DetailView):
     context_object_name='batch_list'
     template_name='coursemanagement/batch_detail.html'
     queryset=Batch.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(BatchDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self, *args ,**kwargs):
+        context = super(BatchDetailView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']      
         return context 
 
 class BatchUpdateView(UpdateView):
@@ -142,8 +161,9 @@ class SectionListView(ListView):
     template_name='coursemanagement/section_list.html'
     context_object_name='section_list'
     queryset=Section.objects.all()
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, *args ,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 
 class SectionDetailView(DetailView):
@@ -151,8 +171,9 @@ class SectionDetailView(DetailView):
     template_name='coursemanagement/section_detail.html'
     queryset=Batch.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(SectionDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self,*args,**kwargs):
+        context = super(SectionDetailView, self).get_context_data(**kwargs) 
+        context['username'] = self.request.session['username']      
         return context 
 
 class SectionUpdateView(UpdateView):
@@ -166,28 +187,32 @@ class SectionDeleteView(DeleteView):
     success_url=reverse_lazy('section_list')
 
 def load_course(request):
+    username = request.session['username']
     stream_id=request.GET.get('stream')
     course=Course.objects.filter(stream_id=stream_id).order_by('-id')
-    context={'course':course}
+    context={'course':course, 'username':username}
     return render(request,'coursemanagement/includes/course_ajax.html',context)
 
 def load_batch(request):
+    username = request.session['username']
     stream_id=request.GET.get('course')
     course=Course.objects.get(pk=stream_id)
     batch=Batch.objects.filter(course_name=course).order_by('-id')
-    context={'batch':batch}
+    context={'batch':batch, 'username':username}
     return render(request,'coursemanagement/includes/batch_ajax.html',context)
 
 
 def load_section(request):
+    username = request.session['username']
     stream_id=request.GET.get('stream')
     course_id=request.GET.get('course_name')
     batch_id=request.GET.get('batch_no')
     section=Section.objects.filter(course_id=course_id,stream_id=stream_id,batch_id=batch_id).order_by('-id')
-    context={'section':section}
+    context={'section':section, 'username':username}
     return render(request,'coursemanagement/includes/section_ajax.html',context)
 
 def load_fee_selection(request):
+    username = request.session['username']
     stream_id=request.GET.get('stream_id')
     course_id=request.GET.get('course_id')
     batch_id=request.GET.get('batch_id')
@@ -196,11 +221,12 @@ def load_fee_selection(request):
     feetype_list = [i[0] for i in feeplan]
     feetype_obj = Feestype.objects.all().exclude(pk__in=feetype_list)
     print(feetype_obj.count())
-    context={'section':feetype_obj}
+    context={'section':feetype_obj, 'username':username}
     return render(request,'coursemanagement/includes/fee_ajax.html',context)
 
 
 def feesmanagement(request):
+    username = request.session['username']
     form=FeesForm()
     if request.method=="POST":
         form=FeesForm(request.POST or None)
@@ -210,13 +236,14 @@ def feesmanagement(request):
             form.save()
             return redirect('fees_list')
     
-    return render(request,'coursemanagement/feessetting.html',{'form':form})
+    return render(request,'coursemanagement/feessetting.html',{'form':form, 'username':username})
 class FeesTypeView(ListView):
     template_name='coursemanagement/fees_list.html'
     context_object_name='fees_list'
     queryset=Feestype.objects.all()
-    def get_context_data(self,**kwargs):
+    def get_context_data(self,*args,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
     def get_queryset(self,*args):
         return Feestype.objects.all()
@@ -233,12 +260,13 @@ class FeesTypeDeleteView(DeleteView):
 
 def FeesManagementView(request):
     form=FeesManagementSettingForm()
+    username = request.session['username']
     if request.method=="POST":
         form=FeesManagementSettingForm(request.POST or None)
         if form.is_valid():
             form.save()
             return redirect('feesmanagement_list')
-    return render(request,'coursemanagement/feesmanagment_create.html',{'form':form})
+    return render(request,'coursemanagement/feesmanagment_create.html',{'form':form, 'username':username})
     
 class FeesManagementSettingUpdateView(UpdateView):
     model=FeesManagementSetting
@@ -251,8 +279,9 @@ class FeesManagementSettingListView(ListView):
     context_object_name='feesmanagement_list'
     queryset=FeesManagementSetting.objects.all()
     
-    def get_context_data(self,**kwargs):
+    def get_context_data(self, *args ,**kwargs):
         context=super().get_context_data(**kwargs)
+        context['username'] = self.request.session['username']
         return context
 
 class FeesManagementSettingDetailView(DetailView):
@@ -260,8 +289,9 @@ class FeesManagementSettingDetailView(DetailView):
     template_name='coursemanagement/feesmanagement_detail.html'
     queryset=FeesManagementSetting.objects.all()
     
-    def get_context_data(self,**kwargs):
-        context = super(FeesManagementSettingDetailView, self).get_context_data(**kwargs)       
+    def get_context_data(self,*args,**kwargs):
+        context = super(FeesManagementSettingDetailView, self).get_context_data(**kwargs)
+        context['username'] = self.request.session['username']    
         return context 
 
 class FeesManagementSettingDeleteView(DeleteView):

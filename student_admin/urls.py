@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('student.urls')),
@@ -9,6 +10,7 @@ urlpatterns = [
     path('',include('coursemanagement.urls')),
     path('',include('feeplan.urls')),
     path('',include('employee.urls')),
+    path('',include('user.urls')),   
 ]
 
 if settings.DEBUG:
