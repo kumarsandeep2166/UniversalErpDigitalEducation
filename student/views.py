@@ -96,7 +96,7 @@ class StudentListView(ListView):
 
 class StudentDetailView(DetailView):
     context_object_name='student_list'
-    template_name='student/admissionfrm.html'
+    template_name='student/student_detail.html'
     queryset=Student.objects.all()
     
     def get_context_data(self, *args ,**kwargs):
@@ -300,3 +300,32 @@ def start_admission(request, id):
         form.fields["entrance_score"].initial = stud_obj.score
 
         return render(request,'student/studentadmissionform.html',{'form':form, 'username': username})
+
+
+def approve_academic(request):
+    student_id = request.POST.get('student_id')
+    stud_obj = Student.objects.get(pk=student_id)
+    stud_obj.academic_status=2
+    stud_obj.save()
+    context={'msg':"Approved"}
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+def reject_academic(request):
+    student_id = request.POST.get('student_id')
+    stud_obj = Student.objects.get(pk=student_id)
+    stud_obj.academic_status=0
+    stud_obj.save()
+    context={'msg':"Rejected"}
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+class Enroll_StudentList(View):
+    
+    template_name = 'student/enroll_student_list.html'
+
+    def get(self, request, *args, **kwargs):
+        object_list = Student.objects.filter(academic_status=2, fee_status=2)
+        print(object_list[0].academic_status)
+        print(object_list[0].fee_status)
+        return render(request, 'student/enroll_student_list.html', context={'object_list':object_list})
+    
+    

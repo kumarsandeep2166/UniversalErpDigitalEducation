@@ -12,4 +12,6 @@ urlpatterns=[
     path('add_note/', views.add_note, name='note'),
     path('pin_toggle_note/', views.pin_toggle_note, name='pin_toggle_note'),
     path('approvecollection/<int:id>/',views.FeePlanApprove.as_view(), name='approve_collection'),
+    path('fee/collect_fee/<int:id>/', views.CollectFee.as_view(), name="collect_fee"),
+    path('feeplan/save_fee/', views.collectfeesave, name="save_fee"),
 ]

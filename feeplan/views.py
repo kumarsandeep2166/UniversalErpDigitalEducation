@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import FeesPlanType,ApproveFeeplanType, Note
+from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView,View
 from .forms import FeesPlanTypeForm
 from coursemanagement.models import Stream, Course, Batch
@@ -347,6 +347,7 @@ class FeePlanApprove(View):
     def get(self, request, id, *args, **kwargs):
         username = request.session['username']
         stud_obj = Student.objects.get(pk=id)
+        approved = stud_obj.fee_status
         course_name=stud_obj.course.course_name
         batch_no=stud_obj.batch.batch_no
         approved_fee_objs = ApproveFeeplanType.objects.filter(student=stud_obj)
@@ -368,10 +369,8 @@ class FeePlanApprove(View):
                 if feeplan_obj.third_installment is not None:
                     feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%Y-%m-%d")
                     feetype_dic['third_installment_amt'] = feeplan_obj.third_installment
-                if feeplan_obj.status==2:
-                    approved = True
-                else:
-                    approved =False
+                   
+               
                 feetype_list.append(feetype_dic)
         print(feetype_list)
         context={ 'stud_obj':stud_obj.pk,
@@ -433,14 +432,15 @@ class FeePlanApprove(View):
                     appr_fee_plan_obj.due_date_first_installment = first_date
                     appr_fee_plan_obj.due_date_second_installment = sec_date
                     appr_fee_plan_obj.due_date_third_installment = third_date
-                appr_fee_plan_obj.status=2
                 appr_fee_plan_obj.save()
             except Exception as e:
                 print(e)
         course_name=stud_obj.course.course_name
         batch_no=stud_obj.batch.batch_no
+        stud_obj.fee_status=2
+        stud_obj.save()
         approved_fee_objs = ApproveFeeplanType.objects.filter(student=stud_obj)
-        
+        approved = stud_obj.fee_status
         feetype_list = []
         if approved_fee_objs:
             for feeplan_obj in approved_fee_objs:
@@ -459,10 +459,6 @@ class FeePlanApprove(View):
                 if feeplan_obj.third_installment is not None:
                     feetype_dic['third_installment_date'] = feeplan_obj.due_date_third_installment.strftime("%Y-%m-%d")
                     feetype_dic['third_installment_amt'] = feeplan_obj.third_installment
-                if feeplan_obj.status==2:
-                    approved = True
-                else:
-                    approved =False
 
                 feetype_list.append(feetype_dic)
         
@@ -475,3 +471,107 @@ class FeePlanApprove(View):
                     'approved': approved}
         
         return render(request, 'feeplan/approvecollection.html', context)
+
+
+class CollectFee(View):
+    def get(self, request, id, *args, **kwargs):
+        try:
+            enr_obj = Enrollment.objects.get(student_name=id)
+        except:
+            enr_obj = ""
+        if enr_obj:
+            approved_fee_objs = FeeCollect.objects.filter(student=id)
+            approved_fee_list = []
+            for approved_fee_obj in approved_fee_objs:
+                approved_fee_dict = {}
+                approved_fee_dict['fee_type'] = approved_fee_obj.approve_fee.fees_node.fees_type.fee_type
+                approved_fee_dict['fee_type_id'] = approved_fee_obj.approve_fee.pk
+                approved_fee_dict['fee_amount'] = approved_fee_obj.approve_fee.first_installment
+                approved_fee_dict['amount_paid'] = approved_fee_obj.amount_paid
+                approved_fee_dict['amount_left'] = approved_fee_obj.amount_left
+                approved_fee_list.append(approved_fee_dict)
+        else:
+            approved_fee_objs = ApproveFeeplanType.objects.filter(student=id)
+            approved_fee_list = []
+            for approved_fee_obj in approved_fee_objs:
+                approved_fee_dict = {}
+                approved_fee_dict['fee_type'] = approved_fee_obj.fees_node.fees_type.fee_type
+                approved_fee_dict['fee_type_id'] = approved_fee_obj.pk
+                approved_fee_dict['fee_amount'] = approved_fee_obj.first_installment
+                approved_fee_dict['amount_paid'] = 0
+                approved_fee_dict['amount_left'] = approved_fee_obj.first_installment
+                approved_fee_list.append(approved_fee_dict)
+        context = {"object_list": approved_fee_list,
+                    "total_fee_type": len(approved_fee_list),
+                    "student_id": id}
+        return render(request, 'student/fee_view.html', context)
+
+
+def collectfeesave(request):
+    student_id = request.POST.get('student_id')
+    total_count = request.POST.get('total_fee_type')
+    for i in range(int(total_count)):
+        try:
+            amount = float(request.POST.get('fee'+str(i)))
+        except:
+            amount = 0.0
+        if amount > 0:
+            enroll = True
+            break
+    if enroll:
+        for i in range(int(total_count)):
+            approve_id = request.POST.get('approve_fee_id'+str(i))
+            approved_fee_obj = ApproveFeeplanType.objects.get(pk=approve_id)
+            total_amount = float(approved_fee_obj.first_installment)
+            try:
+                amount = float(request.POST.get('fee'+str(i)))
+            except:
+                amount = 0.0
+            if total_amount == amount:
+                remaing_amt = 0.0
+            else:
+                remaing_amt = total_amount
+            fee_collect_obj, created = FeeCollect.objects.get_or_create(
+                student=approved_fee_obj.student,
+                approve_fee=approved_fee_obj)
+            fee_collect_obj.amount_paid = amount
+            fee_collect_obj.amount_left = remaing_amt
+            fee_collect_obj.save()
+    
+        stud_obj = approved_fee_obj.student
+        stream_obj = approved_fee_obj.student.stream
+        course_obj = approved_fee_obj.student.course
+        batch_obj = approved_fee_obj.student.batch
+        try:
+            enrobj = Enrollment.objects.get(student_name=stud_obj)
+        except:
+            enrobj = ""
+        if not enrobj:
+            enrl_obj = Enrollment.objects.filter(stream=stream_obj, course=course_obj, batch=batch_obj).order_by('-pk')
+            
+            try:
+                enrl_no = enrl_obj[0].enrollment_number
+                enr_arr = enrl_no.split('/')
+                enrl_no = int(enr_arr[-1])
+                enrl_no += 1
+                enrl_no = str(enrl_no)
+                stream_abb = enr_arr[0]
+                course_abb = enr_arr[1]
+                batch_abb = enr_arr[2]
+                sr_num = enrl_no.zfill(5)
+                enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
+                enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=student_obj)
+                enrl_obj.enrollment_number = enrl_no
+                enrl_obj.save()
+            except:
+                enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=stud_obj)
+                stream_abb = stream_obj.short_name
+                course_abb = course_obj.course_aliases
+                batch_abb = batch_obj.batch_no
+                sr_num = '00001'
+                enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
+                enrl_obj.enrollment_number = enrl_no
+                enrl_obj.save()
+    else:
+        pass
+    return redirect('/fee/collect_fee/'+student_id+"/")

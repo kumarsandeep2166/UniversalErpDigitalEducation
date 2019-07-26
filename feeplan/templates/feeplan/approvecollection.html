@@ -99,10 +99,14 @@
                         </table>
                         
                         <div class="form-group col-sm-2 col-xs-2">
-                            {% if approved %}
-                                Approved
-                            {% else %}
+                            {% if approved < 1 %}
+                                <span id="approve_msg">Rejected</span>
+                            {% elif approved < 2 %}
                                 <button type="submit" class="btn btn-default okbtn">Approve</button>
+                                <a href="" class="btn btn-danger" id="reject_btn">Reject</a>
+                                <span id="approve_msg"></span>
+                            {% else %}
+                                <span id="approve_msg">Approved</span>
                             {% endif %}
                         </div>
                     </form>  
@@ -110,7 +114,7 @@
                     </div>  
                     
                     <div class="form-group">
-                        <label for="note">Note:</label>
+                        <label for="note">Remark:</label>
                         <textarea class="form-control" name="note" rows="3" id="note"></textarea>
                     </div>  
                     <div class="form-group col-sm-2 col-xs-2">

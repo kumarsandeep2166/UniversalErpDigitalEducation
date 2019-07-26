@@ -27,7 +27,6 @@ class ApproveFeeplanType(models.Model):
     due_date_second_installment = models.DateField(default=datetime.date.today, blank=True, null=True)
     third_installment = models.DecimalField(max_digits=10,decimal_places=2, blank=True, null=True)
     due_date_third_installment = models.DateField(default=datetime.date.today, blank=True, null=True)
-    status = models.IntegerField(default=1)
 
 class Note(models.Model):
     note=models.TextField()
@@ -36,6 +35,13 @@ class Note(models.Model):
     note_type= models.IntegerField(default=1)
     is_pin=models.BooleanField(default=False)
     is_active=models.BooleanField(default=True)
-    
 
 
+class FeeCollect(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    approve_fee = models.ForeignKey(ApproveFeeplanType, on_delete=models.CASCADE)
+    installment_number = models.IntegerField(default=1)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True) 
+    amount_left = models.DecimalField(max_digits=10, default=0, decimal_places=2, null=True, blank=True)
+    date= models.DateField(default=datetime.date.today)
+    is_active = models.BooleanField(default=True)

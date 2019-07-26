@@ -24,6 +24,7 @@ urlpatterns=[
     path('enroll_detail/<int:pk>',views.EnrollmnetViewDetail.as_view(),name='enrollment_detail'),
     path('ajax_load_enrollment/', views.ajax_load_enrollment, name='ajax_load_enrollment'),
     path('start_admission/<int:id>/', views.start_admission, name='start_admission'),
-
-
+    path('approve_academic/', views.approve_academic, name='approve_academic'),
+    path('reject_academic/', views.reject_academic, name='reject_academic'),
+    path('student_enroll_list/', views.Enroll_StudentList.as_view(), name='student_enroll_list'),
 ]

@@ -1,42 +1,6 @@
 {% extends 'student/base.html' %}
-
-{{object.twelth_school}}<br>
-{{object.twelth_university}}<br>
-{{object.twelth_full_mark}}<br>
-{{object.twelth_secured_mark}}<br>
-{{object.tewlth_percentage}}<br>
-{{object.degree_stream}}<br>
-{{object.degree_college}}<br>
-{{object.degree_university}}<br>
-{{object.degree_full_mark}}<br>
-{{object.degree_secured_mark}}<br>
-{{object.degree_percentage}}<br>
-{{object.postdegree_stream}}<br>
-{{object.postdegree_college}}<br>
-{{object.postdegree_university}}<br>
-{{object.postdegree_full_mark}}<br>
-{{object.postdegree_secured_mark}}<br>
-{{object.postdegree_percentage}}<br>
-{{object.present_house_plot_no}}<br>
-{{object.present_Lane}}<br>
-{{object.present_pin}}<br>
-{{object.present_district}}<br>
-{{object.present_state}}<br>
-{{object.present_country}}<br>
-{{object.present_same_address}}<br>
-{{object.permanent_house_plot_no}}<br>
-{{object.permanent_Lane}}<br>
-{{object.permanent_pin}}<br>
-{{object.permanent_district}}<br>
-{{object.permanent_state}}<br>
-{{object.permanent_country}}<br>
-{{object.entrance_name}}<br>
-{{object.entrance_year}}<br>
-{{object.entrance_score}}<br>
-
-
+{% load static %}
 {% block content %}
-
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -154,6 +118,14 @@
                                     <td>{{object.tenth_percentage}}</td>
                                 </tr>
                                 <tr>
+                                    <td>10th Document</td>
+                                    <td><a href="/media/{{object.student_tenth}}" target="_blank">view document</a></td>
+                                </tr>
+                                <tr>
+                                    <td>10th Mark Sheet</td>
+                                    <td><a href="/media/{{object.tenth_marksheet}}" target="_blank">view document</a></td>
+                                </tr>
+                                <tr>
                                     <td>12th Board</td>
                                     <td>{{object.twelth_board}}</td>
                                 </tr>
@@ -169,101 +141,221 @@
                                     <td>12th  Occupation</td>
                                     <td>{{object.twelth_board}}</td>
                                 </tr>
+                                
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>12th  Document</td>
+                                    <td><a href="/media/{{object.student_twelth}}" target="_blank">view document</a></td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>12th  Mark Sheet</td>
+                                    <td><a href="/media/{{object.tewlth_marksheet}}" target="_blank">view document</a></td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Stream</td>
+                                    <td>{{object.degree_stream}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>Degree College</td>
+                                    <td>{{object.degree_college}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
-                                </tr>
-
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree University</td>
+                                    <td>{{object.degree_university}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Full Mark</td>
+                                    <td>{{object.degree_full_mark}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Secured Mark</td>
+                                    <td>{{object.degree_secured_mark}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Percentage</td>
+                                    <td>{{object.degree_percentage}}</td>
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Document</td>
+                                    <td><a href="/media/{{object.student_degree}}" target="_blank">view document</a></td>                                  
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Degree Mark Sheet</td>
+                                    <td><a href="/media/{{object.degree_marksheet}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>CLC</td>
+                                    <td><a href="/media/{{object.student_clc}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Conduct</td>
+                                    <td><a href="/media/{{object.student_conduct_certificate}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Migration</td>
+                                    <td><a href="/media/{{object.student_migration}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Birth Certificate</td>
+                                    <td><a href="/media/{{object.student_birth_certificate}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Student Thumb</td>
+                                    <td><a href="/media/{{object.student_thumb}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Student Address</td>
+                                    <td><a href="/media/{{object.student_address}}" target="_blank">view document</a></td>                                   
                                 </tr>
                                 <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
+                                    <td>Student Signature</td>
+                                    <td><a href="/media/{{object.student_signature}}" target="_blank">view document</a></td>                                   
                                 </tr>
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>{{object.twelth_board}}</td>
-                                </tr>
-                                <tr>
-                                    <td>Father's Occupation</td>
-                                    <td>Male</td>
-                                </tr>
+                               
                             </tbody>
                         </table>
                     </div>
+                    {% if object.academic_status < 1 %}
+                        <span id="approve_msg">Rejected</span>
+                    {% elif object.academic_status < 2 %}
+                        <a href="" class="btn btn-info" id="approve_btn">Approve</a>
+                        <a href="" class="btn btn-info" id="reject_btn">Reject</a>
+                        <span id="approve_msg"></span>
+                    {% else %}
+                        <span id="approve_msg">Approved</span>
+                    {% endif %}
                 </div>
+                <input type="text" id="student_id" value="{{object.pk}}" hidden="hidden">
+                <div class="form-group">
+                    <label for="note">Remark:</label>
+                    <textarea class="form-control" name="note" rows="3" id="note"></textarea>
+                </div>  
+                <div class="form-group col-sm-2 col-xs-2">
+                    <button type="submit" id="addnote" class="btn btn-default okbtn">Add Note</button>
+                </div> <br><br><br>
+                <div id="notesDiv" class="table-responsive">
+                    <table id="note_table" class="table table-striped table-hover">
+                        <tbody>
+                            
+                        </tbody>
+                    </table> 
+                </div>                  
             </div>
         </div>
     </div>
 </section>
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    var student_id=$("#student_id").val();
+    $.ajax({
+    type:'GET',
+    url:'/add_note/',
+    data:{
+        'student_id':student_id,
+        'note_type': '2',
+    },
+    success:function(data){
+            $("#note_table").html(data);
+            }
+    });
+
+    
+});
+    function pinToggle(id){
+        var student_id=$("#student_id").val();
+        $.ajax({
+        type:'GET',
+        url:'/pin_toggle_note/',
+        data:{
+            'student_id':student_id,
+            'note_id':id,
+            'note_type': '2',
+        },
+        success:function(data){
+                $("#note_table").html(data);
+                }
+        });
+    }
+    $('#addnote').on('click', function(event){
+    event.preventDefault();
+    console.log("form submitted!")  // sanity check
+    var note = $("#note").val();
+    var student_id=$("#student_id").val();
+    console.log(student_id);
+    $.ajax({
+
+
+        type:'POST',
+        url:'/add_note/',
+        data:{
+            'student_id':student_id,
+            'note': note,
+            'note_type': '2',
+        },
+        success:function(data){
+                $("#note_table").html(data);
+             }
+        });
+});
+$('#approve_btn').on('click', function(event){
+    event.preventDefault();
+    var student_id=$("#student_id").val();
+    $.ajax({
+
+
+        type:'POST',
+        url:'/approve_academic/',
+        data:{
+            'student_id':student_id,
+        },
+        success:function(result){
+               if(result.msg=="Approved"){
+                   $("#approve_btn").hide();
+                   $("#reject_btn").hide();
+                   $("#approve_msg").text("Approved");
+               }
+             }
+        });
+});
+$('#reject_btn').on('click', function(event){
+    event.preventDefault();
+    var student_id=$("#student_id").val();
+    $.ajax({
+
+
+        type:'POST',
+        url:'/reject_academic/',
+        data:{
+            'student_id':student_id,
+        },
+        success:function(result){
+               if(result.msg=="Rejected"){
+                   $("#approve_btn").hide();
+                   $("#reject_btn").hide();
+                   $("#approve_msg").text("Rejected");
+               }
+             }
+        });
+});
+function getCookie(c_name) {
+    if (document.cookie.length > 0)
+    {
+        c_start = document.cookie.indexOf(c_name + "=");
+        if (c_start != -1)
+        {
+            c_start = c_start + c_name.length + 1;
+            c_end = document.cookie.indexOf(";", c_start);
+            if (c_end == -1) c_end = document.cookie.length;
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+    }
+    return "";
+}
+    $(function(){
+        $.ajaxSetup({
+            headers:{"X-CSRFToken":getCookie('csrftoken')}
+        });
+    });
+</script>
 {% endblock content %}
