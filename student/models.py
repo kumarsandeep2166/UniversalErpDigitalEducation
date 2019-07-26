@@ -231,6 +231,7 @@ class Student(models.Model):
     stream=models.ForeignKey(Stream, on_delete=models.SET_NULL,null=True, blank=True)
     course=models.ForeignKey(Course, on_delete=models.SET_NULL,null=True, blank=True)
     batch=models.ForeignKey(Batch, on_delete=models.SET_NULL,null=True, blank=True)
+    status=models.IntegerField(default=1)
     
 
     
