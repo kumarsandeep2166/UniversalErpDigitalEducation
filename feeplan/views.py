@@ -171,14 +171,14 @@ class FeePlanCreate(View):
                 somedate = datetime.date.today()
                 if total_installment == 1:
                     first_amt =float( request.POST.get('first_installment_amt'+str(i)))
-                    first_date =int( request.POST.get('first_installment_date'+str(i)))
+                    first_date =request.POST.get('first_installment_date'+str(i))
                     appr_fee_plan_obj.first_installment = first_amt
                     appr_fee_plan_obj.due_date_first_installment = first_date
                 elif total_installment == 2 :
                     first_amt =float( request.POST.get('first_installment_amt'+str(i)))
-                    first_date =int( request.POST.get('first_installment_date'+str(i)))
+                    first_date =request.POST.get('first_installment_date'+str(i))
                     sec_amt =float( request.POST.get('sec_installment_amt'+str(i)))
-                    sec_date =int( request.POST.get('sec_installment_date'+str(i)))
+                    sec_date =request.POST.get('sec_installment_date'+str(i))
                     appr_fee_plan_obj.first_installment = first_amt
                     appr_fee_plan_obj.second_installment = sec_amt
                     appr_fee_plan_obj.due_date_first_installment = first_date
