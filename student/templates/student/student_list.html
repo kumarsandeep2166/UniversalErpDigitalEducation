@@ -28,9 +28,8 @@
                                     <th>Sub Caste</th>
                                     <th>Place Of Birth</th>
                                     <th>Aadhar Number</th>
-                                    <th>Gender</th>  
-
-                                  
+                                    <th>Gender</th>                                   
+                                    <th>Fee Plan</th>                                   
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -46,6 +45,7 @@
                                         <td>{{stud.place_of_birth}}</td>
                                         <td>{{stud.aadhar_number}}</td>
                                         <td>{{stud.gender}}</td>      
+                                        <td><a href="/plancollection/{{stud.id}}">Plan Fee</a></td>      
                                     
                                     <td>
                                         <a href="{% url 'student_detail' pk=stud.id %}" class="social-icon">

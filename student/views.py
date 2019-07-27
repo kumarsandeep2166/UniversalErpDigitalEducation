@@ -108,8 +108,8 @@ class StudentDetailView(DetailView):
 class StudentUpdateView(UpdateView):
     model=Student
     fields='__all__'
-    template_name='student/studentadmissionform.html'
-    success_url=reverse_lazy('student_list')
+    template_name='student/student_update.html'
+    
 
 class StudentDeleteView(DeleteView):
     model=Student
