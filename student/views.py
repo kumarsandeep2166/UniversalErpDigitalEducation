@@ -325,8 +325,6 @@ class Enroll_StudentList(View):
 
     def get(self, request, *args, **kwargs):
         object_list = Student.objects.filter(academic_status=2, fee_status=2)
-        print(object_list[0].academic_status)
-        print(object_list[0].fee_status)
         return render(request, 'student/enroll_student_list.html', context={'object_list':object_list})
     
     
