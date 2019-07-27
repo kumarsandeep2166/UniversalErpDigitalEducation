@@ -16,4 +16,5 @@ urlpatterns=[
     path('feeplan/save_fee/', views.collectfeesave, name="save_fee"),
     path('get_remaning_fee_list/', views.get_remaning_fee_list, name="get_remaning_fee_list"),
     path('collect_student_fee/', views.collect_student_fee, name="collect_student_fee"),
+    path('pay_by_id/', views.pay_by_id, name="pay_by_id"),
 ]

@@ -615,7 +615,7 @@ def get_remaning_fee_list(request):
     first_fee_list = []
     for fee_collect_obj in fee1_collect_objs:
         fee_dic = {}
-        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_id'] = fee_collect_obj.pk
         fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
         fee_dic['fee_paid'] =  float(fee_collect_obj.amount_paid)
         fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
@@ -625,7 +625,7 @@ def get_remaning_fee_list(request):
     second_fee_list = []
     for fee_collect_obj in fee2_collect_objs:
         fee_dic = {}
-        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_id'] = fee_collect_obj.pk
         fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
         fee_dic['fee_paid'] =  float(fee_collect_obj.amount_paid)
         fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
@@ -635,7 +635,7 @@ def get_remaning_fee_list(request):
     third_fee_list = []
     for fee_collect_obj in fee3_collect_objs:
         fee_dic = {}
-        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_id'] = fee_collect_obj.pk
         fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
         fee_dic['fee_paid'] = float(fee_collect_obj.amount_paid)
         fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
@@ -655,3 +655,26 @@ def get_remaning_fee_list(request):
 def collect_student_fee(request):
     context={'username': request.session['username']}
     return render(request,'feeplan/collect_fee.html',context)
+
+
+def pay_by_id(request):
+    pay_id = request.POST.get('pay_id')
+    pay_amount = request.POST.get('pay_amount')
+    fee_obj = FeeCollect.objects.get(pk=pay_id)
+    previous_amt = fee_obj.amount_paid
+    total_pay_amt = float(pay_amount) + float(previous_amt)
+    if float(pay_amount) > float(fee_obj.amount_left):
+        to_json = {
+            "msg": "Unsuccessfull"
+            }
+        return HttpResponse(json.dumps(to_json), 'application/json')
+    else:
+        amt_left = float(fee_obj.amount_left)-float(pay_amount)
+        print(amt_left)
+        fee_obj.amount_paid = total_pay_amt
+        fee_obj.amount_left = amt_left
+        fee_obj.save()
+        to_json = {
+            "msg": "Successfull"
+            }
+        return HttpResponse(json.dumps(to_json), 'application/json')

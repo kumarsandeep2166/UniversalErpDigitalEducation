@@ -25,22 +25,15 @@
               <div class="panel-body collapse" id="demo1">
                   <table class="table">
                       <thead>
-                            <td>Id</td>
                             <td>Type</td>
                             <td>Amount</td>
                             <td>Paid</td>
                             <td>Left</td>
+                            <td>Pay</td>
+                            <td>Action</td>
                       </thead>
                       <tbody id="tbody1">
-                    {% for fee in first_fee_list %}
-                        <tr>
-                            <td>{{fee.fee_id}}</td>
-                            <td>{{fee.fee_type}}</td>
-                            <td>{{fee.fee_amount}}</td>
-                            <td>{{fee.fee_left}}</td>
-                            <td>{{fee.fee_paid}}</td>
-                        </tr>
-                    {% endfor %}
+                    
                     </tbody>
                   </table>
               </div>
@@ -52,22 +45,15 @@
               <div class="panel-body collapse" id="demo2">
                     <table class="table">
                             <thead>
-                                  <td>Id</td>
                                   <td>Type</td>
                                   <td>Amount</td>
                                   <td>Paid</td>
                                   <td>Left</td>
+                                  <td>Pay</td>
+                                  <td>Action</td>
                             </thead>
                             <tbody id="tbody2">
-                          {% for fee in second_fee_list %}
-                              <tr>
-                                  <td>{{fee.fee_id}}</td>
-                                  <td>{{fee.fee_type}}</td>
-                                  <td>{{fee.fee_amount}}</td>
-                                  <td>{{fee.fee_left}}</td>
-                                  <td>{{fee.fee_paid}}</td>
-                              </tr>
-                          {% endfor %}
+                          
                           </tbody>
                         </table>
               </div>
@@ -79,22 +65,15 @@
               <div class="panel-body collapse" id="demo3">
                     <table class="table">
                             <thead>
-                                  <td>Id</td>
                                   <td>Type</td>
                                   <td>Amount</td>
                                   <td>Paid</td>
                                   <td>Left</td>
+                                  <td>Pay</td>
+                                  <td>Action</td>
                             </thead>
                             <tbody id="tbody3">
-                          {% for fee in third_fee_list %}
-                              <tr>
-                                  <td>{{fee.fee_id}}</td>
-                                  <td>{{fee.fee_type}}</td>
-                                  <td>{{fee.fee_amount}}</td>
-                                  <td>{{fee.fee_left}}</td>
-                                  <td>{{fee.fee_paid}}</td>
-                              </tr>
-                          {% endfor %}
+                          
                           </tbody>
                         </table>
               </div>
@@ -116,15 +95,21 @@
         success:function(data){
                 var tableString = "";
                 if(data.first_fee_list.length === 0) {
-                    tableString = "<tr><td></td><td></td><td>No fee available.</td><td></td><td></td></tr>";
+                    tableString = "<tr><td></td><td>No fee available.</td><td></td><td></td></tr>";
                 }
                 else {
                     for(var i in data.first_fee_list){
-                        tableString += "<tr><td>" + data.first_fee_list[i].fee_id + "</td>";
-                        tableString += "<td>" + data.first_fee_list[i].fee_type + "</td>";
+                        tableString += "<tr><td>" + data.first_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.first_fee_list[i].fee_amount + "</td>";
+                        tableString += "<td>" + data.first_fee_list[i].fee_paid + "</td>";
                         tableString += "<td>" + data.first_fee_list[i].fee_left + "</td>";
-                        tableString += "<td>" + data.first_fee_list[i].fee_paid + "</td></tr>";
+                        if(data.first_fee_list[i].fee_left>0){
+                            tableString += "<td><input type='text' id='amount"+data.first_fee_list[i].fee_id+"'></td>";
+                            tableString += "<td><a type='button' class='btn btn-info savepay' onclick='pay_amount("+data.first_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                        } else {
+                            tableString += "<td></td>";
+                            tableString += "<td></tr>";
+                        }
                     }
                 }
                 $("#tbody1").html(tableString);
@@ -134,11 +119,17 @@
                 }
                 else {
                     for(var i in data.second_fee_list){
-                        tableString += "<tr><td>" + data.second_fee_list[i].fee_id + "</td>";
-                        tableString += "<td>" + data.second_fee_list[i].fee_type + "</td>";
+                        tableString += "<tr><td>" + data.second_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.second_fee_list[i].fee_amount + "</td>";
+                        tableString += "<td>" + data.second_fee_list[i].fee_paid + "</td>";
                         tableString += "<td>" + data.second_fee_list[i].fee_left + "</td>";
-                        tableString += "<td>" + data.second_fee_list[i].fee_paid + "</td></tr>";
+                        if(data.second_fee_list[i].fee_left>0){
+                            tableString += "<td><input type='text' id='amount"+data.second_fee_list[i].fee_id+"'></td>";
+                            tableString += "<td><a type='button' class='btn btn-info savepay' onclick='pay_amount("+data.second_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                        } else {
+                            tableString += "<td></td>";
+                            tableString += "<td></tr>";
+                        }
                     }
                 }
                 $("#tbody2").html(tableString);
@@ -148,15 +139,57 @@
                 }
                 else {
                     for(var i in data.third_fee_list){
-                        tableString += "<tr><td>" + data.third_fee_list[i].fee_id + "</td>";
-                        tableString += "<td>" + data.third_fee_list[i].fee_type + "</td>";
+                        tableString += "<tr><td>" + data.third_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.third_fee_list[i].fee_amount + "</td>";
+                        tableString += "<td>" + data.third_fee_list[i].fee_paid + "</td>";
                         tableString += "<td>" + data.third_fee_list[i].fee_left + "</td>";
-                        tableString += "<td>" + data.third_fee_list[i].fee_paid + "</td></tr>";
+                        if(data.third_fee_list[i].fee_left>0){
+                            tableString += "<td><input type='text' id='amount"+data.third_fee_list[i].fee_id+"'></td>";
+                            tableString += "<td><a type='button' class='btn btn-info' onclick='pay_amount("+data.third_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                        } else {
+                            tableString += "<td></td>";
+                            tableString += "<td></tr>";
+                        }
                     }
                 }
                 $("#tbody3").html(tableString);
              }
+        });
+    });
+    function pay_amount(id){
+        
+        
+        var text_id = "#amount" + id;
+        var pay_value = $(text_id).val();
+        $.ajax({
+            type:'POST',
+            url:'/pay_by_id/',
+            data:{
+            'pay_id': id,
+            'pay_amount': pay_value,
+            },
+            success:function(data){
+                $("#enr_submit").click();
+            },
+        });
+    }
+    function getCookie(c_name) {
+        if (document.cookie.length > 0)
+        {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1)
+            {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start,c_end));
+            }
+        }
+        return "";
+    }
+    $(function(){
+        $.ajaxSetup({
+            headers:{"X-CSRFToken":getCookie('csrftoken')}
         });
     });
 </script>
