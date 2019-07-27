@@ -8,6 +8,7 @@ from student.models import Enrollment, Student
 from coursemanagement.models import Course, Batch, Stream
 import datetime
 import calendar
+import json
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 
@@ -480,7 +481,7 @@ class CollectFee(View):
         except:
             enr_obj = ""
         if enr_obj:
-            approved_fee_objs = FeeCollect.objects.filter(student=id)
+            approved_fee_objs = FeeCollect.objects.filter(student=id, installment_number=1)
             approved_fee_list = []
             for approved_fee_obj in approved_fee_objs:
                 approved_fee_dict = {}
@@ -533,11 +534,39 @@ def collectfeesave(request):
                 remaing_amt = total_amount
             fee_collect_obj, created = FeeCollect.objects.get_or_create(
                 student=approved_fee_obj.student,
-                approve_fee=approved_fee_obj)
+                approve_fee=approved_fee_obj,
+                installment_number=1)
             fee_collect_obj.amount_paid = amount
             fee_collect_obj.amount_left = remaing_amt
             fee_collect_obj.save()
-    
+        approve_other_objs = ApproveFeeplanType.objects.filter(student=student_id)
+        for obj in approve_other_objs:
+            if obj.no_of_installments==2:
+                fee_collect_obj, created = FeeCollect.objects.get_or_create(
+                    student=obj.student,
+                    approve_fee=obj,
+                    installment_number=2)
+                if created:
+                    fee_collect_obj.amount_paid = 0.0
+                    fee_collect_obj.amount_left = obj.second_installment
+                    fee_collect_obj.save()
+            elif obj.no_of_installments==3:
+                fee_collect_obj, created = FeeCollect.objects.get_or_create(
+                    student=obj.student,
+                    approve_fee=obj,
+                    installment_number=2)
+                if created:
+                    fee_collect_obj.amount_paid = 0.0
+                    fee_collect_obj.amount_left = obj.second_installment
+                    fee_collect_obj.save()
+                fee_collect_obj, created = FeeCollect.objects.get_or_create(
+                    student=obj.student,
+                    approve_fee=obj,
+                    installment_number=3)
+                if created:
+                    fee_collect_obj.amount_paid = 0.0
+                    fee_collect_obj.amount_left = obj.third_installment
+                    fee_collect_obj.save()
         stud_obj = approved_fee_obj.student
         stream_obj = approved_fee_obj.student.stream
         course_obj = approved_fee_obj.student.course
@@ -575,3 +604,54 @@ def collectfeesave(request):
     else:
         pass
     return redirect('/fee/collect_fee/'+student_id+"/")
+
+
+from django.shortcuts import get_object_or_404
+def get_remaning_fee_list(request):
+    enr_number = request.GET.get('enr_number')
+    enr_obj = get_object_or_404(Enrollment, enrollment_number=enr_number)
+    stud_obj = enr_obj.student_name
+    fee1_collect_objs = FeeCollect.objects.filter(student=stud_obj, installment_number=1)
+    first_fee_list = []
+    for fee_collect_obj in fee1_collect_objs:
+        fee_dic = {}
+        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
+        fee_dic['fee_paid'] =  float(fee_collect_obj.amount_paid)
+        fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
+        fee_dic['fee_amount'] =  float(fee_collect_obj.approve_fee.first_installment)
+        first_fee_list.append(fee_dic)
+    fee2_collect_objs = FeeCollect.objects.filter(student=stud_obj, installment_number=2) 
+    second_fee_list = []
+    for fee_collect_obj in fee2_collect_objs:
+        fee_dic = {}
+        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
+        fee_dic['fee_paid'] =  float(fee_collect_obj.amount_paid)
+        fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
+        fee_dic['fee_amount'] =  float(fee_collect_obj.approve_fee.second_installment)
+        second_fee_list.append(fee_dic)
+    fee3_collect_objs = FeeCollect.objects.filter(student=stud_obj, installment_number=3) 
+    third_fee_list = []
+    for fee_collect_obj in fee3_collect_objs:
+        fee_dic = {}
+        fee_dic['fee_id'] = fee_collect_obj.approve_fee.pk
+        fee_dic['fee_type'] = fee_collect_obj.approve_fee.fees_node.fees_type.fee_type
+        fee_dic['fee_paid'] = float(fee_collect_obj.amount_paid)
+        fee_dic['fee_left'] =  float(fee_collect_obj.amount_left)
+        fee_dic['fee_amount'] =  float(fee_collect_obj.approve_fee.third_installment)
+        third_fee_list.append(fee_dic)
+    
+    to_json = {
+        "first_fee_list":first_fee_list,
+        "second_fee_list":second_fee_list,
+        "third_fee_list":third_fee_list,
+        "student_id": stud_obj.pk
+        }
+    return HttpResponse(json.dumps(to_json), 'application/json')
+
+
+
+def collect_student_fee(request):
+    context={'username': request.session['username']}
+    return render(request,'feeplan/collect_fee.html',context)
