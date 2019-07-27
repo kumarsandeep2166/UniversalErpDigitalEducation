@@ -13,8 +13,9 @@ import json
 from django.contrib.auth.decorators import login_required
 
 
-def index(request):    
-    return render(request,'student/index.html')
+def index(request):   
+    username = request.session['username']
+    return render(request,'student/index.html',{'username': username})
 
 def admissionfrm(request):
     return render(request,'student/admissionfrm.html',{})
