@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect
+from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect, FeeDetails
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView,View
 from .forms import FeesPlanTypeForm
 from coursemanagement.models import Stream, Course, Batch
@@ -11,6 +11,10 @@ import calendar
 import json
 from django.http import HttpResponse
 from django.contrib.auth.models import User
+from student.views import addstudentuser
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 
 def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
@@ -23,20 +27,21 @@ class FeesPlanTypeCreate(CreateView):
     model=FeesPlanType
     form_class=FeesPlanTypeForm
     template_name='feeplan/feeplan_create.html'
-
+    
+    @method_decorator(login_required(login_url='/login'))
     def get(self, request, *args, **kwargs):
         username = request.session['username']
-        context={'form':FeesPlanTypeForm(),'username':username}
+        context={'form':FeesPlanTypeForm()}
         return render(request, 'feeplan/feeplan_create.html', context)
-
+    
+    @method_decorator(login_required(login_url='/login'))
     def post(self, request, *args, **kwargs):
-        username = request.session['username']
         form=FeesPlanTypeForm(request.POST)
         if request.method=="POST":
             if form.is_valid():
                 form.save()
                 return redirect("feeplan_list")
-        return render(request, 'feeplan/feeplan_create.html', {'form':form,'username':username})
+        return render(request, 'feeplan/feeplan_create.html', {'form':form})
 
 class FeesPlanTypeView(ListView):
     model=FeesPlanType
@@ -50,18 +55,17 @@ class FeesPlanTypeView(ListView):
         context = super().get_context_data(**kwargs)
         context['stream_object'] = self.stream_object
         context['course_object'] = self.course_object
-        context['batch_obj'] = self.batch_obj
-        context['username'] = self.request.session['username']
+        context['batch_obj'] = self.batch_obj        
         return context
 
+@login_required(login_url='/login')
 def ajax_load_list_data(request):
-    username = request.session['username']
     stream_id=request.GET.get('stream_id')
     course_id=request.GET.get('course_id')
     batch_id=request.GET.get('batch_id')
     print(stream_id, course_id, batch_id)
     objects=FeesPlanType.objects.filter(course=course_id,stream=stream_id,batch=batch_id)
-    context={'objects': objects, 'username':username}
+    context={'objects': objects}
     return render(request,'feeplan/includes/data.html',context)
 """
 feeplanType
@@ -94,8 +98,10 @@ Stores information of a student by selecting enrollment number
 """
 class FeePlanCreate(View):    
     template_name='feeplan/feecollection.html'
+
+    @method_decorator(login_required(login_url='/login'))
     def get(self, request, id, *args, **kwargs):
-        username = request.session['username']
+        #username = request.session['username']
         stud_obj = Student.objects.get(pk=id)
         course_name=stud_obj.course.course_name
         batch_no=stud_obj.batch.batch_no
@@ -141,12 +147,12 @@ class FeePlanCreate(View):
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
                     'total':len(feetype_list),
-                    'username': username}
+                    }
         return render(request, 'feeplan/feecollection.html', context)
 
+    @method_decorator(login_required(login_url='/login'))
     def post(self, request, id, *args, **kwargs):
         counter = request.POST.get('total')
-        username = request.session['username']
         stud_obj = Student.objects.get(pk=id)
         course_obj = stud_obj.course
         batch_obj = stud_obj.batch
@@ -269,10 +275,11 @@ class FeePlanCreate(View):
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
                     'total':len(feetype_list),
-                    'username':username}
+                    }
         
         return render(request, 'feeplan/feecollection.html', context)
 
+@login_required(login_url='/login')
 def add_note(request):
     if request.method == 'POST':
         student_id = request.POST.get('student_id')
@@ -290,8 +297,7 @@ def add_note(request):
         print(note_obj.pk)
     else:
         student_id = request.GET.get('student_id')
-        note_type = request.GET.get('note_type')
-        username = request.session['username']
+        note_type = request.GET.get('note_type')        
     note_objs = Note.objects.filter(
         student_admission_id=student_id,
         note_type=note_type,
@@ -311,7 +317,7 @@ def add_note(request):
     context={'note_list': note_list}
     return render(request,'feeplan/includes/note.html',context)
 
-
+@login_required(login_url='/login')
 def pin_toggle_note(request):
     note_id = request.GET.get('note_id')
     student_id = request.GET.get('student_id')
@@ -345,8 +351,9 @@ def pin_toggle_note(request):
 
 class FeePlanApprove(View):    
     template_name='feeplan/feecollection.html'
-    def get(self, request, id, *args, **kwargs):
-        username = request.session['username']
+    
+    @method_decorator(login_required(login_url='/login'))
+    def get(self, request, id, *args, **kwargs):        
         stud_obj = Student.objects.get(pk=id)
         approved = stud_obj.fee_status
         course_name=stud_obj.course.course_name
@@ -378,14 +385,13 @@ class FeePlanApprove(View):
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
-                    'total':len(feetype_list),
-                    'username': username,
+                    'total':len(feetype_list),                   
                     'approved': approved}
         return render(request, 'feeplan/approvecollection.html', context)
 
+    @method_decorator(login_required(login_url='/login'))
     def post(self, request, id, *args, **kwargs):
-        counter = request.POST.get('total')
-        username = request.session['username']
+        counter = request.POST.get('total')        
         stud_obj = Student.objects.get(pk=id)
         course_obj = stud_obj.course
         batch_obj = stud_obj.batch
@@ -467,14 +473,15 @@ class FeePlanApprove(View):
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
-                    'total':len(feetype_list),
-                    'username':username,
+                    'total':len(feetype_list),                   
                     'approved': approved}
         
         return render(request, 'feeplan/approvecollection.html', context)
 
 
 class CollectFee(View):
+
+    @method_decorator(login_required(login_url='/login'))
     def get(self, request, id, *args, **kwargs):
         try:
             enr_obj = Enrollment.objects.get(student_name=id)
@@ -491,6 +498,10 @@ class CollectFee(View):
                 approved_fee_dict['amount_paid'] = approved_fee_obj.amount_paid
                 approved_fee_dict['amount_left'] = approved_fee_obj.amount_left
                 approved_fee_list.append(approved_fee_dict)
+            context = {"object_list": approved_fee_list,
+                    "total_fee_type": len(approved_fee_list),
+                    "student_id": id,
+                    "enrolled": True}
         else:
             approved_fee_objs = ApproveFeeplanType.objects.filter(student=id)
             approved_fee_list = []
@@ -502,12 +513,14 @@ class CollectFee(View):
                 approved_fee_dict['amount_paid'] = 0
                 approved_fee_dict['amount_left'] = approved_fee_obj.first_installment
                 approved_fee_list.append(approved_fee_dict)
-        context = {"object_list": approved_fee_list,
-                    "total_fee_type": len(approved_fee_list),
-                    "student_id": id}
+            context = {"object_list": approved_fee_list,
+                        "total_fee_type": len(approved_fee_list),
+                        "student_id": id,
+                        "enrolled": False}
         return render(request, 'student/fee_view.html', context)
 
 
+@login_required(login_url='/login')
 def collectfeesave(request):
     student_id = request.POST.get('student_id')
     total_count = request.POST.get('total_fee_type')
@@ -539,6 +552,8 @@ def collectfeesave(request):
             fee_collect_obj.amount_paid = amount
             fee_collect_obj.amount_left = remaing_amt
             fee_collect_obj.save()
+            if amount>0:
+                fee_detail_obj = FeeDetails.objects.create(fee=fee_collect_obj,amount=amount)
         approve_other_objs = ApproveFeeplanType.objects.filter(student=student_id)
         for obj in approve_other_objs:
             if obj.no_of_installments==2:
@@ -571,10 +586,13 @@ def collectfeesave(request):
         stream_obj = approved_fee_obj.student.stream
         course_obj = approved_fee_obj.student.course
         batch_obj = approved_fee_obj.student.batch
+        
         try:
             enrobj = Enrollment.objects.get(student_name=stud_obj)
         except:
             enrobj = ""
+            addstudentuser(stud_obj.pk)
+        print('enrobj, v')
         if not enrobj:
             enrl_obj = Enrollment.objects.filter(stream=stream_obj, course=course_obj, batch=batch_obj).order_by('-pk')
             
@@ -589,7 +607,7 @@ def collectfeesave(request):
                 batch_abb = enr_arr[2]
                 sr_num = enrl_no.zfill(5)
                 enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
-                enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=student_obj)
+                enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=stud_obj)
                 enrl_obj.enrollment_number = enrl_no
                 enrl_obj.save()
             except:
@@ -607,6 +625,8 @@ def collectfeesave(request):
 
 
 from django.shortcuts import get_object_or_404
+
+@login_required(login_url='/login')
 def get_remaning_fee_list(request):
     enr_number = request.GET.get('enr_number')
     enr_obj = get_object_or_404(Enrollment, enrollment_number=enr_number)
@@ -646,17 +666,17 @@ def get_remaning_fee_list(request):
         "first_fee_list":first_fee_list,
         "second_fee_list":second_fee_list,
         "third_fee_list":third_fee_list,
-        "student_id": stud_obj.pk
+        "student_id": stud_obj.pk,
+        "student_name": stud_obj.first_name + " " + stud_obj.last_name,
         }
     return HttpResponse(json.dumps(to_json), 'application/json')
 
 
+@login_required(login_url='/login')
+def collect_student_fee(request):    
+    return render(request,'feeplan/collect_fee.html')
 
-def collect_student_fee(request):
-    context={'username': request.session['username']}
-    return render(request,'feeplan/collect_fee.html',context)
-
-
+@login_required(login_url='/login')
 def pay_by_id(request):
     pay_id = request.POST.get('pay_id')
     pay_amount = request.POST.get('pay_amount')
@@ -674,6 +694,8 @@ def pay_by_id(request):
         fee_obj.amount_paid = total_pay_amt
         fee_obj.amount_left = amt_left
         fee_obj.save()
+        if pay_amount>0:
+            fee_detail_obj = FeeDetails.objects.create(fee=fee_obj,amount=pay_amount)
         to_json = {
             "msg": "Successfull"
             }

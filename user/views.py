@@ -14,18 +14,20 @@ def userlogin(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(username=username, password = password)
+        print(user)
         if user is not None and user.is_active:
             login(request, user)
-            request.session['username']=username
-           
-            return redirect('/')
+            if request.POST.get('next'):
+                return redirect(request.POST.get('next'))
+            else:
+                return redirect('/')
         else:
-            return redirect('login.html')
+            return redirect('/login/')
     return render(request, 'user/login.html')
 
 def userlogout(request):
     auth.logout(request)
-    return render(request,'user/login.html')
+    return redirect('/login/')
 
 
 def userinvalid(request):

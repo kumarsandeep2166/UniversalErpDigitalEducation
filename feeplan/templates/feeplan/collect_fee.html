@@ -10,9 +10,7 @@
                             <button class="btn btn-info okbtn" id="enr_submit">View Fee</button>
                         </header>                     
                     </div>
-                </div>
-                
-                    
+                </div>      
                     
                     
                 
@@ -21,6 +19,7 @@
         </div>
         <div class="container">
             <div class="panel panel-default">
+                    <input type="text" id="stud_name" name="stud_name">
               <div class="panel-heading" data-toggle="collapse" data-target="#demo1">First Installment</div>
               <div class="panel-body collapse" id="demo1">
                   <table class="table">
@@ -93,6 +92,7 @@
         'enr_number':enr_number,
         },
         success:function(data){
+            $("#stud_name").val(data.student_name);
                 var tableString = "";
                 if(data.first_fee_list.length === 0) {
                     tableString = "<tr><td></td><td>No fee available.</td><td></td><td></td></tr>";

@@ -45,7 +45,12 @@
                                     {% endfor %}
                             </tbody>
                         </table>
-                        <button type="submit" class="btn btn-info okbtn">Save</button>
+                        
+                        {% if not enrolled %}
+                             <button type="submit" class="btn btn-info okbtn">Save</button>
+                        {% else %}
+                            <a href="/collect_student_fee/" type="submit" class="btn btn-info okbtn">Collect Fee</a>
+                        {% endif %}
                     </form>
                 </div>
                   

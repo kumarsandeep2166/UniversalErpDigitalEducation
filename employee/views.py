@@ -1,8 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView
 from .models import Employee
 from .forms import EmployeeForm
+from user.models import Usertype
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+import json
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 # Create your views here.
 class EmployeeCreateView(CreateView):
     model=Employee
@@ -12,16 +19,18 @@ class EmployeeCreateView(CreateView):
     def get_context_data(self,**kwargs):
         context=super(EmployeeCreateView,self).get_context_data(**kwargs)
         return context
-    def get(self,request,*args,**kwargs):
-        username = request.session['username']
-        context={'form':EmployeeForm(),'username':username}
+    
+    @method_decorator(login_required(login_url='/login'))
+    def get(self,request,*args,**kwargs):        
+        context={'form':EmployeeForm()}
         return render(request,'student/employeemanagement.html',context)
+    
+    @method_decorator(login_required(login_url='/login'))
     def post(self,request,*args,**kwargs):
-        form=EmployeeForm(request.POST or None,request.FILES or None)
-        username = request.session['username']
+        form=EmployeeForm(request.POST or None,request.FILES or None)        
         if form.is_valid():
             form.save()
-        return render(request,'student/employeemanagement.html',{'form':form, 'username':username})
+        return render(request,'student/employeemanagement.html',{'form':form})
 
 
 class EmployeeListView(ListView):
@@ -31,8 +40,7 @@ class EmployeeListView(ListView):
     ordering=('-id')
 
     def get_context_data(self, *args ,**kwargs):
-        context = super(EmployeeListView, self).get_context_data(**kwargs)    
-        context['username'] = self.request.session['username']   
+        context = super(EmployeeListView, self).get_context_data(**kwargs)   
         return context 
 
 class EmployeeDetailView(DetailView):
@@ -41,8 +49,7 @@ class EmployeeDetailView(DetailView):
     queryset = Employee.objects.all()
     
     def get_context_data(self, *args,**kwargs):
-        context = super(EmployeeDetailView, self).get_context_data(**kwargs)
-        context['username'] = self.request.session['username']     
+        context = super(EmployeeDetailView, self).get_context_data(**kwargs)         
         return context
     
 class EmployeeUpdateView(UpdateView):
@@ -54,3 +61,17 @@ class EmployeeUpdateView(UpdateView):
 class EmployeeDeleteView(DeleteView):
     model=Employee
     success_url=reverse_lazy('employee_list')
+
+def addemployeeuser(request, pk):
+    employee_obj = get_object_or_404(Employee, pk=pk)
+    user_obj = User.objects.create_user(
+        username = employee_obj.email,
+        email = employee_obj.email,
+        password = 'runexe@123'
+    )    
+    user_obj_type = Usertype.objects.create(userprofile=user_obj)
+    employee_obj.user_id = user_obj
+    employee_obj.save()
+    return redirect('/employee/detail/'+str(pk))
+    
+

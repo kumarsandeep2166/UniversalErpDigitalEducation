@@ -83,10 +83,25 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model=Student
         fields='__all__'
+        exclude=['academic_status','fee_status']
         template_name='student/studentadmissionform.html'
         # widgets={
         #     'student_pic':forms.FileField(attrs={'onchange': "readURL(this);"})
         # }
+    
+
+class UpdateForm(forms.ModelForm):
+    class Meta:
+        model= Student
+        fields=['student_pic','student_tenth',
+        'student_twelth','student_degree','student_clc',
+        'student_conduct_certificate',
+        'student_migration','student_birth_certificate','student_address',
+        'student_thumb','student_signature','tenth_marksheet',
+        'tewlth_marksheet','degree_marksheet']
+        #exclude=['']
+
+
 class EmployeeForm(forms.ModelForm):
     date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
     tenth_subjects = forms.CharField(label='', required=False)

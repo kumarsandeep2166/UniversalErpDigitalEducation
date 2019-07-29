@@ -184,7 +184,10 @@
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                     <img alt="" src="{% static 'images/avatar1_small.jpg' %}">
-                    <span class="username">{{ username }}</span>
+                    <span class="username"> {% if user.is_authenticated %}
+                        {{user.get_username}}
+                    {% endif %}</span>
+                   
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu extended logout">

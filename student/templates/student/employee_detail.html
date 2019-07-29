@@ -174,9 +174,11 @@
                                                 
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-info edit"><a href="{% url 'student_update' pk=object.id %}">Edit</a> </button>
+                                        
                                         <button type="submit" class="btn btn-info subbtn">Submit</button>
-                                        <button type="submit" class="btn btn-info edit"><a href="{% url 'enrollment' pk=object.id  %}">Enroll This Student</a></button>
+                                        {% if object.user_id is None %}
+                                            <a class="btn btn-info subbtn" href="/employee/addemployeeuser/{{object.id}}">Set User</a>
+                                        {% endif %}
                                         
                                     </div>
                                     <div class="tab_content" style="overflow-x:auto;">
@@ -377,6 +379,7 @@
                                         </div>
                                         <button type="submit" class="btn btn-info edit">Edit</button>
                                         <button type="submit" class="btn btn-info subbtn">Submit</button>
+                                        
                                     </div>
                                     <!-- <div class="tab_content">
                                         <div class="row">

@@ -45,3 +45,9 @@ class FeeCollect(models.Model):
     amount_left = models.DecimalField(max_digits=10, default=0, decimal_places=2, null=True, blank=True)
     date= models.DateField(default=datetime.date.today)
     is_active = models.BooleanField(default=True)
+
+class FeeDetails(models.Model):
+    fee = models.ForeignKey(FeeCollect, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    pay_date = models.DateField(default=datetime.date.today)
+    is_active = models.BooleanField(default=True)

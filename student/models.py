@@ -9,7 +9,8 @@ from coursemanagement.models import Course,Stream,Batch
 from django.db.models.signals import pre_save
 from .utils import unique_enrollment_number_generator
 from coursemanagement.models import Course, Stream, Batch, Section
-
+from django.contrib.auth.models import User
+from user.models import Usertype
 
 def year_choices():
     return [(r,r) for r in range(1984, datetime.date.today().year+1)]
@@ -130,6 +131,7 @@ class Student(models.Model):
     )
     n=(('india','India'),
         ('others','others'),)
+    user_id=models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank= True)
     first_name=models.CharField(max_length=20)
     middle_name=models.CharField(max_length=20, blank=True)
     last_name=models.CharField(max_length=20)
@@ -158,33 +160,33 @@ class Student(models.Model):
     mothers_email_id=models.EmailField(blank=True)
     mothers_annual_income=models.CharField(max_length=10,blank=True)
 
-    tenth_board=models.CharField(max_length=20,blank=False)
-    tenth_subjects=models.CharField(max_length=20,blank=False)
-    tenth_school=models.CharField(max_length=20,blank=False)    
-    tenth_full_mark=models.IntegerField()
-    tenth_secured_mark=models.IntegerField()
-    tenth_percentage=models.FloatField()
+    tenth_board=models.CharField(max_length=50,null=True,blank=True)
+    tenth_subjects=models.CharField(max_length=50,null=True,blank=True)
+    tenth_school=models.CharField(max_length=50,null=True,blank=True)    
+    tenth_full_mark=models.IntegerField(null=True,blank=True)
+    tenth_secured_mark=models.IntegerField(null=True,blank=True)
+    tenth_percentage=models.FloatField(null=True,blank=True)
 
 
     twelth_board=models.CharField(max_length=20,blank=False)
     twelth_stream=models.CharField(max_length=20,blank=False)
     twelth_school=models.CharField(max_length=20,blank=False)
     #twelth_university=models.CharField(max_length=20,blank=True)
-    twelth_full_mark=models.IntegerField()
-    twelth_secured_mark=models.IntegerField()
-    tewlth_percentage=models.FloatField()
+    twelth_full_mark=models.IntegerField(null=True,blank=True)
+    twelth_secured_mark=models.IntegerField(null=True,blank=True)
+    tewlth_percentage=models.FloatField(null=True,blank=True)
 
     
-    degree_stream=models.CharField(max_length=20,blank=False)
-    degree_college=models.CharField(max_length=20,blank=False)
-    degree_university=models.CharField(max_length=20,blank=False)
-    degree_full_mark=models.IntegerField(blank=True,null=True)
-    degree_secured_mark=models.IntegerField(blank=True,null=True)
-    degree_percentage=models.FloatField(blank=False)
+    degree_stream=models.CharField(max_length=20,null=True,blank=True)
+    degree_college=models.CharField(max_length=20,null=True,blank=True)
+    degree_university=models.CharField(max_length=20,null=True,blank=True)
+    degree_full_mark=models.IntegerField(null=True,blank=True)
+    degree_secured_mark=models.IntegerField(null=True,blank=True)
+    degree_percentage=models.FloatField(null=True,blank=True)
 
-    postdegree_stream=models.CharField(max_length=20,blank=True)
-    postdegree_college=models.CharField(max_length=20,blank=True)
-    postdegree_university=models.CharField(max_length=20,blank=True)
+    postdegree_stream=models.CharField(max_length=20,null=True,blank=True)
+    postdegree_college=models.CharField(max_length=20,null=True,blank=True)
+    postdegree_university=models.CharField(max_length=20,null=True,blank=True)
     postdegree_full_mark=models.IntegerField(blank=True,null=True)
     postdegree_secured_mark=models.IntegerField(blank=True,null=True)
     postdegree_percentage=models.FloatField(null=True,blank=True)
@@ -247,7 +249,7 @@ class Student(models.Model):
 
 
 class Enrollment(models.Model):
-    enrollment_number=models.CharField(max_length=20, unique=True,blank=True)
+    enrollment_number=models.CharField(max_length=50, unique=True,blank=True)
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE,blank=True,null=True)
     course=models.ForeignKey(Course,on_delete=models.CASCADE,blank=True,null=True)
     batch=models.ForeignKey(Batch,on_delete=models.CASCADE,blank=True,null=True)     
