@@ -36,7 +36,24 @@
                 </div>
 
                 <div class="row" id="attendance">
-                    
+                    <div class="panel-body" style="overflow-x:auto;">
+                        <table class="table table-bordered table-striped table-condensed" id="table_id">
+                            <thead>
+                                <tr class="hdclr">
+                                    <th>Enroll No.</th>
+                                    <th>Student Name</th>        
+                                    <th>Total Class Held</th>
+                                    <th>Total class Attended</th>
+                                    <th>Total class Absent</th>                          
+                                    <th>Action <input type="date" id="date"> </th>
+                                    <th>Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance_tbody"> 
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>               
                 
             </div>
@@ -105,17 +122,30 @@
         });
     });
     $("#id_subject").change(function(){
-        console.log("Hello");
         var url=$("#attendancePlan").attr("data-attendance-url");
         var subject_id =$(this).val();
-        console.log(subject_id)
         $.ajax({
             url:url,
             data:{
                 'subject_id': subject_id,
             },
             success:function(data){
-                $("#attendance").html(data);
+                var tableString = "";
+                if(data.attendance_list.length === 0) {
+                    tableString += "<tr><td></td><td></td><td></td><td>No daa available.</td><td></td><td></td><td></td></tr>";
+                }
+                else {
+                    for(var i in data.first_fee_list){
+                        tableString += "<tr><td>" + data.attendance_list[i].enr_no + "</td>";
+                        tableString += "<td>" + data.attendance_list[i].name + "</td>";
+                        tableString += "<td>" + data.attendance_list[i].total_class + "</td>";
+                        tableString += "<td>" + data.attendance_list[i].class_present + "</td>";
+                        tableString += "<td>" + data.attendance_list[i].class_absent + "</td>";
+                        tableString += "<td><select name=\"attendance\" id=\"attendane_type" + i + "\"><option value=\"A\">A</option><option value=\"P\">P</option><option value=\"L\">L</option></select></td>";
+                        tableString += "<td><input type=\"text\" name=\"remark\" id=\"remark" + i + "\"></td></tr>";
+                    }
+                }
+                $("#attendance_tbody").html(tableString);
             }
         });
     });
