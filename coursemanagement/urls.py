@@ -30,4 +30,7 @@ urlpatterns=[
     path('ajax_load_batch/',views.load_batch,name='ajax_load_batch'),
     path('ajax_load_section/',views.load_section,name='ajax_load_section'),
     path('ajax_load_feeplan/', views.load_fee_selection, name='ajax_load_feeplan'),    
+
+    path('fees_type_create/', views.FeesTypeCreate.as_view(), name="feestype_create"),
+    path('feestype_list/', views.FeesTypeList.as_view(), name="feestype_list"),
 ]

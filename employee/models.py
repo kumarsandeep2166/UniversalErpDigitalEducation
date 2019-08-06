@@ -12,6 +12,7 @@ class Category(models.Model):
         return self.name
 
 class Designation(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     designation = models.CharField(max_length=50)
     
     def __str__(self):
@@ -73,6 +74,7 @@ class Employee(models.Model):
         ('n','No'),
     )
     user_id=models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank= True)
+    employee_id= models.CharField(max_length=50, unique=True, null=True, blank=True)
     title=models.CharField(max_length=5,choices=ttl,default='Mr.')
     first_name=models.CharField(max_length=15)
     middle_name=models.CharField(max_length=15,null=True,blank= True)
@@ -85,7 +87,7 @@ class Employee(models.Model):
     aadhar_no=models.CharField(max_length=12,validators=[RegexValidator('^[0-9]{12}$', message="Aadhar Number must be of 12 Digits")], null=True, blank= True)
     pan_no=models.CharField(max_length=15, null=True, blank= True)
     epfo_no=models.CharField(max_length=25, null=True, blank= True)
-    email=models.EmailField()    
+    email=models.EmailField()
     nationality=models.CharField(max_length=10,choices=national,blank=False)
     caste=models.CharField(max_length=5,choices=caste,default='Others',blank=False)
     religion=models.CharField(max_length=20,choices=RELIGION_CHOICES,default='Hindu')
@@ -146,14 +148,12 @@ class Employee(models.Model):
     national_conference_no=models.IntegerField(null=True,blank=True)    
     international_conference_no=models.IntegerField(null=True,blank=True)
     conference_details=models.TextField(null=True,blank=True)
-    status=models.BooleanField(default=True)
-    
-    employee_category=models.ForeignKey(Category,on_delete=models.SET_NULL, null=True, blank= True)
-    employee_designation=models.ForeignKey(Designation,on_delete=models.SET_NULL, null=True, blank= True)
-    employee_department=models.ForeignKey(Stream,on_delete=models.SET_NULL, null=True, blank= True)
+    status=models.BooleanField(default=True)   
+    employee_designation=models.ForeignKey(Designation,on_delete=models.SET_NULL, null=True, blank= True)    
 
     def __str__(self):
         return '{}-{}-{}'.format(self.first_name,self.middle_name,self.last_name)
+    
     def get_absolute_url(self):
         return reverse('employee_detail', kwargs={
             'pk': self.pk

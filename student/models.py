@@ -7,7 +7,7 @@ import datetime
 from django.urls import reverse
 from coursemanagement.models import Course,Stream,Batch
 from django.db.models.signals import pre_save
-from .utils import unique_enrollment_number_generator
+#from .utils import unique_enrollment_number_generator
 from coursemanagement.models import Course, Stream, Batch, Section
 from django.contrib.auth.models import User
 from user.models import Usertype
@@ -259,10 +259,10 @@ class Enrollment(models.Model):
     def __str__(self):
         return self.enrollment_number
 
-def pre_save_enrollment_number(sender, instance, *args, **kwargs):
-    if not instance.enrollment_number:
-        instance.enrollment_number = unique_enrollment_number_generator(instance)
-pre_save.connect(pre_save_enrollment_number,sender=Enrollment)
+# def pre_save_enrollment_number(sender, instance, *args, **kwargs):
+#     if not instance.enrollment_number:
+#         instance.enrollment_number = unique_enrollment_number_generator(instance)
+# pre_save.connect(pre_save_enrollment_number,sender=Enrollment)
 
 class Employee_Department(models.Model):
     employee_department=models.CharField(max_length=100)

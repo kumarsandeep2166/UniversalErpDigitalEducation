@@ -1,0 +1,40 @@
+<div class="panel-body" style="overflow-x:auto;">
+    <table class="table table-bordered table-striped table-condensed" id="table_id">
+        <thead>
+            <tr class="hdclr">
+                <th>Enroll No.</th>
+                <th>Student Name</th>        
+                <th>Total Class Held</th>
+                <th>Total class Attended</th>
+                <th>Total class Absent</th>                          
+                <th>Action <input type="date" id="date"> </th>
+                <th>Remark</th>
+            </tr>
+        </thead>
+        <tbody>     
+            {% for obj in object %}      
+            <tr>
+                <td>{{obj.student.pk}}</td>
+                <td>{{obj.student}}</td>                
+                <td>50</td>
+                <td>30</td>                                        
+                <td>20</td>               
+                <td>
+                    <select name="attendance">
+                    <option value="A">A</option>
+                    <option value="P">P</option>
+                    <option value="L">L</option>
+                </select></td>   
+                <td><input type="number" name="remark"></td>            
+            </tr> 
+            {% endfor %}          
+        </tbody>
+    </table>
+</div>
+<script>
+    n =  new Date();
+    y = n.getFullYear();
+    m = n.getMonth() + 1;
+    d = n.getDate();
+    document.getElementById("date").innerHTML = m + "/" + d + "/" + y;
+</script>

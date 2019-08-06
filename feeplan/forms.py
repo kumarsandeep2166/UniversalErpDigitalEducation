@@ -1,6 +1,8 @@
 from django import forms
 from .models import FeesPlanType,ApproveFeeplanType
 
+
+
 class FeesPlanTypeForm(forms.ModelForm):
     class Meta:
         model=FeesPlanType

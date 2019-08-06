@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from .models import Section,Stream,Batch,Course,Feestype,FeesManagementSetting
 from django.views.generic import ListView,CreateView,DeleteView,DetailView,UpdateView
-from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesManagementSettingForm
+from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesManagementSettingForm, FeetypeCreateForm
 from django.urls import reverse_lazy
 import string
 from feeplan.models import FeesPlanType
@@ -219,3 +219,28 @@ def load_fee_selection(request):
     context={'section':feetype_obj}
     return render(request,'coursemanagement/includes/fee_ajax.html',context)
 
+class FeesTypeCreate(CreateView):
+    model = Feestype
+    template_name = 'feeplan/feestypecreate.html'
+    form_class = FeetypeCreateForm
+
+    def get(self, request, *args, **kwargs):        
+        context={'form':FeetypeCreateForm()}
+        return render(request, 'feeplan/feestypecreate.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        form=FeetypeCreateForm(request.POST)
+        if request.method=="POST":
+            if form.is_valid():
+                form.save()
+                return redirect("feestype_list")
+        return render(request, 'feeplan/feestypecreate.html', {'form':form})
+
+class FeesTypeList(ListView):
+    model = Feestype
+    template_name = 'feeplan/feetype_list.html'
+    context_object_name='object'
+
+    def get_context_data(self, *args, **kwargs):        
+        context = super().get_context_data(**kwargs)
+        return context

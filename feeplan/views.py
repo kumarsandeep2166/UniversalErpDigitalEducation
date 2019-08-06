@@ -16,6 +16,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 
 
+
 def add_months(sourcedate, months):
     month = sourcedate.month - 1 + months
     year = sourcedate.year + month // 12
@@ -26,15 +27,12 @@ def add_months(sourcedate, months):
 class FeesPlanTypeCreate(CreateView):
     model=FeesPlanType
     form_class=FeesPlanTypeForm
-    template_name='feeplan/feeplan_create.html'
-    
-    @method_decorator(login_required(login_url='/login'))
-    def get(self, request, *args, **kwargs):
-        username = request.session['username']
+    template_name='feeplan/feeplan_create.html'    
+   
+    def get(self, request, *args, **kwargs):        
         context={'form':FeesPlanTypeForm()}
-        return render(request, 'feeplan/feeplan_create.html', context)
-    
-    @method_decorator(login_required(login_url='/login'))
+        return render(request, 'feeplan/feeplan_create.html', context)    
+  
     def post(self, request, *args, **kwargs):
         form=FeesPlanTypeForm(request.POST)
         if request.method=="POST":
@@ -42,6 +40,9 @@ class FeesPlanTypeCreate(CreateView):
                 form.save()
                 return redirect("feeplan_list")
         return render(request, 'feeplan/feeplan_create.html', {'form':form})
+
+
+
 
 class FeesPlanTypeView(ListView):
     model=FeesPlanType
@@ -58,7 +59,7 @@ class FeesPlanTypeView(ListView):
         context['batch_obj'] = self.batch_obj        
         return context
 
-@login_required(login_url='/login')
+
 def ajax_load_list_data(request):
     stream_id=request.GET.get('stream_id')
     course_id=request.GET.get('course_id')
@@ -98,8 +99,7 @@ Stores information of a student by selecting enrollment number
 """
 class FeePlanCreate(View):    
     template_name='feeplan/feecollection.html'
-
-    @method_decorator(login_required(login_url='/login'))
+    
     def get(self, request, id, *args, **kwargs):
         #username = request.session['username']
         stud_obj = Student.objects.get(pk=id)
@@ -141,7 +141,7 @@ class FeePlanCreate(View):
             feetype_dic['actual_fees'] = feeplan_obj.actual_fees
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
-        
+            return redirect('/')
         context={ 'stud_obj':stud_obj.pk,
                     'course_name':course_name,
                     'batch_no': batch_no,
@@ -150,7 +150,7 @@ class FeePlanCreate(View):
                     }
         return render(request, 'feeplan/feecollection.html', context)
 
-    @method_decorator(login_required(login_url='/login'))
+    
     def post(self, request, id, *args, **kwargs):
         counter = request.POST.get('total')
         stud_obj = Student.objects.get(pk=id)
@@ -269,7 +269,7 @@ class FeePlanCreate(View):
             feetype_dic['actual_fees'] = feeplan_obj.actual_fees
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
-        
+            return redirect('/')
         context={ 'stud_obj':stud_obj.pk,
                     'course_name':course_name,
                     'batch_no': batch_no,
@@ -279,7 +279,7 @@ class FeePlanCreate(View):
         
         return render(request, 'feeplan/feecollection.html', context)
 
-@login_required(login_url='/login')
+
 def add_note(request):
     if request.method == 'POST':
         student_id = request.POST.get('student_id')
@@ -317,7 +317,7 @@ def add_note(request):
     context={'note_list': note_list}
     return render(request,'feeplan/includes/note.html',context)
 
-@login_required(login_url='/login')
+
 def pin_toggle_note(request):
     note_id = request.GET.get('note_id')
     student_id = request.GET.get('student_id')
@@ -350,9 +350,7 @@ def pin_toggle_note(request):
 
 
 class FeePlanApprove(View):    
-    template_name='feeplan/feecollection.html'
-    
-    @method_decorator(login_required(login_url='/login'))
+    template_name='feeplan/feecollection.html'    
     def get(self, request, id, *args, **kwargs):        
         stud_obj = Student.objects.get(pk=id)
         approved = stud_obj.fee_status
@@ -389,7 +387,7 @@ class FeePlanApprove(View):
                     'approved': approved}
         return render(request, 'feeplan/approvecollection.html', context)
 
-    @method_decorator(login_required(login_url='/login'))
+   
     def post(self, request, id, *args, **kwargs):
         counter = request.POST.get('total')        
         stud_obj = Student.objects.get(pk=id)
@@ -479,9 +477,7 @@ class FeePlanApprove(View):
         return render(request, 'feeplan/approvecollection.html', context)
 
 
-class CollectFee(View):
-
-    @method_decorator(login_required(login_url='/login'))
+class CollectFee(View):    
     def get(self, request, id, *args, **kwargs):
         try:
             enr_obj = Enrollment.objects.get(student_name=id)
@@ -520,7 +516,6 @@ class CollectFee(View):
         return render(request, 'student/fee_view.html', context)
 
 
-@login_required(login_url='/login')
 def collectfeesave(request):
     student_id = request.POST.get('student_id')
     total_count = request.POST.get('total_fee_type')
@@ -626,7 +621,6 @@ def collectfeesave(request):
 
 from django.shortcuts import get_object_or_404
 
-@login_required(login_url='/login')
 def get_remaning_fee_list(request):
     enr_number = request.GET.get('enr_number')
     enr_obj = get_object_or_404(Enrollment, enrollment_number=enr_number)
@@ -672,11 +666,9 @@ def get_remaning_fee_list(request):
     return HttpResponse(json.dumps(to_json), 'application/json')
 
 
-@login_required(login_url='/login')
 def collect_student_fee(request):    
     return render(request,'feeplan/collect_fee.html')
 
-@login_required(login_url='/login')
 def pay_by_id(request):
     pay_id = request.POST.get('pay_id')
     pay_amount = request.POST.get('pay_amount')

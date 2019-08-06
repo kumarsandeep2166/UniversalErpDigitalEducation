@@ -2,7 +2,7 @@ from django import forms
 from .models import Employee
 
 class EmployeeForm(forms.ModelForm):
-    date_of_birth = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1990,2030)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
+    date_of_birth = forms.DateField()
     tenth_subjects = forms.CharField(label='')
     tenth_school = forms.CharField(label='')
     tenth_board=forms.CharField(label='')
@@ -33,5 +33,5 @@ class EmployeeForm(forms.ModelForm):
     postdegree_percentage=forms.FloatField(label='')
     class Meta:
         model=Employee
-        fields=('__all__')
+        exclude=('user_id','employee_id')
         template_name='student/employeemanagement.html'

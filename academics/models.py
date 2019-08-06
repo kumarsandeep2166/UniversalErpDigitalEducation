@@ -27,15 +27,15 @@ class Semestar(models.Model):
 class Subject(models.Model):
     semestar = models.ForeignKey(Semestar, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    total_class_held = models.IntegerField(default=0)
+    
 
     def __str__(self):
         return self.name
 
-
 class SubjectTeacher(models.Model):
     teacher = models.ForeignKey(Employee, on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-
 
 class LessonPlan(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -43,5 +43,19 @@ class LessonPlan(models.Model):
     from_time = models.TimeField(null=True, blank=True)
     to_time = models.TimeField(null=True, blank=True)
     duration = models.CharField(max_length=20, null=True, blank=True)
-    topic = models.CharField(max_length=250)
+    topic = models.CharField(max_length=250, verbose_name="Title")
+    remark = models.TextField(null=True, blank=True)    
+
+class Attendance(models.Model):
+    Attendance_Choice = (
+        ('A','A'),
+        ('P','P'),
+        ('L','L'),
+    )
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)    
+    date = models.DateTimeField(auto_now_add=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)    
+    attendance_type = models.CharField(max_length=3, choices=Attendance_Choice, default='P')
     remark = models.TextField(null=True, blank=True)
+    
+    

@@ -20,17 +20,20 @@ class EmployeeCreateView(CreateView):
         context=super(EmployeeCreateView,self).get_context_data(**kwargs)
         return context
     
-    @method_decorator(login_required(login_url='/login'))
-    def get(self,request,*args,**kwargs):        
+    #@method_decorator(login_required(login_url='/login'))
+    def get(self,request,*args,**kwargs):          
         context={'form':EmployeeForm()}
         return render(request,'student/employeemanagement.html',context)
     
-    @method_decorator(login_required(login_url='/login'))
+    #@method_decorator(login_required(login_url='/login'))
     def post(self,request,*args,**kwargs):
-        form=EmployeeForm(request.POST or None,request.FILES or None)        
+        form=EmployeeForm(request.POST or None,request.FILES or None)         
         if form.is_valid():
-            form.save()
-        return render(request,'student/employeemanagement.html',{'form':form})
+            obj = form.save(commit=False)
+            obj.save()
+            print(obj)
+        print("invalid")
+        return redirect('employee_list')
 
 
 class EmployeeListView(ListView):

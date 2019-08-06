@@ -36,3 +36,8 @@ class FeesManagementSettingForm(forms.ModelForm):
     # def __init__(self, *args, **kwargs):
     #     super(FeesManagementSettingForm, self).__init__(*args, **kwargs)
     #     self.fields['fees'].widget = forms.CheckboxSelectMultiple
+
+class FeetypeCreateForm(forms.ModelForm):
+    class Meta:
+        model = Feestype
+        fields = ('__all__')

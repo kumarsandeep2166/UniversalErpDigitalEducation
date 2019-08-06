@@ -1,5 +1,6 @@
 ﻿{% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
 <script>
         document.getElementById("emp").className += " active";
@@ -11,6 +12,7 @@
                 color:#fff !important;
         }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.css">
 <section id="main-content">
     <div class="wrapper">
         <div class="row">
@@ -42,7 +44,7 @@
                                 </div>
                           </div>
             <div class="row">
-                    <div class="form-group col-sm-3 col-xs-12">
+                    <div class="form-group col-sm-3 col-xs-12" >
                             {{ form.date_of_birth| as_crispy_field}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
@@ -56,12 +58,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-4 col-xs-12">
-                         {{ form.employee_department| as_crispy_field}}
-                    </div>
-                <div class="form-group col-sm-4 col-xs-12">
-                        {{ form.employee_category| as_crispy_field}}
-                </div>
+                   
+                
                 <div class="form-group col-sm-4 col-xs-12">
                         {{ form.employee_designation| as_crispy_field}}
                 </div>
@@ -273,6 +271,12 @@
     </div>
     
 </section>
-
+<script src="{% static 'js/datepicker.js' %}"></script>
+<script>
+        $( function() {
+          $( "#id_date_of_birth" ).datepicker();
+          $( "#id_date_of_birth" ).attr('autocomplete','off');
+        } );
+        </script>
   
 {% endblock content %}

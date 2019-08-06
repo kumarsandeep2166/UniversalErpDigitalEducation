@@ -10,3 +10,5 @@ academics/migrations/*.*
 user/migrations/*.*
 db.sqlite3
 media/
+lesson_attendance/migrations/*.*
+academics/__pycache__/

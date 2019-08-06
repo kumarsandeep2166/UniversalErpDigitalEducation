@@ -59,11 +59,10 @@ def studentadmissionlist(request):
     return render(request,'student/studentadmissionlist.html',{})
 
 @login_required(login_url='/login')
-def load_branches(request):
-    username = request.session['username']
+def load_branches(request):   
     stream_id=request.GET.get('department')
     branches=Course.objects.filter(stream=stream_id).order_by('course_name')
-    return render(request,'student/department_options.html',{'branches':branches, 'username': username})
+    return render(request,'student/department_options.html',{'branches':branches})
 
 
 class StudentCreateView(CreateView):
@@ -151,9 +150,6 @@ def search_list(request):
     exact_search=request.GET.get('anything')
     category_search=request.GET.get('category')
     pass
-
-
-
 
 class EnorllmentView(View):
     # model=Enrollment
