@@ -57,7 +57,8 @@
                 </div>               
                 
             </div>
-            <button type="submit" class="btn btn-info save">Submit Attendance</button>
+            <input type="hidden" id="student_count" value="0">
+            <button class="btn btn-info save" id="submit_attn">Submit Attendance</button>
             </form>
         </div>
     </div>
@@ -135,19 +136,43 @@
                     tableString += "<tr><td></td><td></td><td></td><td>No daa available.</td><td></td><td></td><td></td></tr>";
                 }
                 else {
-                    for(var i in data.first_fee_list){
+                    for(var i in data.attendance_list){
                         tableString += "<tr><td>" + data.attendance_list[i].enr_no + "</td>";
-                        tableString += "<td>" + data.attendance_list[i].name + "</td>";
+                        tableString += "<td><input type=\"hidden\" id=\"student_id"+i+"\" value=\""+data.attendance_list[i].stud_id+"\">" + data.attendance_list[i].name + "</td>";
                         tableString += "<td>" + data.attendance_list[i].total_class + "</td>";
                         tableString += "<td>" + data.attendance_list[i].class_present + "</td>";
                         tableString += "<td>" + data.attendance_list[i].class_absent + "</td>";
-                        tableString += "<td><select name=\"attendance\" id=\"attendane_type" + i + "\"><option value=\"A\">A</option><option value=\"P\">P</option><option value=\"L\">L</option></select></td>";
-                        tableString += "<td><input type=\"text\" name=\"remark\" id=\"remark" + i + "\"></td></tr>";
+                        tableString += "<td><select name=\"attendance"+i+"\" id=\"attendane_type" + i + "\"><option value=\"A\">A</option><option value=\"P\">P</option><option value=\"L\">L</option></select></td>";
+                        tableString += "<td><input type=\"text\" name=\"remark"+i+"\" id=\"remark" + i + "\"></td></tr>";
                     }
                 }
+                console.log(tableString);
                 $("#attendance_tbody").html(tableString);
+                $("#student_count").val(data.attendance_list.length);
             }
         });
+    });
+    $("#submit_attn").on('click', function(event){
+        var stud_count = $("#student_count").val();
+        if(stud_count>0){
+            var stud_id = new Array();
+            for(i=0;i<stud_count;i++){
+                var student_id = "#student_id"+i;
+                var stud = $(student_id).val();
+                stud_id.push(stud);
+                console.log(stud_id);
+                console.log("2");
+            }
+        //     $.ajax({
+        //     url:"#",
+        //     data:{
+        //         'subject_id': stud_count,
+        //     },
+        //     success:function(data){
+
+        //     }
+        // });
+        }
     });
     
 </script> 
