@@ -102,7 +102,7 @@ class Employee(models.Model):
     state=models.CharField(max_length=25, null=True, blank= True)
     country=models.CharField(max_length=25, null=True, blank= True)
     bank_name=models.CharField(max_length=25, null=True, blank= True)
-    bank_account_number=models.IntegerField(null=True, blank= True)
+    bank_account_number=models.CharField(max_length=25, null=True, blank= True)
     bank_ifsc_code=models.CharField(max_length=25, null=True, blank= True)
     bank_branch=models.CharField(max_length=25, null=True, blank= True)
     tenth_subjects=models.CharField(max_length=20, null=True, blank= True)
