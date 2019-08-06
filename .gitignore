@@ -12,3 +12,5 @@ db.sqlite3
 media/
 lesson_attendance/migrations/*.*
 academics/__pycache__/
+coursemanagement/migrations/*.*
+student_admin/local_settings.py
