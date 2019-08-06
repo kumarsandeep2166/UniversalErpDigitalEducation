@@ -43,15 +43,12 @@ class LessonPlanForm(forms.ModelForm):
         model = LessonPlan
         fields = ('__all__')
 
-class AttendanceForm(forms.ModelForm):
+class AttendanceForm(forms.Form):
     stream = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Stream.objects.all()])
     course = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Course.objects.all()])
     batch = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Batch.objects.all()])
     semestar = forms.ChoiceField(choices=[(o.id, str(o)) for o in Semestar.objects.all()])
     subject = forms.ChoiceField(choices=[(o.id, str(o)) for o in Subject.objects.all()])
-    
-    class Meta:
-        model = Attendance
-        fields = ('__all__')
+
 
 

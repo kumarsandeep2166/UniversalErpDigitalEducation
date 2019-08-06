@@ -1,7 +1,8 @@
 {% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.css">
 <section id="main-content">
     <div class="wrapper">
             <div class="col-sm-12 col-xs-12 col-sm-offset-0">
@@ -10,7 +11,7 @@
                    student Attendance
                 </h1>
             </div>
-            <form class="frmbgg clear-fx" action="." method="post"  id="attendancePlan" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-subject-url="{% url 'ajax_load_subject' %}" data-attendance-url="{% url 'ajax_load_attendance' %}">
+            <form class="frmbgg clear-fx"   id="attendancePlan" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-subject-url="{% url 'ajax_load_subject' %}" data-attendance-url="{% url 'ajax_load_attendance' %}">
                 <div class="row">
                 {% csrf_token %}
                 <div class="row">
@@ -45,7 +46,7 @@
                                     <th>Total Class Held</th>
                                     <th>Total class Attended</th>
                                     <th>Total class Absent</th>                          
-                                    <th>Action <input type="date" id="date"> </th>
+                                    <th>Action <input type="date" id="date" onload="getDate()"> </th>
                                     <th>Remark</th>
                                 </tr>
                             </thead>
@@ -63,7 +64,7 @@
         </div>
     </div>
 </section>
-
+<script src="{% static 'js/datepicker.js' %}"></script>
 <script type="text/javascript">
     $("#id_stream").change(function(event){
         event.preventDefault();
@@ -138,7 +139,7 @@
                 else {
                     for(var i in data.attendance_list){
                         tableString += "<tr><td>" + data.attendance_list[i].enr_no + "</td>";
-                        tableString += "<td><input type=\"hidden\" id=\"student_id"+i+"\" value=\""+data.attendance_list[i].stud_id+"\">" + data.attendance_list[i].name + "</td>";
+                        tableString += "<td><input type=\"hidden\" id=\"student_id"+i+"\" value=\""+data.attendance_list[i].stud_id+"\"><a href=\"/student_detail/" + data.attendance_list[i].stud_id + "\" target=\"_blank\">" + data.attendance_list[i].name + "</a></td>";
                         tableString += "<td>" + data.attendance_list[i].total_class + "</td>";
                         tableString += "<td>" + data.attendance_list[i].class_present + "</td>";
                         tableString += "<td>" + data.attendance_list[i].class_absent + "</td>";
@@ -146,35 +147,70 @@
                         tableString += "<td><input type=\"text\" name=\"remark"+i+"\" id=\"remark" + i + "\"></td></tr>";
                     }
                 }
-                console.log(tableString);
                 $("#attendance_tbody").html(tableString);
                 $("#student_count").val(data.attendance_list.length);
+            },
+            error:function(data){
+                $("#attendance_tbody").html("");
+                $("#student_count").val(0);
             }
         });
     });
     $("#submit_attn").on('click', function(event){
+        event.preventDefault();
         var stud_count = $("#student_count").val();
+        var id_subject = $("#id_subject").val();
         if(stud_count>0){
-            var stud_id = new Array();
+            var stud_list = new Array();
+            var attn_list = new Array();
+            var remark_list = new Array();
             for(i=0;i<stud_count;i++){
                 var student_id = "#student_id"+i;
                 var stud = $(student_id).val();
-                stud_id.push(stud);
-                console.log(stud_id);
-                console.log("2");
+                
+                var attendance_type = "#attendane_type"+0+" option:selected";
+                var attn_type = $(attendance_type).text();
+                
+                var remark_id = "#remark"+i;
+                var remark = $(remark_id).val();
+                attn_list.push({"id":stud, "attn":attn_type, "remark": remark});
             }
-        //     $.ajax({
-        //     url:"#",
-        //     data:{
-        //         'subject_id': stud_count,
-        //     },
-        //     success:function(data){
+            $.ajax({
+            method: "POST",
+            url:"/save_attendance/",
+            data:{
+                'attn_list': attn_list,
+                'stud_count': stud_count,
+                'id_subject': id_subject,
+            },
+            success:function(data){
 
-        //     }
-        // });
+            }
+        });
         }
     });
-    
+    function getCookie(c_name) {
+        if (document.cookie.length > 0)
+        {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1)
+            {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start,c_end));
+            }
+        }
+        return "";
+    }
+    $(function(){
+        $.ajaxSetup({
+            headers:{"X-CSRFToken":getCookie('csrftoken')}
+        });
+    });
+    $( function() {
+          $( "#date" ).datepicker().datepicker("setDate", new Date());
+        } );
 </script> 
 
 {% endblock content %}

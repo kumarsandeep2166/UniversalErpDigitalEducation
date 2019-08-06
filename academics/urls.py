@@ -16,5 +16,5 @@ urlpatterns=[
     #path('lesson_plan/', views.LessonPlanCreateView.as_view(), name="subject_lesson_plan"),
     path('attendance/', views.attendance, name="attendance"),
     path('ajax_load_attendance/', views.ajax_load_attendance, name="ajax_load_attendance"),
-    
+    path('save_attendance/', views.save_attendance, name="save_attendance"),
 ]

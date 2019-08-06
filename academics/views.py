@@ -215,4 +215,22 @@ def ajax_load_attendance(request):
     return HttpResponse(attendance_json, 'application/json')
 
 
-
+def save_attendance(request):
+    stud_count = int(request.POST.get('stud_count'))
+    id_subject = request.POST.get('id_subject')
+    sub_obj = Subject.objects.get(pk=id_subject)
+    total_class = int(sub_obj.total_class_held)
+    sub_obj.total_class_held = total_class+1
+    sub_obj.save()
+    for i in range(stud_count):
+        stud_id = request.POST.get('attn_list['+ str(i) +'][id]')
+        attn_type = request.POST.get('attn_list['+ str(i) +'][attn]')
+        remark = request.POST.get('attn_list['+ str(i) +'][remark]')
+        att_obj = Attendance()
+        att_obj.subject = sub_obj
+        att_obj.student = Student.objects.get(pk=stud_id)
+        att_obj.attendance_type = attn_type
+        att_obj.remark = remark
+        att_obj.save()
+    attendance_json = json.dumps({'msg': "success"})
+    return HttpResponse(attendance_json, 'application/json')
