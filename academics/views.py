@@ -1,13 +1,16 @@
 from django.shortcuts import render,redirect,get_object_or_404
+
 from django.views.generic import ListView,CreateView,UpdateView,DeleteView,DetailView, View
 from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance
 from .forms import SemestarForm, SubjectForm, SubjectTeacherForm, LessonPlanForm, AttendanceForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy,reverse
 from employee.models import Employee
 from django.db import transaction
 from django.db.models import Count
 from student.models import Student
+from django.db import connection
+import json
 
 class SemestarCreateView(CreateView):
     model=Semestar
@@ -176,14 +179,40 @@ def ajax_load_attendance(request):
     # semestar=Semestar.objects.filter(stream=stream_id, course=course, batch=batch_id)
     # subject = Subject.objects.filter(semestar=semestar)
     subject_id = request.GET.get('subject_id')
-    subject_obj = Subject.objects.get(pk=subject_id)
-    print(subject_obj)
-    obj = Attendance.objects.filter(subject=subject_obj).select_related('subject', 'student').annotate(total=Count('student')).order_by('total')
-    print(len(obj))
-    if not len(obj):
-        sem_obj = Semestar.objects.get(pk=subject_obj.semestar.pk)
-        print(sem_obj)
-        obj = Student.objects.filter(stream=sem_obj.stream.pk, course=sem_obj.course.pk, batch=sem_obj.batch.pk)
-        print(len(obj))
-    context={'object':obj}
-    return render(request, 'academics/attendance_ajax.html', context)
+    query = """select
+        stud.id, enr.enrollment_number, stud.first_name, stud.last_name, 
+        sub.total_class_held, COUNT(att.student_id)
+        FROM
+        student_student as stud
+        join student_enrollment as enr on stud.id = enr.student_name_id
+        join academics_semestar as sem on stud.stream_id = sem.stream_id
+        and stud.course_id = sem.course_id
+        and stud.batch_id = sem.batch_id
+        join academics_subject sub on sem.id = sub.semestar_id
+        left join academics_attendance as att on sub.id = att.subject_id
+        and stud.id = att.student_id
+        WHERE
+        sub.id = {0} and att.attendance_type="P"
+        GROUP BY
+        att.subject_id,
+        att.student_id;""".format(subject_id)
+    cursor = connection.cursor()
+    cursor.execute(query)
+    query_list = cursor.fetchall()
+    attendance_list = []
+    for obj in query_list:
+        attendance_dic = {}
+        attendance_dic['stud_id'] = obj[0]
+        attendance_dic['enr_no'] = obj[1]
+        attendance_dic['name'] = obj[2] + " " + obj[3]
+        class_held = int(obj[4])
+        class_present = int(obj[5])
+        attendance_dic['total_class'] = class_held
+        attendance_dic['class_present'] = class_present
+        attendance_dic['class_absent'] = class_held - class_present
+        attendance_list.append(attendance_dic)
+    attendance_json = json.dumps({'attendance_list': attendance_list})
+    return HttpResponse(attendance_json, 'application/json')
+
+
+
