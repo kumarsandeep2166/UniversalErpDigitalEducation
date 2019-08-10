@@ -1,5 +1,6 @@
 {% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
 <section id="main-content">
     <div class="wrapper">
@@ -9,7 +10,7 @@
                     Add Subject Teacher
                 </h1>
             </div>
-            <form class="frmbgg clear-fx" action="." method="post"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-subject-url="{% url 'ajax_load_subject' %}">
+            <form class="frmbgg clear-fx" action="." method="post"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}"  data-subject-url="{% url 'ajax_load_subject' %}">
                 <div class="row">
                 {% csrf_token %}
                 <div class="form-group col-sm-4 col-xs-12">
@@ -25,16 +26,24 @@
                     {{ form.semestar| as_crispy_field}}
                 </div>
                 <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.section| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
                     {{ form.subject| as_crispy_field}}
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    {{ form.teacher_department| as_crispy_field}}
                 </div>
                 <div class="form-group col-sm-4 col-xs-12">
                     {{ form.teacher| as_crispy_field}}
                 </div>
-                <button type="submit" class="btn btn-info save">Assign</button>
+                
             </div>
+            <button type="submit" class="btn btn-info save">Assign</button>
             </form>
         </div>
     </div>
+           
 </section>
 <script type="text/javascript">
     $("#id_stream").change(function(){
@@ -80,20 +89,49 @@
             }
         });
     });
-    $("#id_semestar").change(function(){
-        var url=$("#assignSubjectTeacherForm").attr("data-subject-url");
+    $("#id_semestar").change(function(){       
         var semestar_id =$(this).val();
         $.ajax({
-            url:url,
+            url:'/get_section_subject/',
             data:{
                 'semestar_id': semestar_id,
             },
             success:function(data){
-                $("#id_subject").html(data);
+                subj_str = "<option>----------</option>";
+                sec_str = "<option>----------</option>";
+                if(data.subject_list.length){
+                    for(var i in data.subject_list) {
+                        subj_str += "<option value=\""+ data.subject_list[i].id +"\">"+ data.subject_list[i].name +"</option>";
+                    }
+                }
+                if(data.section_list.length){
+                    for(var i in data.section_list) {
+                        sec_str += "<option value=\""+ data.section_list[i].id +"\">"+ data.section_list[i].name +"</option>";
+                    }
+                }
+                $("#id_section").html(sec_str);
+                $("#id_subject").html(subj_str);
+            },
+            error:function(data){
+                $("#id_section").html("<option>----------</option>");
+                $("#id_subject").html("<option>----------</option>");
+            }
+        });
+    });
+    $("#id_teacher_department").change(function(){      
+        var id_teacher_department =$(this).val();
+        $.ajax({
+            url:'/teacher_load/',
+            data:{
+                'stream_id': id_teacher_department,
+            },
+            success:function(data){
+                $("#id_teacher").html(data);
             }
         });
     });
     
 </script> 
+
 
 {% endblock content %}

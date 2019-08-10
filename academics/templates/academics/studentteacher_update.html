@@ -9,7 +9,7 @@
                     Update Subject Teacher
                 </h1>
             </div>
-            <form class="frmbgg clear-fx" action="." method="post"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-subject-url="{% url 'ajax_load_subject' %}">
+            <form class="frmbgg clear-fx" action="." method="post"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}"  data-subject-url="{% url 'ajax_load_subject' %}">
                 <div class="row">
                 {% csrf_token %}
                 <div class="form-group col-sm-4 col-xs-12">
@@ -63,6 +63,7 @@
             }
         });
     });
+    
     $("#id_batch").change(function(){
         var url=$("#assignSubjectTeacherForm").attr("data-semestar-url");
         var batch_id=$(this).val();

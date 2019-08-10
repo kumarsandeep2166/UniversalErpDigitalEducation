@@ -62,15 +62,9 @@ class Batch(models.Model):
 
     def __str__(self):
         return self.batch_no
-class Section(models.Model):
-    stream=models.ForeignKey(Stream,on_delete=models.CASCADE)
-    course_name=models.ForeignKey(Course,on_delete=models.CASCADE)
-    batch_no=models.ForeignKey(Batch,on_delete=models.CASCADE)
-    section_name=models.CharField(max_length=20)
-    remark=models.TextField()
 
-    def __str__(self):
-        return self.section_name
+
+    
 class FeesManagementSetting(models.Model):
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE)
     course=models.ForeignKey(Course,on_delete=models.CASCADE)

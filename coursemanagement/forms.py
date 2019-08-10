@@ -1,6 +1,7 @@
 from django import forms
 
-from .models import Stream,Section,Batch,Course,Feestype,FeesManagementSetting
+from .models import Stream,Batch,Course,Feestype,FeesManagementSetting
+from academics.models import Section
 
 class StreamForm(forms.ModelForm):
     #DOB = forms.DateField(widget=forms.SelectDateWidget(years=[i for i in range(1920,2010)]),input_formats=['%Y-%m-%d','%m/%d/%Y','%m/%d/%y','%d/%m/%y'])
@@ -21,6 +22,9 @@ class BatchForm(forms.ModelForm):
         model=Batch
         fields=('__all__')
 class SectionForm(forms.ModelForm):
+    stream = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Stream.objects.all()])
+    course = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Course.objects.all()])
+    batch = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Batch.objects.all()])    
     class Meta:
         model=Section
         fields=('__all__')
