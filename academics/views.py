@@ -369,3 +369,6 @@ def student_section_list(request):
 def class_timing_setting(request):
     form=ClassTimingsForm()
     return render(request, 'academics/class_time_table_setting.html',{'form':form})
+
+def timetablecreate(request):
+    return render(request, 'student/timetable.html',{})

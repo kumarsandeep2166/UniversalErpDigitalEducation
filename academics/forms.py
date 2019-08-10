@@ -32,7 +32,7 @@ class SubjectTeacherForm(forms.ModelForm):
     teacher_department = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Stream.objects.all()], label="Teacher's Department")  
     class Meta:
         model = SubjectTeacher
-        fields = ('__all__')
+        exclude = ('total_class_held',)
 
  
 

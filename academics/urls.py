@@ -24,4 +24,5 @@ urlpatterns=[
     path('student_section_ajax/',views.studentsection, name="student_section_ajax"),
     path('student_section_list/',views.student_section_list, name="student_section_list"),
     path('class_timing_setting/',views.class_timing_setting, name="class_timing_setting"),
+    path('timetablecreate/',views.timetablecreate, name="timetablecreate"),
 ]
