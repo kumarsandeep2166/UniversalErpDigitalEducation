@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream,Batch,Section
+from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream,Batch
 from student.models import Student,Enrollment
 class FeeType(models.Model):
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE)

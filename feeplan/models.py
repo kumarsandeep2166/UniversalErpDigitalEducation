@@ -1,5 +1,5 @@
 from django.db import models
-from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream,Batch,Section
+from coursemanagement.models import FeesManagementSetting,Feestype,Course,Stream,Batch
 from student.models import Student,Enrollment
 from coursemanagement.models import Feestype
 import datetime

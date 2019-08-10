@@ -7,7 +7,7 @@ from .forms import (StudentForm,StudentEnquiryForm,EmployeeForm,EnrollmentForm)
 from django.views.generic import ListView,DetailView,DeleteView,UpdateView,CreateView,View
 from django.views.generic.base import TemplateView
 from django.db.models import Q,Count
-from coursemanagement.models import Stream, Course, Batch, Section
+from coursemanagement.models import Stream, Course, Batch
 from django.http import HttpResponse,HttpResponseRedirect
 import json
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from user.models import Usertype
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from academics.models import Section
 
 @login_required(login_url='/login')
 def index(request):   

@@ -22,6 +22,7 @@
                                         <th>Stream Name</th>                                                                             
                                         <th>Course Name</th>
                                         <th>Batch No</th>
+                                        <th>Semestar</th>
                                         <th>Section Name</th>                                        
                                         <th>Remark</th>
                                        
@@ -33,13 +34,13 @@
                                 {% for i in object_list %}
                                 <tr>
                                         <td>{{i.id}}</td>
-                                        <td>{{i.stream}}</td>
-                                        <td>{{i.course_name}}</td>
-                                        <td>{{i.batch_no}}</td>
+                                        <td>{{i.semestar.stream.name}}</td>
+                                        <td>{{i.semestar.course.course_name}}</td>
+                                        <td>{{i.semestar.batch.batch_no}}</td>
+                                        <td>{{i.semestar}}</td>
                                         <td>{{i.section_name}}</td>                                        
-                                        <td>{{i.remark}}</td>
-                                        
-                                        <td><a href="{% url 'section_detail' pk=i.pk %}">View</a>||<a href="{% url 'section_edit' pk=i.pk %}">Edit</a>||<a href="{% url 'section_delete' pk=i.pk %}">Delete</a></td>
+                                        <td>{{i.remark}}</td>                                        
+                                        <td><a href="{% url 'section_edit' pk=i.pk %}">Edit</a>||<a href="{% url 'section_delete' pk=i.pk %}">Delete</a></td>
                                        
                                 </tr>
                                 {% endfor %}

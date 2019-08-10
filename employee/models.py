@@ -149,10 +149,11 @@ class Employee(models.Model):
     international_conference_no=models.IntegerField(null=True,blank=True)
     conference_details=models.TextField(null=True,blank=True)
     status=models.BooleanField(default=True)   
-    employee_designation=models.ForeignKey(Designation,on_delete=models.SET_NULL, null=True, blank= True)    
+    employee_designation=models.ForeignKey(Designation,on_delete=models.SET_NULL, null=True, blank= True)
+    stream = models.ForeignKey(Stream, null=True, blank= True, on_delete=models.SET_NULL)  
 
     def __str__(self):
-        return '{}-{}-{}'.format(self.first_name,self.middle_name,self.last_name)
+        return '{} {}'.format(self.first_name,self.last_name)
     
     def get_absolute_url(self):
         return reverse('employee_detail', kwargs={

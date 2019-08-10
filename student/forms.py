@@ -1,7 +1,8 @@
 from django import forms
 from .models import (StudentEnquiry, Branch,Student,Employee,Enrollment)
 from datetime import datetime
-from coursemanagement.models import Course, Stream, Batch, Section
+from coursemanagement.models import Course, Stream, Batch
+from academics.models import Section
 
 
 #from django.views.generic.edit import FormView

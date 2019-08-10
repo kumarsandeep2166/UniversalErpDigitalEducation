@@ -8,7 +8,7 @@
             <div class="col-sm-12 col-xs-12 col-sm-offset-0">
             <div class="text-center">
                 <h1 class="hdrcolorbg">
-                   student Attendance
+                   Student Attendance
                 </h1>
             </div>
             <form class="frmbgg clear-fx"   id="attendancePlan" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-subject-url="{% url 'ajax_load_subject' %}" data-attendance-url="{% url 'ajax_load_attendance' %}">
@@ -28,12 +28,15 @@
                         {{ form.semestar| as_crispy_field}}
                     </div>
                     <div class="form-group col-sm-4 col-xs-12">
+                        {{ form.section| as_crispy_field}}
+                    </div>
+                    <div class="form-group col-sm-4 col-xs-12">
                         {{ form.subject| as_crispy_field}}
                     </div>   
-                    <div class="form-group col-sm-4 col-xs-12" >
+                    <!-- <div class="form-group col-sm-4 col-xs-12" >
                         <label>Date</label>
                         <input type="date" name="dateinput">                      
-                    </div>                   
+                    </div>                    -->
                 </div>
 
                 <div class="row" id="attendance">
@@ -59,7 +62,28 @@
                 
             </div>
             <input type="hidden" id="student_count" value="0">
-            <button class="btn btn-info save" id="submit_attn">Submit Attendance</button>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="">Topic</label>
+                    <input type="text" name="class_topic" id="class_topic">
+                </div>
+                <div class="col-sm-12">
+                    <label for="">Remark</label>
+                    <textarea name="topic_remark" id="topic_remark" rows="2"></textarea>
+                </div>
+                <div class="col-sm-4">
+                    <label for="">From Time</label>
+                    <input type="time" name="from_date" id="from_date">
+                </div>
+                <div class="col-sm-4">
+                    <label for="">To Time</label>
+                    <input type="time" name="to_date" id="to_date">
+                </div>
+            </div>
+            
+                <button class="btn btn-info save" id="submit_attn">Submit Attendance</button>
+                
+            
             </form>
         </div>
     </div>
@@ -110,31 +134,49 @@
             }
         });
     });
-    $("#id_semestar").change(function(){
-        var url=$("#attendancePlan").attr("data-subject-url");
+    $("#id_semestar").change(function(){       
         var semestar_id =$(this).val();
         $.ajax({
-            url:url,
+            url:'/get_section_subject/',
             data:{
                 'semestar_id': semestar_id,
             },
             success:function(data){
-                $("#id_subject").html(data);
+                subj_str = "<option>----------</option>";
+                sec_str = "<option>----------</option>";
+                if(data.subject_list.length){
+                    for(var i in data.subject_list) {
+                        subj_str += "<option value=\""+ data.subject_list[i].id +"\">"+ data.subject_list[i].name +"</option>";
+                    }
+                }
+                if(data.section_list.length){
+                    for(var i in data.section_list) {
+                        sec_str += "<option value=\""+ data.section_list[i].id +"\">"+ data.section_list[i].name +"</option>";
+                    }
+                }
+                $("#id_section").html(sec_str);
+                $("#id_subject").html(subj_str);
+            },
+            error:function(data){
+                $("#id_section").html("<option>----------</option>");
+                $("#id_subject").html("<option>----------</option>");
             }
         });
     });
     $("#id_subject").change(function(){
         var url=$("#attendancePlan").attr("data-attendance-url");
         var subject_id =$(this).val();
+        var section_id =$("#id_section").val();
         $.ajax({
             url:url,
             data:{
                 'subject_id': subject_id,
+                'section_id': section_id,
             },
             success:function(data){
                 var tableString = "";
                 if(data.attendance_list.length === 0) {
-                    tableString += "<tr><td></td><td></td><td></td><td>No daa available.</td><td></td><td></td><td></td></tr>";
+                    tableString += "<tr><td></td><td></td><td></td><td>No data available.</td><td></td><td></td><td></td></tr>";
                 }
                 else {
                     for(var i in data.attendance_list){
@@ -160,6 +202,12 @@
         event.preventDefault();
         var stud_count = $("#student_count").val();
         var id_subject = $("#id_subject").val();
+        var id_section = $("#id_section").val();
+        var class_topic = $("#class_topic").val();
+        var topic_remark = $("#topic_remark").val();
+        var from_date = $("#from_date").val();
+        var to_date = $("#to_date").val();
+        var attendancedate= $("#date").val();
         if(stud_count>0){
             var stud_list = new Array();
             var attn_list = new Array();
@@ -182,9 +230,20 @@
                 'attn_list': attn_list,
                 'stud_count': stud_count,
                 'id_subject': id_subject,
+                'id_section': id_section,
+                'from_datetime': from_date,
+                'to_datetime': to_date,
+                'remark': topic_remark,
+                'topic': class_topic,
+                'attendancedate':attendancedate,
             },
             success:function(data){
-
+                if(data.msg=="success"){
+                    url_str = '/attendanceProgressDetailView/?section_id='+data.id_section+'&subject_id='+data.id_subject;
+                    window.location.replace(url_str);
+                } else {
+                    alert(data.msg);
+                }
             }
         });
         }
@@ -211,6 +270,7 @@
     $( function() {
           $( "#date" ).datepicker().datepicker("setDate", new Date());
         } );
-</script> 
+        
+        </script> 
 
 {% endblock content %}

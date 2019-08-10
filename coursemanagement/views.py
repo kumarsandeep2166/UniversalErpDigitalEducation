@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import Section,Stream,Batch,Course,Feestype,FeesManagementSetting
+from .models import Stream,Batch,Course,Feestype,FeesManagementSetting
 from django.views.generic import ListView,CreateView,DeleteView,DetailView,UpdateView
 from .forms import SectionForm,StreamForm,BatchForm,CourseForm,FeesForm,FeesManagementSettingForm, FeetypeCreateForm
 from django.urls import reverse_lazy
@@ -7,6 +7,7 @@ import string
 from feeplan.models import FeesPlanType
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from academics.models import Section
 
 class StreamCreateView(CreateView):
     model=Stream
@@ -177,12 +178,13 @@ class SectionDetailView(DetailView):
 
 class SectionUpdateView(UpdateView):
     model=Section
-    fields=('__all__')
+    form_class=SectionForm
     template_name='coursemanagement/section_edit.html'
     success_url=reverse_lazy('section_list')
 
 class SectionDeleteView(DeleteView):
     model=Section
+    template_name='coursemanagement/section_confirm_delete.html'
     success_url=reverse_lazy('section_list')
 
 def load_course(request):    
@@ -201,9 +203,9 @@ def load_batch(request):
 
 def load_section(request):    
     stream_id=request.GET.get('stream')
-    course_id=request.GET.get('course_name')
-    batch_id=request.GET.get('batch_no')
-    section=Section.objects.filter(course_id=course_id,stream_id=stream_id,batch_id=batch_id).order_by('-id')
+    course_id=Course.objects.get(pk=stream_id)
+    batch_id=Batch.objects.get(course_name=course_id).order_by('-id')
+    section=Section.objects.filter(batch_id=batch_id).order_by('-id')
     context={'section':section}
     return render(request,'coursemanagement/includes/section_ajax.html',context)
 

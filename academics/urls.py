@@ -17,4 +17,11 @@ urlpatterns=[
     path('attendance/', views.attendance, name="attendance"),
     path('ajax_load_attendance/', views.ajax_load_attendance, name="ajax_load_attendance"),
     path('save_attendance/', views.save_attendance, name="save_attendance"),
+    path('teacher_load/', views.teacher_load, name="teacher_load"),
+    path('get_section_subject/',views.get_section_subject, name="get_section_subject"),
+    path('attendanceProgressDetailView/',views.attendanceProgressDetailView, name="attendanceProgressDetailView"),
+    path('student_section/',views.studentsectioncreate, name="student_section"),
+    path('student_section_ajax/',views.studentsection, name="student_section_ajax"),
+    path('student_section_list/',views.student_section_list, name="student_section_list"),
+    path('class_timing_setting/',views.class_timing_setting, name="class_timing_setting"),
 ]

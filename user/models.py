@@ -8,3 +8,6 @@ class Usertype(models.Model):
     )
     usertype=models.CharField(max_length=50, choices=user_choice, default='employee')
     userprofile = models.OneToOneField(User, on_delete=models.CASCADE)       
+
+
+

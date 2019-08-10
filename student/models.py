@@ -8,7 +8,7 @@ from django.urls import reverse
 from coursemanagement.models import Course,Stream,Batch
 from django.db.models.signals import pre_save
 #from .utils import unique_enrollment_number_generator
-from coursemanagement.models import Course, Stream, Batch, Section
+from coursemanagement.models import Course, Stream, Batch
 from django.contrib.auth.models import User
 from user.models import Usertype
 
@@ -103,7 +103,7 @@ class PathAndRename(object):
 #         return "Images uploaded for:{}".format(self.student_image.name)
 
 
-    
+
 
 
 
@@ -234,13 +234,10 @@ class Student(models.Model):
     course=models.ForeignKey(Course, on_delete=models.SET_NULL,null=True, blank=True)
     batch=models.ForeignKey(Batch, on_delete=models.SET_NULL,null=True, blank=True)
     academic_status=models.IntegerField(default=1)
-    fee_status=models.IntegerField(default=1)
-    
-
-    
+    fee_status=models.IntegerField(default=1)   
     
     def __str__(self):
-        return '{}-{}-{}'.format(self.first_name,self.middle_name,self.last_name)
+        return '{} {}'.format(self.first_name,self.last_name)
 
     def get_absolute_url(self):
         return reverse('student_detail', kwargs={
@@ -422,7 +419,6 @@ class Employee(models.Model):
         return reverse('employee_detail', kwargs={
             'pk': self.pk
         })
-
 
 
 

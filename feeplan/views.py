@@ -141,7 +141,7 @@ class FeePlanCreate(View):
             feetype_dic['actual_fees'] = feeplan_obj.actual_fees
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
-            return redirect('/')
+            
         context={ 'stud_obj':stud_obj.pk,
                     'course_name':course_name,
                     'batch_no': batch_no,
