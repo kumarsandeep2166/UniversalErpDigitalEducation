@@ -32,14 +32,17 @@
                                 <td>{{i.fee_type}}</td>
                                
                                 <td>
-                                        <a href="{% url 'feestype_edit' pk=i.pk %}" class="social-icon">
+                                        <a href="{% url 'feestype_edit' pk=i.pk %}" class="social-icon smnu">
                                                 <i class="fa fa-pencil editt"></i>
                                                 <div class="tooltip">Edit</div>
                                         </a>
-                                        <a href="{% url 'fees_delete' pk=i.pk %}" class="social-icon" id="delete">
-                                                <i class="fa fa-trash-o deletee"></i>
-                                                <div class="tooltip">Delete</div>
-                                        </a>
+                                       
+                                        <form method="post" action="{% url 'fees_delete' pk=i.pk %}" enctype="multipart/form-data" >
+                                                {% csrf_token %}                        
+                                                <button type="submit"  class="social-icon smnu"  id="delete" onclick="return confirm('Are you sure to delete {{ i }}?');">
+                                                        <i class="fa fa-trash-o deletee"></i>  
+                                                </button>
+                                            </form>
                                 </td>                                       
                                 </tr>
                                 {% endfor %}

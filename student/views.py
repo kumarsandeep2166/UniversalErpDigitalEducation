@@ -16,6 +16,7 @@ from user.models import Usertype
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from academics.models import Section
+from feeplan.models import *
 
 @login_required(login_url='/login')
 def index(request):   
@@ -95,12 +96,21 @@ class StudentListView(ListView):
     context_object_name='student_list'
     template_name='student/student_list.html'
     queryset=Student.objects.all()
-    ordering=('-id')
-    
+    ordering=('-id')   
 
     def get_context_data(self, *args, **kwargs):
-        context = super(StudentListView, self).get_context_data(**kwargs)              
+        context = super(StudentListView, self).get_context_data(**kwargs)
+        context['enrollment'] = Enrollment.objects.all().order_by('-id')            
         return context       
+
+def StudentListViewFun(request):
+    queryset=Student.objects.all()
+    #enrollment_queryset = Enrollment.objects.prefetch_related('Enrollment')
+    context = {
+        'queryset':queryset,
+        #'enrollment_queryset':enrollment_queryset
+    }
+    return render(request,'student/student_list.html', context)
 
 class StudentDetailView(DetailView):
     context_object_name='student_list'
@@ -258,10 +268,7 @@ def ajax_load_enrollment(request):
 
 
 @login_required(login_url='/login')
-def start_admission(request, id):
-   
-
-    
+def start_admission(request, id):    
     if request.method == "POST":
         pass
     else:
@@ -276,6 +283,8 @@ def start_admission(request, id):
         form.fields["entrance_name"].initial = stud_obj.entrance
         form.fields["entrance_year"].initial = stud_obj.year
         form.fields["entrance_score"].initial = stud_obj.score
+        form.fields["stream"].initial = stud_obj.stream
+        form.fields["course"].initial = stud_obj.course
 
         return render(request,'student/studentadmissionform.html',{'form':form})
 
@@ -297,10 +306,8 @@ def reject_academic(request):
     context={'msg':"Rejected"}
     return HttpResponse(json.dumps(context), content_type="application/json")
 
-class Enroll_StudentList(View):
-    
-    template_name = 'student/enroll_student_list.html'
-    
+class Enroll_StudentList(View):    
+    template_name = 'student/enroll_student_list.html'    
     @method_decorator(login_required(login_url='/login'))
     def get(self, request, *args, **kwargs):
         object_list = Student.objects.filter(academic_status=2, fee_status=2)
@@ -319,3 +326,12 @@ def addstudentuser(pk):
     stud_obj.save()
     print("User created")
     return True
+
+def enrollstudentlistview(request):
+    enr_obj = Enrollment.objects.all()
+    return render(request, 'student/enrolled_list.html',{"enr_obj":enr_obj})
+
+def invoice(request, id):
+    #id = request.GET.get('id')
+    print(id)
+    return render(request, 'student/payment_option.html',{'id':id})

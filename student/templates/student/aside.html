@@ -8,28 +8,29 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="sub-menu" id="stt">
+                <li class="sub-menu">
                     <a href="javascript:;">  
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Student Management</span>
                     </a>
-                    <ul class="sub" id="stm1"> 
+                    <ul class="sub"> 
                         <!-- <li><a href="/admissionfrm">Student Admission</a></li> -->
                         <!-- <li><a href="/studentadmissionlist">Student Admission Details</a></li> -->
-                        <li id="stm01"><a href="/applicantfrm">Student Application Form</a></li>
-                        <li id="stm02"><a href="/studentadmissionform">Student Admission Form</a></li>
-                        <li id="stm03"><a href="/student-list">Student List</a></li>
-                        <li id="stm03"><a href="/student_enroll_list">Enroll Student</a></li>
+                        <li><a href="/applicantfrm">Student Application Form</a></li>
+                        <li><a href="/studentadmissionform">Student Admission Form</a></li>
+                        <li><a href="/student-list">Student List</a></li>
+                        <li><a href="/student_enroll_list">Enroll Student</a></li>
+                        <li><a href="/enrollstudentlistview">Enrolled Student List</a></li>
                     </ul>
                 </li>
-                <li class="sub-menu" id="emp">
+                <li class="sub-menu">
                     <a href="javascript:;" class="">
                         <i class="fa fa-users" aria-hidden="true"></i>
                         <span>Employee Management </span>
                     </a>
                     <ul class="sub" id="emp1">
-                        <li id="emp01"><a href="{% url 'employee_create'%}">Employee Create Form</a></li>
-                        <li id="emp02"><a href="/employee">Manage Employee</a></li>                                        
+                        <li><a href="{% url 'employee_create'%}">Employee Create Form</a></li>
+                        <li><a href="/employee">Manage Employee</a></li>                                        
                     </ul>
                 </li>
                 <li class="sub-menu">
@@ -47,8 +48,8 @@
                             <i class="fa fa-share" aria-hidden="true"></i>
                             <span>Enquiry</span>
                         </a>
-                        <ul class="sub" id="enqry1">
-                            <li id="enqry01"><a href="/enquiry">Enquiry</a></li>  
+                        <ul class="sub">
+                            <li><a href="/enquiry">Enquiry</a></li>  
                             <li><a href="/applicantfrm">Take An Enquiry</a></li>                                     
                         </ul>
                 </li>
@@ -58,10 +59,10 @@
                         <span>Course Management </span>
                     </a>
                     <ul class="sub"  id="strm1">
-                        <li id="strm01"><a href="{% url 'stream_list' %}">Stream</a></li>
-                        <li id="strm02"><a href="{% url 'course_list' %}">Course</a></li>
-                        <li id="strm03"><a href="{% url 'batch_list' %}">Batch</a></li>
-                        <li id="strm04"><a href="{% url 'section_list' %}">Section</a></li>                        
+                        <li><a href="{% url 'stream_list' %}">Stream</a></li>
+                        <li><a href="{% url 'course_list' %}">Course</a></li>
+                        <li><a href="{% url 'batch_list' %}">Batch</a></li>
+                                        
                     </ul>
                 </li>
                 <li class="sub-menu" id="fee">
@@ -71,10 +72,10 @@
                     </a>
                     <ul class="sub" id="fee1">                        
                         
-                        <li id="fee01"><a href="{% url 'feestype_create' %}">Fees Type Create</a></li> 
-                        <li id="fee02"><a href="{% url 'feeplan_list' %}">Fees List</a></li>
-                        <li id="fee03"><a href="{% url 'feeplan_create' %}">Fees SetUp</a></li>                  
-                        <li id="fee03"><a href="{% url 'collect_student_fee' %}">Collect Student Fee</a></li>                  
+                        <li><a href="{% url 'feestype_create' %}">Fees Type Create</a></li> 
+                        <li><a href="{% url 'feeplan_list' %}">Fees List</a></li>
+                        <li><a href="{% url 'feeplan_create' %}">Fees SetUp</a></li>                  
+                        <li><a href="{% url 'collect_student_fee' %}">Collect Student Fee</a></li>                  
                         <!-- <li><a href="{% url 'batch_list' %}">Batch</a></li>
                         <li><a href="{% url 'section_list' %}">Section</a></li> -->                        
                     </ul>
@@ -86,9 +87,11 @@
                     </a>
                     <ul class="sub">
                         <li><a href="/semestar/">Semestar</a></li>
+                        <li><a href="{% url 'section_list' %}">Section</a></li>   
                         <li><a href="/subject/">Subject</a></li>
                         <li><a href="/subject_teacher/">Assign Subject</a></li>
                         <li><a href="/student_section_list/">Section Student</a></li>
+                             
                     </ul>
                 </li>
                 <li class="sub-menu">

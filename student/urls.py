@@ -10,7 +10,7 @@ urlpatterns=[
     #path('studentadmissionform/',views.studentregister,name='studentadmissionform'),
     path('studentadmissionform/',views.StudentCreateView.as_view(),name='studentadmissionform'),
     path('ajax/load-branch',views.load_branches,name='ajax_load_branch'),
-    path('student-list',login_required(views.StudentListView.as_view(),login_url='/login'),name='student_list'),
+    path('student-list',login_required(views.StudentListViewFun,login_url='/login'),name='student_list'),
     path('student_detail/<int:pk>/',views.StudentDetailView.as_view(),name='student_detail'),
     path('student_update/<int:pk>/',views.StudentUpdateView.as_view(),name='student_update'),
     path('student_delete/<int:pk>/',login_required(views.StudentDeleteView.as_view(),login_url='/login'),name='student_delete'),
@@ -29,4 +29,6 @@ urlpatterns=[
     path('reject_academic/', views.reject_academic, name='reject_academic'),
     path('student_enroll_list/', views.Enroll_StudentList.as_view(), name='student_enroll_list'),
     path('addstudentuser/<int:pk>/', views.addstudentuser, name="addstudentuser"),
+    path('enrollstudentlistview/', views.enrollstudentlistview, name="enrollstudentlistview"),
+    path('payment_view/<int:id>', views.invoice, name="paymentview"),
 ]

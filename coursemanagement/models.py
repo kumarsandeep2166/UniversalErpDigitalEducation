@@ -44,7 +44,6 @@ class Course(models.Model):
     total_seats=models.IntegerField()
     approved_date=models.DateField()
     exam_pattern=models.CharField(max_length=3,choices=Exam_choices,default='SEMESTER')
-
     affiliated_body=models.CharField(max_length=30)
     syllabus=models.FileField(blank=False)
     remark=models.TextField()

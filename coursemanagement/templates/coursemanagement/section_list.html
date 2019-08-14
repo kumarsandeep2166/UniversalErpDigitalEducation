@@ -24,8 +24,7 @@
                                         <th>Batch No</th>
                                         <th>Semestar</th>
                                         <th>Section Name</th>                                        
-                                        <th>Remark</th>
-                                       
+                                        <th>Remark</th>                                       
                                         <th>Action</th>
                                         
                                     </tr>
@@ -40,7 +39,12 @@
                                         <td>{{i.semestar}}</td>
                                         <td>{{i.section_name}}</td>                                        
                                         <td>{{i.remark}}</td>                                        
-                                        <td><a href="{% url 'section_edit' pk=i.pk %}">Edit</a>||<a href="{% url 'section_delete' pk=i.pk %}">Delete</a></td>
+                                        <td width="150"><a href="{% url 'section_edit' pk=i.pk %}" class="btn btn-info btn-xs smnu">Edit</a> <form method="post" action="{% url 'section_delete' pk=i.pk %}" enctype="multipart/form-data" >
+                                                {% csrf_token %}                                               
+                                                <button type="submit" value="Submit" class="btn btn-danger btn-xs smnu" onclick="return confirm('Are you sure to delete {{ object }}?');">
+                                                    Delete
+                                                </button>
+                                            </form></td>
                                        
                                 </tr>
                                 {% endfor %}

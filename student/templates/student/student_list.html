@@ -14,7 +14,11 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 <section id="main-content">
     <div class="wrapper">
-           {% include 'student/filter.html' %}
+            <header class="panel-heading clearfix col-sm-12">
+                <div class="col-sm-4 col-xs-12">
+                    Student Admission Details
+                </div>
+            </header>          
         <div class="row">
                 <div class="panel-body" style="overflow-x:auto;">
                         <table class="table table-bordered table-striped table-condensed" id="table_student">
@@ -30,11 +34,13 @@
                                     <th>Aadhar Number</th>
                                     <th>Gender</th>                                   
                                     <th>Fee Plan</th>                                   
+                                    <th>Approve Plan</th>                                   
+                                    <th>Enroll</th>                                   
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for stud in object_list %}
+                                {% for stud in queryset %}
                                 <tr>
                                         <td>{{stud.id}}</td>
                                         <td><a href="{{ stud.get_absolute_url }}">{{stud.first_name}}{{stud.middle_name}}{{stud.last_name}}</a></td>
@@ -44,10 +50,25 @@
                                         <td>{{stud.sub_caste}}</td>
                                         <td>{{stud.place_of_birth}}</td>
                                         <td>{{stud.aadhar_number}}</td>
-                                        <td>{{stud.gender}}</td>      
-                                        <td><a href="/plancollection/{{stud.id}}">Plan Fees</a><br><br><a href="/approvecollection/{{stud.id}}">Approve Fee</a></td>      
+                                        <td>{{stud.gender}}</td>  
+                                        {% ifequal stud.fee_status 3 %}
+                                            <td>Planned</td>
+                                            <td>Approved</td>
+                                            <td>Enrolled</td>
+                                        {% else %}
+                                            {% ifequal stud.fee_status 2 %}
+                                                <td>Planned</td>
+                                                <td>Approved</td>
+                                                <td><a href="/fee/collect_fee/{{stud.id}}">Enroll</a></td>
+                                            {% else %}
+                                                <td><a href="/plancollection/{{stud.id}}">Plan Fee</a></td>
+                                                <td><a href="/approvecollection/{{stud.id}}">Approve Fee</a></td>
+                                                <td>Not Planned</td>
+                                            {% endifequal %}
+                                        {% endifequal %}
+                                        
                                     
-                                    <td>
+                                    <td width="150">
                                         <a href="{% url 'student_detail' pk=stud.id %}" class="social-icon">
                                             <i class="fa fa-eye vieww"></i>
                                             <div class="tooltip">View</div>
@@ -56,16 +77,18 @@
                                             <i class="fa fa-pencil editt"></i>
                                             <div class="tooltip">Edit</div>
                                         </a>
-                                        <a href="{% url 'student_delete' pk=stud.id %}" class="social-icon" id="delete">
-                                            <i class="fa fa-trash-o deletee"></i>
-                                            <div class="tooltip">Delete</div>
-                                        </a>
-
+                                        
+                                        <form method="post" action="{% url 'student_delete' pk=stud.id  %}" enctype="multipart/form-data" >
+                                            {% csrf_token %}                        
+                                            <button type="submit"  class="social-icon"  id="delete" onclick="return confirm('Are you sure to delete {{ stud }}?');">
+                                                    <i class="fa fa-trash-o deletee"></i>  
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% empty %}
                                 <div class="container-fluid">
-                                  <h3>No Posts Found having search query "{{ request.GET.q }}"</h3>
+                                  <h3>No Posts Found having search query "{{ request.POST.q }}"</h3>
                                 </div>
                                 {% endfor %}
                             </tbody>
@@ -93,11 +116,7 @@
     $(document).ready(function(){
         $("#table_student").dataTable();
             });
-   $(document).ready(function(event){
-    $('#delete').click(function(){
-        return confirm( "Are you sure to delete This");
-    });
-   });
+  
 </script>
 
 {% endblock content %}

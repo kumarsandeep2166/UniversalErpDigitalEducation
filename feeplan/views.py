@@ -5,7 +5,6 @@ from .forms import FeesPlanTypeForm
 from coursemanagement.models import Stream, Course, Batch
 from django.db.models import Q
 from student.models import Enrollment, Student
-from coursemanagement.models import Course, Batch, Stream
 import datetime
 import calendar
 import json
@@ -142,7 +141,8 @@ class FeePlanCreate(View):
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
             
-        context={ 'stud_obj':stud_obj.pk,
+        context={ 'stud_id':stud_obj.pk,
+                    'stud_obj':stud_obj,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
@@ -270,7 +270,8 @@ class FeePlanCreate(View):
             feetype_dic['default_installment'] = feeplan_obj.default_installment
             feetype_list.append(feetype_dic)
             return redirect('/')
-        context={ 'stud_obj':stud_obj.pk,
+        context={   'stud_id':stud_obj.pk,
+                    'stud_obj':stud_obj,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
@@ -285,7 +286,7 @@ def add_note(request):
         student_id = request.POST.get('student_id')
         note = request.POST.get('note')
         note_type = request.POST.get('note_type')
-        username = request.session['username']
+        username = request.user.username
         user_obj = User.objects.get(username=username)
         student_obj = Student.objects.get(pk=student_id)
         note_obj = Note()
@@ -379,7 +380,8 @@ class FeePlanApprove(View):
                
                 feetype_list.append(feetype_dic)
         print(feetype_list)
-        context={ 'stud_obj':stud_obj.pk,
+        context={ 'stud_id':stud_obj.pk,
+                    'stud_obj':stud_obj,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
@@ -467,7 +469,8 @@ class FeePlanApprove(View):
 
                 feetype_list.append(feetype_dic)
         
-        context={ 'stud_obj':stud_obj.pk,
+        context={  'stud_id':stud_obj.pk,
+                    'stud_obj':stud_obj,
                     'course_name':course_name,
                     'batch_no': batch_no,
                     'feetype_list':feetype_list,
@@ -614,6 +617,8 @@ def collectfeesave(request):
                 enrl_no = stream_abb + "/" + course_abb + "/" + batch_abb + "/" + sr_num
                 enrl_obj.enrollment_number = enrl_no
                 enrl_obj.save()
+                stud_obj.fee_status=3
+                stud_obj.save()
     else:
         pass
     return redirect('/fee/collect_fee/'+student_id+"/")
@@ -667,11 +672,11 @@ def get_remaning_fee_list(request):
 
 
 def collect_student_fee(request):    
-    return render(request,'feeplan/collect_fee.html')
+    return render(request,'feeplan/collect_fee_main.html')
 
 def pay_by_id(request):
     pay_id = request.POST.get('pay_id')
-    pay_amount = request.POST.get('pay_amount')
+    pay_amount = float(request.POST.get('pay_amount'))
     fee_obj = FeeCollect.objects.get(pk=pay_id)
     previous_amt = fee_obj.amount_paid
     total_pay_amt = float(pay_amount) + float(previous_amt)
@@ -692,3 +697,18 @@ def pay_by_id(request):
             "msg": "Successfull"
             }
         return HttpResponse(json.dumps(to_json), 'application/json')
+
+
+def moneyreceipt(request):
+    return render(request,'student/payment_option.html',{'id':id})
+
+def viewfeedetails(request,id):
+    enr_no = Enrollment.objects.get(id=id)
+    feesc = FeeCollect.objects.filter(student=id)
+    return render(request,'feeplan/payment_option.html',{'enr_no':enr_no,'feesc':feesc})
+
+def viewfeedetailsdetail(request,id):
+    enr_no = Enrollment.objects.get(id=id)
+    feesc = ApproveFeeplanType.objects.filter(student=id)
+    feeplan = FeeCollect.objects.filter(student=id)
+    return render(request,'feeplan/invoice_detail.html',{'enr_no':enr_no,'feesc':feesc,'feeplan':feeplan})

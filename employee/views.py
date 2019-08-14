@@ -69,9 +69,16 @@ def addemployeeuser(request, pk):
         username = employee_obj.email,
         email = employee_obj.email,
         password = 'runexe@123'
-    )    
+    )
+    emp_objs = Employee.objects.all().order_by('-employee_id')
+    if len(emp_objs):
+        emp_id = int(emp_objs[0].employee_id)
+        emp_id = emp_id+1
+    else:
+        emp_id = 1
     user_obj_type = Usertype.objects.create(userprofile=user_obj)
     employee_obj.user_id = user_obj
+    employee_obj.employee_id = emp_id
     employee_obj.save()
     return redirect('/employee/detail/'+str(pk))
     

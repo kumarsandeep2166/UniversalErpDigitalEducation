@@ -23,7 +23,7 @@
                                 Section
                             </h1>
                         </div>
-                        <form role="form" class="frmbgg" action="#" method="POST" id="mysectionForm"  data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-section-url="{% url 'ajax_load_section' %}">
+                        <form role="form" class="frmbgg" action="#" method="POST" id="mysectionForm"  data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}" data-section-url="{% url 'ajax_load_section' %}">
                             {% csrf_token %}
                             <div class="row">
                                 <div class="col-sm-12">
@@ -97,23 +97,36 @@ $("#id_stream").change(function(event){
         }
         });
 
-
+    });
     $("#id_batch").change(function(event){
         var batch_id=$(this).val();
         course=$("#id_course").val();
         stream_id=$("#id_stream").val();
-    $.ajax({
-        url:'/ajax_load_sem/',
-        data:{
-        'batch_id':batch_id,
-        'course':course,
-        'stream_id':stream_id,
-        },
-        success:function(data){
-                $("#id_semestar").html(data);
-             }
+        $.ajax({
+            url:'/ajax_load_sem/',
+            data:{
+            'batch_id':batch_id,
+            'course':course,
+            'stream_id':stream_id,
+            },
+            success:function(data){
+                    $("#id_semestar").html(data);
+                }
+            });
         });
-    });
-});
+    // $("#id_semestar").change(function(){
+    //     var url=$("#lessonPlan").attr("data-subject-url");
+    //     var semestar_id =$(this).val();
+    //     $.ajax({
+    //         url:'/ajax_load_sem/',
+    //         data:{
+    //             'semestar_id': semestar_id,
+    //         },
+    //         success:function(data){
+    //             $("#id_section_name").html(data);
+    //         }
+    //     });
+    // });
+
 </script>
 {% endblock content %}

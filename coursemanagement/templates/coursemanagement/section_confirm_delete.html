@@ -32,11 +32,13 @@
          }
     </style>
 <section> 
-        <div class="deletebaackgroundbg">
-            <form method="post" enctype="multipart/form-data">
+        <div class="deletebaackgroundbg" >
+            <form method="post" action="{% url 'section_delete' pk=i.pk %}" enctype="multipart/form-data" >
                 {% csrf_token %}
-                Are you sure you want to delete "{{ object }}" ?
-                <input type="submit" value="Submit" class="btmnhk"  />
+               
+                <button type="submit" value="Submit" class="btn btn-default btn-sm" onclick="return confirm('Are you sure to delete {{ object }}?');">
+                    Submit
+                </button>
             </form>
         </div>
 </section>

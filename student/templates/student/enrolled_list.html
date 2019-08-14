@@ -14,48 +14,51 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 <section id="main-content">
     <div class="wrapper">
-            <header class="panel-heading clearfix col-sm-12">
-                    <div class="col-sm-4 col-xs-12">
-                        Enrolled Student List
-                    </div>
-                </header>  
+           {% include 'student/filter.html' %}
         <div class="row">
                 <div class="panel-body" style="overflow-x:auto;">
                         <table class="table table-bordered table-striped table-condensed" id="table_student">
                             <thead>
                                 <tr class="hdclr">
                                     <th>Sl No.</th>
-                                    <th>Student Name</th>                                    
-                                    <th>Aadhar Number</th>                                   
-                                    <th>Department</th>  
-                                    <th>Course</th>  
-
-                                  
-                                    <th>Action</th>
+                                    <th>Student Name</th>
+                                    <th>Enrollment Number</th>
+                                    <th>Stream</th>
+                                    <th>Course</th>
+                                    <th>Batch</th>
+                                    <th>Date Of Admission</th>
+                                    <th>Fees Action</th>
+                                    <th>Fees Action Detail</th>
+                                    <!-- <th>Action</th> -->
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for stud in object_list %}
+                                {% for stud in enr_obj %}
                                 <tr>
                                         <td>{{stud.id}}</td>
-                                        <td><a href="{{ stud.get_absolute_url }}">{{stud.first_name}}{{stud.middle_name}}{{stud.last_name}}</a></td>
-                                        <td>{{stud.aadhar_number}}</td>
+                                        <td>{{stud.student_name}}</td>
+                                        <td>{{stud.enrollment_number}}</td>
                                         <td>{{stud.stream}}</td>
-                                        <td>{{stud.course}}</td>      
+                                        <td>{{stud.course}}</td>           
+                                        <td>{{stud.batch}}</td>           
+                                        <td>{{stud.date_of_admission}}</td>                                                                               
+                                        <td><a href="{% url 'viewfeedetails' id=stud.id %}">View Fees Details</a></td>
+                                        <td><a href="{% url 'viewfeedetailsdetail' id=stud.id %}">View Details</a></td>
                                     
-                                    <td>
-                                        <a href="{% url 'student_detail' pk=stud.id %}" class="social-icon">                                            
-                                                <i class="fa fa-eye editt" aria-hidden="true"></i><div class="tooltip">Enroll</div>
+                                    <!-- <td>
+                                        <a href="{% url 'student_detail' pk=stud.id %}" class="social-icon">
+                                            <i class="fa fa-eye vieww"></i>
+                                            <div class="tooltip">View</div>
                                         </a>
                                         <a href="{% url 'student_update' pk=stud.id %}" class="social-icon">
                                             <i class="fa fa-pencil editt"></i>
                                             <div class="tooltip">Edit</div>
                                         </a>
-                                        <a href="/fee/collect_fee/{{stud.id}}" class="social-icon">
-                                            <i class="fa fa-money editt"></i>
-                                            <div class="tooltip">Fees</div></a>
-
-                                    </td>
+                                        <a href="{% url 'student_delete' pk=stud.id %}" class="social-icon" id="delete">
+                                            <i class="fa fa-trash-o deletee"></i>
+                                            <div class="tooltip">Delete</div>
+                                        </a>
+                                    </td> -->
                                 </tr>
                                 {% empty %}
                                 <div class="container-fluid">
@@ -67,8 +70,7 @@
                 </div>
                   <!-- Modal -->
                   <!-- <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-                       
+                    <div class="modal-dialog">                       
                         <div class="modal-content">
                             <div class="modal-body">
                                 <p>Are you sure, you want to delete?</p>

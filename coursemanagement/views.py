@@ -56,10 +56,15 @@ class CourseCreateView(CreateView):
     @method_decorator(login_required(login_url='/login'))
     def post(self,request,*args,**kwargs):        
         form=CourseForm(request.POST or None,request.FILES or None)
-        if form.is_valid():
-            form.save()     
+        if form.is_valid(): 
+            course_name = request.POST.get('course_name')
+            try:
+                obj = Course.objects.get(course_name=course_name)
+
+            except:
+                form.save()
             return redirect('course_list')   
-        return render(request,'coursemanagement/course_form.html',{'form':form, 'username':username})
+        return render(request,'coursemanagement/course_form.html',{'form':form})
 
 class BatchCreateView(CreateView):
     model=Batch
@@ -79,15 +84,18 @@ class BatchCreateView(CreateView):
     def post(self,request,*args,**kwargs):        
         form=BatchForm(request.POST or None,request.FILES or None)
         if form.is_valid():
-            form.save()  
+            batch_no = request.POST.get('batch_no')
+            try:
+                obj = Batch.objects.get(batch_no=batch_no)
+            except:
+                form.save()
             return redirect('batch_list')      
         return render(request,'coursemanagement/batch_form.html',{'form':form})
 
 
 class SectionCreateView(CreateView):
     model=Section
-    form_class=SectionForm
-    print(SectionForm())
+    form_class=SectionForm    
     template_name='coursemanagement/section_form.html'
 
     def get_context_data(self,**kwargs):

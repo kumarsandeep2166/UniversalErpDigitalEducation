@@ -27,7 +27,7 @@
                                         <th>Approved Date</th>
                                         <th>Exam Pattern</th>
                                         <th>Approved Body</th>
-                                        <th>Syllabus</th>
+                                        
                                         <th>Remark</th>
                                         <th>Action</th>
                                         
@@ -45,21 +45,25 @@
                                         <td>{{i.approved_date}}</td>
                                         <td>{{i.exam_pattern}}</td>
                                         <td>{{i.affiliated_body}}</td>
-                                        <td>{{i.syllabus}}</td>
+                                       
                                         <td>{{i.remark}}</td>
-                                        <td>
-                                        <a href="{% url 'course_detail' pk=i.pk %}" class="social-icon">
+                                        <td width="150">
+                                        <a href="{% url 'course_detail' pk=i.pk %}" class="social-icon smnu">
                                                         <i class="fa fa-eye vieww"></i>
                                                         <div class="tooltip">View</div>
                                                     </a>
-                                                    <a href="{% url 'course_edit' pk=i.pk %}" class="social-icon">
+                                                    <a href="{% url 'course_edit' pk=i.pk %}" class="social-icon smnu">
                                                         <i class="fa fa-pencil editt"></i>
                                                         <div class="tooltip">Edit</div>
                                                     </a>
-                                                    <a href="{% url 'course_delete' pk=i.pk %}" class="social-icon" id="delete">
-                                                        <i class="fa fa-trash-o deletee"></i>
-                                                        <div class="tooltip">Delete</div>
-                                                    </a>
+                                                    
+                                                    <form method="post" action="{% url 'course_delete' pk=i.pk %}" enctype="multipart/form-data" >
+                                                        {% csrf_token %}                        
+                                                        <button type="submit"  class="social-icon smnu"  id="delete" onclick="return confirm('Are you sure to delete {{ i }}?');">
+                                                                <i class="fa fa-trash-o deletee"></i>  
+                                                        </button>
+                                                    </form>
+                                               
                                                 </td>
                                 </tr>
                                 {% endfor %}

@@ -10,12 +10,19 @@
                 color:#fff !important;
         }
 </style>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 <section id="main-content">
     <div class="wrapper">
-           {% include 'student/empfilter.html' %}
+        <header class="panel-heading clearfix col-sm-12">
+            <div class="col-sm-4 col-xs-12">
+                Employee Details
+            </div>
+        </header>
+           
         <div class="row">
                 <div class="panel-body" style="overflow-x:auto;">
-                        <table class="table table-bordered table-striped table-condensed">
+                        <table class="table table-bordered table-striped table-condensed" id="table_employee">
                             <thead>
                                 <tr class="hdclr">
                                     <th>Sl No.</th>
@@ -52,10 +59,13 @@
                                             <i class="fa fa-pencil editt"></i>
                                             <div class="tooltip">Edit</div>
                                         </a>
-                                        <a href="{% url 'employee_delete' pk=emp.id %}" class="social-icon" id="delete">
-                                            <i class="fa fa-trash-o deletee"></i>
-                                            <div class="tooltip">Delete</div>
-                                        </a>
+                                        
+                                        <form method="post" action="{% url 'employee_delete' pk=emp.id  %}" enctype="multipart/form-data" >
+                                            {% csrf_token %}                        
+                                            <button type="submit"  class="social-icon"  style="margin-left: 4px;"  id="delete" onclick="return confirm('Are you sure to delete {{ emp }}?');">
+                                                    <i class="fa fa-trash-o deletee"></i>  
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -91,6 +101,9 @@
     </div>
 </section>
 <script>
+    $(document).ready(function(){
+        $("#table_employee").dataTable();
+            });
         $(document).ready(function(event){
          $('#delete').click(function(){
              return confirm( "Are you sure to delete This");

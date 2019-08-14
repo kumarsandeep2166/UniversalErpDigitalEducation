@@ -38,8 +38,11 @@
                 {% csrf_token %}
                 Are you sure you want to delete "{{ object }}" ?
             </div>
-                <input type="submit" value="Submit" class="btmnhk" />
+            <button type="submit" value="Submit" class="btn btn-default btn-sm" onclick="return confirm('Are you sure to delete {{ object }}?');">
+                Submit
+            </button>
         </form>
+        
     </div>
 </section>
 
