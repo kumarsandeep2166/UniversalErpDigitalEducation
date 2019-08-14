@@ -1,7 +1,7 @@
 {% extends 'student/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
-<link href="{% static 'css/js-timepicker.css' %}" rel="stylesheet" />
+<link href="{% static 'css/bootstrap-timepicker.css' %}" rel="stylesheet" />
 {% block content %}
 <style>
         .clk {
@@ -44,7 +44,7 @@
                     Class Timings
                 </h1>
             </div>
-            <form class="frmbgg clear-fx" action="." method="post"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}"  data-subject-url="{% url 'ajax_load_subject' %}">
+            <form class="frmbgg clear-fx"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}"  data-subject-url="{% url 'ajax_load_subject' %}">
                 <div class="row">
                 {% csrf_token %}
                 <div class="form-group col-sm-4 col-xs-12">
@@ -78,50 +78,50 @@
                                 <td>Monday</td>
                                 <td><input type="time" name="intime1" id="intime1"></td>
                                 <td><input type="time" name="outtime1" id="outtime1"></td>
-                                <td><input type="number" name="class1" id="class1"></td>
-                                <td><input type="number" name="break1" id="break1"></td>
+                                <td><input type="number" name="class1" id="class1" value="0"></td>
+                                <td><input type="number" name="break1" id="break1" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Tuesday</td>
                                 <td><input type="time" name="intime2" id="intime2"></td>
                                 <td><input type="time" name="outtime2" id="outtime2"></td>
-                                <td><input type="number" name="class2" id="class2"></td>
-                                <td><input type="number" name="break2" id="break2"></td>
+                                <td><input type="number" name="class2" id="class2" value="0"></td>
+                                <td><input type="number" name="break2" id="break2" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Wednesday</td>
                                 <td><input type="time" name="intime3" id="intime3"></td>
                                 <td><input type="time" name="outtime3" id="outtime3"></td>
-                                <td><input type="number" name="class3" id="class3"></td>
-                                <td><input type="number" name="break3" id="break3"></td>
+                                <td><input type="number" name="class3" id="class3" value="0"></td>
+                                <td><input type="number" name="break3" id="break3" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Thursday</td>
                                 <td><input type="time" name="intime4" id="intime4"></td>
                                 <td><input type="time" name="outtime4" id="outtime4"></td>
-                                <td><input type="number" name="class4" id="class4"></td>
-                                <td><input type="number" name="break4" id="break4"></td>
+                                <td><input type="number" name="class4" id="class4" value="0"></td>
+                                <td><input type="number" name="break4" id="break4" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Friday</td>
                                 <td><input type="time" name="intime5" id="intime5"></td>
                                 <td><input type="time" name="outtime5" id="outtime5"></td>
-                                <td><input type="number" name="class5" id="class5"></td>
-                                <td><input type="number" name="break5" id="break5"></td>
+                                <td><input type="number" name="class5" id="class5" value="0"></td>
+                                <td><input type="number" name="break5" id="break5" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Saturday</td>
                                 <td><input type="time" name="intime6" id="intime6"></td>
                                 <td><input type="time" name="outtime6" id="outtime6"></td>
-                                <td><input type="number" name="class6" id="class6"></td>
-                                <td><input type="number" name="break6" id="break6"></td>
+                                <td><input type="number" name="class6" id="class6" value="0"></td>
+                                <td><input type="number" name="break6" id="break6" value="0"></td>
                             </tr>
                             <tr>
                                 <td>Sunday</td>
                                 <td><input type="time" name="intime7" id="intime7"></td>
                                 <td><input type="time" name="outtime7" id="outtime7"></td>
-                                <td><input type="number" name="class7" id="class7"></td>
-                                <td><input type="number" name="break7" id="break7"></td>
+                                <td><input type="number" name="class7" id="class7" value="0"></td>
+                                <td><input type="number" name="break7" id="break7" value="0"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -133,7 +133,7 @@
         </div>
         
     </div>
-    <div class="row">
+    <div class="row" id="time_table_div" style="display: none;">
             <div class="col-lg-12">
                 <div class="panel">
                     <header class="panel-heading clearfix col-sm-12">
@@ -142,120 +142,25 @@
                         </div>
                     </header>
                     <div class="panel-body" style="overflow-x:auto;">
-                        <table class="table table-bordered table-striped table-condensed">
+                        <table class="table table-bordered table-striped table-condensed" id="timetable_table">
                             <thead>
-                                <tr class="hdclr">
-                                    <th width="10%">Day</th>
-                                    <th>Class1</th>
-                                    <th>Class2</th>
-                                    <th>Class3</th>
-                                    <th>Class4</th>
-                                </tr>
+                
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="daybg">Monday</td>
-                                    <td>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div> 
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-sm-12 col-xs-12 mn10">
-                                            <select class="form-control">
-                                                <option value="">----Select Teacher----</option>
-                                                <option value="Department1">Teacher1</option>
-                                                <option value="Department2">Teacher2</option>
-                                                <option value="Department3">Teacher3</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-sm-12 col-xs-12 mn10">
-                                            <select class="form-control">
-                                                <option value="">----Select Teacher----</option>
-                                                <option value="Department1">Teacher1</option>
-                                                <option value="Department2">Teacher2</option>
-                                                <option value="Department3">Teacher3</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-sm-12 col-xs-12 mn10">
-                                            <select class="form-control">
-                                                <option value="">----Select Teacher----</option>
-                                                <option value="Department1">Teacher1</option>
-                                                <option value="Department2">Teacher2</option>
-                                                <option value="Department3">Teacher3</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-12 col-xs-12 tmop">
-                                            <div class="input-group bootstrap-timepicker timepicker">
-                                                <input type="text" class="form-control input-small timepicker1">
-                                                <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-sm-12 col-xs-12 mn10">
-                                            <select class="form-control">
-                                                <option value="">----Select Teacher----</option>
-                                                <option value="Department1">Teacher1</option>
-                                                <option value="Department2">Teacher2</option>
-                                                <option value="Department3">Teacher3</option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-           
+        
 </section>
 <script src="{% static 'js/bootstrap-timepicker.js' %}"></script>
 
 <script type="text/javascript">
-    $('.timepicker1').timepicker();
+    
+    
     $("#id_stream").change(function(){
         var url=$("#assignSubjectTeacherForm").attr("data-course-url");
         var stream_id=$(this).val();
@@ -334,8 +239,133 @@
 
     $("#class_time_submit").on("click", function(e){
         e.preventDefault();
+        $("#time_table_div").show();
+        
+        table_str = "";
+        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
+        var day_class = new Array(7);
+        var maxi = 0;
+        for(var i=1; i<8; i++){
+            var class_div = "#class"+i;
+            var break_div = "#break"+i;
+            var class_count = parseInt($(class_div).val());
+            var break_count = parseInt($(break_div).val());
+            if(class_count>0){
+                var total_count = class_count + break_count;
+                if(total_count > maxi){
+                    maxi = total_count;
+                }
+                day_class[i-0] = total_count
+            } else {
+                day_class[i-0] = 0;
+            }
+        }
+        //var maxi = Math.max.apply(Math, day_class);
+        console.log(maxi);
+        thead_str  = '<tr class="hdclr"><th width="10%">Day</th>';
+        for(i=1;i<=maxi;i++){
+            thead_str += '<th>Class'+i+'</th>';
+        }
+        thead_str += '</tr>';
+        for(var i=1; i<8; i++){
+            var class_div = "#class"+i;
+            var break_div = "#break"+i;
+            var class_count = parseInt($(class_div).val());
+            var break_count = parseInt($(break_div).val());
+            if(class_count>0){
+                var starttimeId = "#intime"+i;
+                var endtimeId = "#outtime"+i;
+                var starttime = $(starttimeId).val();
+                var endtime = $(endtimeId).val();
+                var total_count = class_count + break_count;
+                var tr_str = "<tr><td>"+ day_of_week[i-1] +"</td>";
+                for(var j=0; j<total_count; j++){
+                    tr_str += '<td>';
+                    tr_str += '<div class="col-sm-12 col-xs-12 tmop">';
+                    tr_str += '<div class="input-group bootstrap-timepicker timepicker">';
+                    if(j==0){
+                        tr_str += '<input type="text" class="form-control input-small timepicker1" id="ttst'+day_of_week[i-1]+j+'" value="'+starttime+'">';
+                    } else {
+                        tr_str += '<input type="text" class="form-control input-small timepicker1" id="ttst'+day_of_week[i-1]+j+'">';
+                    }
+                    tr_str += '<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>';
+                    tr_str += '</div>';
+                    tr_str += '</div>';
+                    tr_str += '<div class="col-sm-12 col-xs-12 tmop">';
+                    tr_str += '<div class="input-group bootstrap-timepicker timepicker">';
+                    if(j==(total_count-1)){
+                        tr_str += '<input type="text" class="form-control input-small timepicker1" id="ttet'+day_of_week[i-1]+j+'" value="'+endtime+'">';
+                    } else {
+                        tr_str += '<input type="text" class="form-control input-small timepicker1" id="ttet'+day_of_week[i-1]+j+'">';
+                    }
+                    tr_str += '<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>';
+                    tr_str += '</div>';
+                    tr_str += '</div>';
+                    tr_str += '<div class="form-group col-sm-12 col-xs-12 mn10">';
+                    tr_str += '<select class="form-control subject_dropdown" id="ttts'+day_of_week[i-1]+j+'"  onchange="load_available_subject(this)">';
+                    tr_str += '</select>';
+                    tr_str += '</div>';
+                    tr_str += '</td>';
+                }
+                for(; j<maxi; j++){
+                    tr_str += "<td></td>";
+                }
+                tr_str += "</tr>";
+                table_str += tr_str;
+            } 
+        }
+        $("#timetable_table thead").html(thead_str);
+        $("#timetable_table tbody").html(table_str);
+        $('.timepicker1').timepicker();
+        var semestar_id = $("#id_semestar").val();
+        $.ajax({
+            url:'/load_subject_available/',
+            data:{
+                'semestar_id': semestar_id,
+            },
+            success:function(data){
+                $(".subject_dropdown").html(data);
+            }
+        });
     });
-    
+    function load_available_subject(obj){
+        var subject_id = $(obj).attr('id');
+        var new_id = subject_id.replace('ttts','');
+        var day = new_id.replace(/[^A-Za-z]+/ig,"");
+        var j = new_id.replace(/[^0-9]+/ig,"");
+        var start_id = "#ttst"+day+j;
+        var end_id = "#ttet"+day+j;
+        var start_time = $(start_id).val();
+        console.log(start_time);
+        var end_time = $(end_id).val();
+        console.log(end_time);
+        var subject_teacher =$(obj).val();
+        if(subject_teacher){
+            $.ajax({
+                url:'/check_teacher_available/',
+                data:{
+                    'start_time':start_time,
+                    'end_time': end_time,
+                    'subject_teacher': subject_teacher,
+                    'day': day,
+                },
+                success:function(data){
+                    if(data.msg=="available"){
+
+                    } else if(data.merge=="merge"){
+                        if(cnf_msg = confirm("want to merge class")){
+                            console.log("hi");
+                        }else {
+                            $(obj).val("");
+                        }
+                    } else {
+                        alert("teacher is not available at this time")
+                        $(obj).val("");
+                    }
+                }
+            });
+        }
+    }
 </script> 
 
 

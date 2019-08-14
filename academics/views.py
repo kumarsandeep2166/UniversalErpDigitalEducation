@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import ListView,CreateView,UpdateView,DeleteView,DetailView, View
-from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance, Section, SubjectProgerssReport, StudentSection
+from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance, Section, SubjectProgerssReport, StudentSection, TeacherTimeTable
 from .forms import SemestarForm, SubjectForm, SubjectTeacherForm, LessonPlanForm, AttendanceForm, StudentSectionForm,ClassTimingsForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy,reverse
@@ -12,6 +12,7 @@ from django.db import connection
 import json
 from coursemanagement.models import Stream
 import datetime
+from django.db.models import Q
 
 
 class SemestarCreateView(CreateView):
@@ -372,3 +373,49 @@ def class_timing_setting(request):
 
 def timetablecreate(request):
     return render(request, 'student/timetable.html',{})
+
+
+def load_subject_available(request):
+    semestar_id = request.GET.get('semestar_id')
+    section_list = list(Section.objects.values_list('pk').filter(semestar=semestar_id))
+    subject_objs = SubjectTeacher.objects.filter(section__in=section_list)
+    print(len(subject_objs))
+    return render(request, 'academics/load_subject_available.html',{"subject_objs": subject_objs})
+
+
+def check_teacher_available(request):
+    start_time = request.GET.get('start_time')
+    start_time = datetime.datetime.strptime(start_time, "%H:%M %p")
+    start_time = datetime.datetime.strftime(start_time, "%H:%M")
+    end_time = request.GET.get('end_time')
+    end_time = datetime.datetime.strptime(end_time, "%H:%M %p")
+    end_time = datetime.datetime.strftime(end_time, "%H:%M")
+    subject_teacher = request.GET.get('subject_teacher')
+    day = request.GET.get('day')
+    print(start_time, end_time, subject_teacher, day)
+    try:
+        obj = SubjectTeacher.objects.get(pk=subject_teacher)
+        teacher_id = obj.teacher.pk
+        teacher_id_list = list(SubjectTeacher.objects.values_list('pk').filter(teacher=teacher_id))
+        query = Q(start_time__lte=start_time, end_time__gte=end_time)
+        teacher_obj = TeacherTimeTable.objects.filter(
+            subjects__in=teacher_id_list,
+            day_of_week=day).filter(
+            Q(start_time__lte=start_time, end_time__gte=start_time) 
+            | Q(start_time__lte=end_time, end_time__gte=end_time) 
+            | Q(start_time__gte=start_time, start_time__lte=end_time)
+            )
+        if len(teacher_obj):
+            t_time_table = TeacherTimeTable.objects.filter(
+                subjects__in=teacher_id_list,
+                day_of_week=day, start_time=start_time, end_time=end_time)
+            if len(t_time_table):
+                attendance_json = json.dumps({'msg': "not available do you want to merge", "merge": "merge"})
+            else:
+                attendance_json = json.dumps({'msg': "not available", "merge": ""})
+        else:
+            attendance_json = json.dumps({'msg': "available", "merge": ""})
+    except Exception as e:
+        print(e)
+        attendance_json = json.dumps({'msg': "available", "merge": ""})
+    return HttpResponse(attendance_json, 'application/json')
