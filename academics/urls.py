@@ -25,4 +25,7 @@ urlpatterns=[
     path('student_section_list/',views.student_section_list, name="student_section_list"),
     path('class_timing_setting/',views.class_timing_setting, name="class_timing_setting"),
     path('timetablecreate/',views.timetablecreate, name="timetablecreate"),
+    path('load_subject_available/', views.load_subject_available, name="load_subject_available"),
+    path('check_teacher_available/', views.check_teacher_available, name="check_teacher_available"),
+
 ]

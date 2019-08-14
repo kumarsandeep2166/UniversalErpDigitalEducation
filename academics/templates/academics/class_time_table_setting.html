@@ -160,6 +160,7 @@
 
 <script type="text/javascript">
     
+    
     $("#id_stream").change(function(){
         var url=$("#assignSubjectTeacherForm").attr("data-course-url");
         var stream_id=$(this).val();
@@ -241,7 +242,7 @@
         $("#time_table_div").show();
         
         table_str = "";
-        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"]
+        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
         var day_class = new Array(7);
         var maxi = 0;
         for(var i=1; i<8; i++){
@@ -301,11 +302,7 @@
                     tr_str += '</div>';
                     tr_str += '</div>';
                     tr_str += '<div class="form-group col-sm-12 col-xs-12 mn10">';
-                    tr_str += '<select class="form-control" id="ttts'+day_of_week[i-1]+j+'">';
-                    tr_str += '<option value="">----Select Teacher----</option>';
-                    tr_str += '<option value="Department1">Teacher1</option>';
-                    tr_str += '<option value="Department2">Teacher2</option>';
-                    tr_str += '<option value="Department3">Teacher3</option>';
+                    tr_str += '<select class="form-control subject_dropdown" id="ttts'+day_of_week[i-1]+j+'"  onchange="load_available_subject(this)">';
                     tr_str += '</select>';
                     tr_str += '</div>';
                     tr_str += '</td>';
@@ -320,8 +317,55 @@
         $("#timetable_table thead").html(thead_str);
         $("#timetable_table tbody").html(table_str);
         $('.timepicker1').timepicker();
+        var semestar_id = $("#id_semestar").val();
+        $.ajax({
+            url:'/load_subject_available/',
+            data:{
+                'semestar_id': semestar_id,
+            },
+            success:function(data){
+                $(".subject_dropdown").html(data);
+            }
+        });
     });
-    
+    function load_available_subject(obj){
+        var subject_id = $(obj).attr('id');
+        var new_id = subject_id.replace('ttts','');
+        var day = new_id.replace(/[^A-Za-z]+/ig,"");
+        var j = new_id.replace(/[^0-9]+/ig,"");
+        var start_id = "#ttst"+day+j;
+        var end_id = "#ttet"+day+j;
+        var start_time = $(start_id).val();
+        console.log(start_time);
+        var end_time = $(end_id).val();
+        console.log(end_time);
+        var subject_teacher =$(obj).val();
+        if(subject_teacher){
+            $.ajax({
+                url:'/check_teacher_available/',
+                data:{
+                    'start_time':start_time,
+                    'end_time': end_time,
+                    'subject_teacher': subject_teacher,
+                    'day': day,
+                },
+                success:function(data){
+                    if(data.msg=="available"){
+
+                    } else if(data.merge=="merge"){
+                        if(cnf_msg = confirm("want to merge class")){
+                            console.log("hi");
+                        }else {
+                            $(obj).val("");
+                        }
+                    } else {
+                        alert("teacher is not available at this time")
+                        $(obj).val("");
+                    }
+                }
+            });
+        }
+    }
 </script> 
 
 
