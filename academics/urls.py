@@ -29,5 +29,10 @@ urlpatterns=[
     path('check_teacher_available/', views.check_teacher_available, name="check_teacher_available"),
     path('student_section_assign/', views.student_section_assign, name="student_section_assign"),
     path('student_section_assign_ajax/', views.student_section_assign_ajax, name="student_section_assign_ajax"),
-    path('save_section_student/', views.save_section_student, name="save_section_student"),    
+    path('save_section_student/', views.save_section_student, name="save_section_student"),
+    path('save_time_table/', views.save_time_table, name="save_time_table"), 
+    path('student_time_table_view/', views.student_time_table_view, name="student_time_table_view"),  
+    path('student_time_table_load/', views.student_time_table_load, name="student_time_table_load"),   
+    path('teacher_time_table_view/', views.teacher_time_table_view, name="teacher_time_table_view"),
+    path('teacher_time_table_load/', views.teacher_time_table_load, name="teacher_time_table_load"),
 ]

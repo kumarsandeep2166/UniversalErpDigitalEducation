@@ -150,6 +150,7 @@
                                 
                             </tbody>
                         </table>
+                        <button onclick="saveTimeTable()">Save</button>
                     </div>
                 </div>
             </div>
@@ -340,7 +341,7 @@
         var end_time = $(end_id).val();
         console.log(end_time);
         var subject_teacher =$(obj).val();
-        if(subject_teacher){
+        if(subject_teacher>0){
             $.ajax({
                 url:'/check_teacher_available/',
                 data:{
@@ -366,6 +367,71 @@
             });
         }
     }
+    function saveTimeTable(){
+        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
+        var day_class = new Array(7);
+        var maxi = 0;
+        var dataArray = new Array();
+        for(var i=1; i<8; i++){
+            var class_div = "#class"+i;
+            var break_div = "#break"+i;
+            var class_count = parseInt($(class_div).val());
+            var break_count = parseInt($(break_div).val());
+            if(class_count>0){
+                var total_count = class_count + break_count;
+                day_class[i-0] = total_count
+            } else {
+                day_class[i-0] = 0;
+            }
+        }
+        for(var i=1; i<8; i++){
+            if(day_class[i]>0){
+                for(j=0;j<day_class[i];j++){
+                    var start_time_id = '#ttst'+day_of_week[i-1]+j;
+                    var end_time_id = '#ttet'+day_of_week[i-1]+j;
+                    var subject_teacher_id = '#ttts'+day_of_week[i-1]+j;
+                    dict = {
+                        "day":day_of_week[i-1],
+                        "start_time": $(start_time_id).val(),
+                        "end_time": $(end_time_id).val(),
+                        "subject_id": $(subject_teacher_id).val(),
+                    }
+                    dataArray.push(dict);
+                }
+            }
+        }
+        $.ajax({
+            url:'/save_time_table/',
+            type: "POST",
+            data:{
+                'dataArray':dataArray,
+                'total': dataArray.length,
+                'section': $("#id_section").val(),
+                },
+            success:function(data){
+                alert("Time table saved successfully!!!")
+            }
+        });
+    }
+    function getCookie(c_name) {
+        if (document.cookie.length > 0)
+        {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1)
+            {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) c_end = document.cookie.length;
+                return unescape(document.cookie.substring(c_start,c_end));
+            }
+        }
+        return "";
+    }
+    $(function(){
+        $.ajaxSetup({
+            headers:{"X-CSRFToken":getCookie('csrftoken')}
+        });
+    });
 </script> 
 
 
