@@ -12,6 +12,7 @@ from coursemanagement.models import Course, Stream, Batch
 from django.contrib.auth.models import User
 from user.models import Usertype
 
+
 def year_choices():
     return [(r,r) for r in range(1984, datetime.date.today().year+1)]
 def current_year():
@@ -101,11 +102,6 @@ class PathAndRename(object):
 #     signature=models.ImageField(upload_to=PathAndRename(image_path))
 #     def __str__(self):
 #         return "Images uploaded for:{}".format(self.student_image.name)
-
-
-
-
-
 
 class Student(models.Model):
     BLOOD_GROUP=(('A+ve','A+ve'),('A-ve','A-ve'),('B+ve','B+ve'),('B-ve','B-ve'),('AB+ve','AB+ve'),('AB-ve','AB-ve'),('O+ve','O+ve'),('O-ve','O-ve'))
@@ -252,7 +248,7 @@ class Enrollment(models.Model):
     batch=models.ForeignKey(Batch,on_delete=models.CASCADE,blank=True,null=True)     
     date_of_admission=models.DateField(blank=True,null=True,default="2019-09-06")   
     student_name=models.ForeignKey(Student,on_delete=models.CASCADE)
-
+    
     def __str__(self):
         return self.enrollment_number
 
@@ -414,7 +410,7 @@ class Employee(models.Model):
     status=models.BooleanField(default=True)
 
     def __str__(self):
-        return '{}-{}-{}'.format(self.first_name,self.middle_name,self.last_name)
+        return '{} {} {}'.format(self.first_name,self.middle_name,self.last_name)
     def get_absolute_url(self):
         return reverse('employee_detail', kwargs={
             'pk': self.pk

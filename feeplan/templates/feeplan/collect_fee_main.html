@@ -60,6 +60,8 @@
                                                 </tr> -->
                                             </tbody>
                                         </table>
+                                        <input type="hidden" id="tbody1_ids">
+                                        <button type="submit" id="tbody1submit" onclick="pay_multiple_amount(1);">Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -96,6 +98,8 @@
                                                 </tr> -->
                                             </tbody>
                                         </table>
+                                        <input type="hidden" id="tbody2_ids">
+                                        <button id="tbody2submit" onclick="pay_multiple_amount(2);">Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -120,8 +124,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="tbody3">
-                                                <!-- <tr>
-                                                    
+                                                <!-- <tr>                                                   
                                                     <td>xxxx</td>
                                                     <td>20.01.2019</td>
                                                     <td><span>Rs/-</span> 50.000</td>
@@ -132,12 +135,16 @@
                                                 </tr> -->
                                             </tbody>
                                         </table>
+                                        <input type="hidden" id="tbody3_ids">
+                                        <button type="submit" id="tbody3submit" onclick="pay_multiple_amount(3);">Submit</button>
                                     </div>
                                 </div>
                             </div>
                         </div> 
+                        
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -159,6 +166,8 @@
                     tableString = "<tr><td></td><td>No fee available.</td><td></td><td></td></tr>";
                 }
                 else {
+                    var j = 0;
+                    var ids = "";
                     for(var i in data.first_fee_list){
                         tableString += "<tr><td>" + data.first_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.first_fee_list[i].fee_amount + "</td>";
@@ -167,11 +176,18 @@
                         if(data.first_fee_list[i].fee_left>0){
                             tableString += "<td><input type='text' id='amount"+data.first_fee_list[i].fee_id+"'></td>";
                             tableString += "<td><a type='button' class='btn btn-info savepay' onclick='pay_amount("+data.first_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                            if(j==0){
+                                ids = data.first_fee_list[i].fee_id;
+                            } else {
+                                ids += "," + data.first_fee_list[i].fee_id;
+                            }
+                            j = j + 1;
                         } else {
                             tableString += "<td></td>";
                             tableString += "<td></tr>";
                         }
                     }
+                    $("#tbody1_ids").val(ids);
                 }
                 $("#tbody1").html(tableString);
                 tableString = "";
@@ -179,6 +195,8 @@
                     tableString = "<tr><td></td><td></td><td>No fee available.</td><td></td><td></td></tr>";
                 }
                 else {
+                    var j = 0;
+                    var ids = "";
                     for(var i in data.second_fee_list){
                         tableString += "<tr><td>" + data.second_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.second_fee_list[i].fee_amount + "</td>";
@@ -187,11 +205,18 @@
                         if(data.second_fee_list[i].fee_left>0){
                             tableString += "<td><input type='text' id='amount"+data.second_fee_list[i].fee_id+"'></td>";
                             tableString += "<td><a type='button' class='btn btn-info savepay' onclick='pay_amount("+data.second_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                            if(j==0){
+                                ids = data.second_fee_list[i].fee_id;
+                            } else {
+                                ids += "," + data.second_fee_list[i].fee_id;
+                            }
+                            j = j + 1;
                         } else {
                             tableString += "<td></td>";
                             tableString += "<td></tr>";
                         }
                     }
+                    $("#tbody2_ids").val(ids);
                 }
                 $("#tbody2").html(tableString);
                 tableString = "";
@@ -199,6 +224,8 @@
                     tableString = "<tr><td></td><td></td><td>No fee available.</td><td></td><td></td></tr>";
                 }
                 else {
+                    var j = 0;
+                    var ids = "";
                     for(var i in data.third_fee_list){
                         tableString += "<tr><td>" + data.third_fee_list[i].fee_type + "</td>";
                         tableString += "<td>" + data.third_fee_list[i].fee_amount + "</td>";
@@ -207,19 +234,25 @@
                         if(data.third_fee_list[i].fee_left>0){
                             tableString += "<td><input type='text' id='amount"+data.third_fee_list[i].fee_id+"'></td>";
                             tableString += "<td><a type='button' class='btn btn-info' onclick='pay_amount("+data.third_fee_list[i].fee_id+")'>Submit</a></td></tr>";
+                            if(j==0){
+                                ids = data.third_fee_list[i].fee_id;
+                            } else {
+                                ids += "," + data.third_fee_list[i].fee_id;
+                            }
+                            j = j + 1;
                         } else {
                             tableString += "<td></td>";
                             tableString += "<td></tr>";
                         }
                     }
+                    $("#tbody3_ids").val(ids);
                 }
                 $("#tbody3").html(tableString);
+                
              }
         });
     });
-    function pay_amount(id){
-        
-        
+    function pay_amount(id){        
         var text_id = "#amount" + id;
         var pay_value = $(text_id).val();
         $.ajax({
@@ -230,9 +263,39 @@
             'pay_amount': pay_value,
             },
             success:function(data){
-                $("#enr_submit").click();
+                window.location.replace('/viewfeedetailsdetail/'+data.mr_id);
             },
         });
+    }
+    function pay_multiple_amount(id){
+        var table_button_id = "#tbody"+id+"_ids";
+        var ids = $(table_button_id).val();
+        var idsArr = ids.split(',');
+        var id_amount_array = new Array();
+        for(var i=0; i<idsArr.length; i++){
+            var text_id = "#amount" + idsArr[i];
+            var pay_value = $(text_id).val();
+            if(pay_value>0){
+                var dict = {
+                    'pay_id': idsArr[i],
+                    'pay_amount': pay_value
+                }
+                id_amount_array.push(dict);
+            }
+        }
+        console.log(id_amount_array);
+        $.ajax({
+            type:'POST',
+            url:'/pay_multiple_fee/',
+            data:{
+                'id_amount_array': id_amount_array,
+                'total': id_amount_array.length,
+            },
+            success:function(data){
+                window.location.replace('/viewfeedetailsdetail/'+data.mr_id);
+            },
+        });
+
     }
     function getCookie(c_name) {
         if (document.cookie.length > 0)

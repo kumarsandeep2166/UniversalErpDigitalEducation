@@ -19,5 +19,10 @@ urlpatterns=[
     path('pay_by_id/', views.pay_by_id, name="pay_by_id"),
     path('viewfeedetails/<int:id>', views.viewfeedetails, name="viewfeedetails"),
     path('viewfeedetailsdetail/<int:id>', views.viewfeedetailsdetail, name="viewfeedetailsdetail"),
+    path('printfee_pdf/<int:id>', views.printfee_pdf, name="printfee_pdf"),
+    path('pay_multiple_fee/', views.pay_multiple_fee, name="pay_multiple_fee"),
+    path('moneyreceiptdetails/', views.moneyreceiptdetails, name="moneyreceiptdetails"),
+
+
     
 ]

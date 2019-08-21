@@ -53,7 +53,7 @@
                             <li><a href="/applicantfrm">Take An Enquiry</a></li>                                     
                         </ul>
                 </li>
-                <li class="sub-menu" id="strm">
+                <li class="sub-menu">
                     <a href="javascript:;" class="">
                         <i class="fa fa-book" aria-hidden="true"></i>
                         <span>Course Management </span>
@@ -72,10 +72,12 @@
                     </a>
                     <ul class="sub" id="fee1">                        
                         
-                        <li><a href="{% url 'feestype_create' %}">Fees Type Create</a></li> 
+                        <!-- <li><a href="{% url 'feestype_create' %}">Fees Type Create</a></li> 
                         <li><a href="{% url 'feeplan_list' %}">Fees List</a></li>
-                        <li><a href="{% url 'feeplan_create' %}">Fees SetUp</a></li>                  
+                        <li><a href="{% url 'feeplan_create' %}">Fees SetUp</a></li>                   -->
                         <li><a href="{% url 'collect_student_fee' %}">Collect Student Fee</a></li>                  
+                        <li><a href="{% url 'student_enroll_list' %}">Enroll From Student List</a></li>                  
+                        <li><a href="/moneyreceiptdetails/">Money Receipt Details</a></li>                  
                         <!-- <li><a href="{% url 'batch_list' %}">Batch</a></li>
                         <li><a href="{% url 'section_list' %}">Section</a></li> -->                        
                     </ul>
@@ -91,16 +93,29 @@
                         <li><a href="/subject/">Subject</a></li>
                         <li><a href="/subject_teacher/">Assign Subject</a></li>
                         <li><a href="/student_section_list/">Section Student</a></li>
+                        <li><a href="/class_timing_setting/">Class Time Table</a></li>
+                        <li><a href="/attendance/">Take Attendance</a></li>
+                        <li><a href="/student_section_assign/">Allot Student Section</a></li>
                              
                     </ul>
                 </li>
+                <li class="sub-menu">
+                        <a href="javascript:;">
+                            <i class="fa fa-envelope"></i>
+                            <span>MIS </span>
+                        </a>
+                        <ul class="sub">
+                            <li><a href="/student-list">Approve Student Details</a></li>
+                            
+                        </ul>
+                    </li> 
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-envelope"></i>
                         <span>Mail </span>
                     </a>
                     <ul class="sub">
-                        <li><a href="#">Inbox</a></li>
+                            <li><a href="#">Student Details</a></li>
                         <li><a href="#">Compose Mail</a></li>
                         <li><a href="#">View Mail</a></li>
                     </ul>

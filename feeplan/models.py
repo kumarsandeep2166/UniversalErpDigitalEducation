@@ -45,6 +45,7 @@ class FeeCollect(models.Model):
     amount_left = models.DecimalField(max_digits=10, default=0, decimal_places=2, null=True, blank=True)
     date= models.DateField(default=datetime.date.today)
     is_active = models.BooleanField(default=True)
+    
 
 class FeeDetails(models.Model):
     fee = models.ForeignKey(FeeCollect, on_delete=models.CASCADE)
@@ -53,5 +54,11 @@ class FeeDetails(models.Model):
     is_active = models.BooleanField(default=True)
 
 class MoneyReceipt(models.Model):
-    mr_no = models.CharField(max_length=100)
+    mr_no = models.CharField(max_length=250, null=True, blank=True)
     enrollment_number = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+class MoneyReceiptDetails(models.Model):
+    money_receipt = models.ForeignKey(MoneyReceipt, on_delete=models.CASCADE)
+    fee_details = models.ForeignKey(FeeDetails, on_delete=models.CASCADE)

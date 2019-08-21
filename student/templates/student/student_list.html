@@ -27,9 +27,7 @@
                                     <th>Sl No.</th>
                                     <th>Student Name</th>
                                     <th>Date Of Birth</th>
-                                    <th>Blood Group</th>
-                                    <th>Caste</th>
-                                    <th>Sub Caste</th>
+                                    <th>Blood Group</th>                                    
                                     <th>Place Of Birth</th>
                                     <th>Aadhar Number</th>
                                     <th>Gender</th>                                   
@@ -43,11 +41,9 @@
                                 {% for stud in queryset %}
                                 <tr>
                                         <td>{{stud.id}}</td>
-                                        <td><a href="{{ stud.get_absolute_url }}">{{stud.first_name}}{{stud.middle_name}}{{stud.last_name}}</a></td>
+                                        <td><a href="{{ stud.get_absolute_url }}">{{stud}}</a></td>
                                         <td>{{stud.date_of_birth}}</td>
-                                        <td>{{stud.blood_group}}</td>
-                                        <td>{{stud.caste}}</td>
-                                        <td>{{stud.sub_caste}}</td>
+                                        <td>{{stud.blood_group}}</td>                                        
                                         <td>{{stud.place_of_birth}}</td>
                                         <td>{{stud.aadhar_number}}</td>
                                         <td>{{stud.gender}}</td>  
@@ -68,7 +64,7 @@
                                         {% endifequal %}
                                         
                                     
-                                    <td width="150">
+                                    <td>
                                         <a href="{% url 'student_detail' pk=stud.id %}" class="social-icon">
                                             <i class="fa fa-eye vieww"></i>
                                             <div class="tooltip">View</div>

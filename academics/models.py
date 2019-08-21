@@ -1,7 +1,7 @@
 from django.db import models
 from coursemanagement.models import Course, Stream, Batch
 from employee.models import Employee
-from student.models import Student
+from student.models import Student, Enrollment
 
 SEMESTAR_CHOICES = (
     ('1st', '1st'),
@@ -53,6 +53,9 @@ class SubjectTeacher(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
     total_class_held = models.IntegerField(default=0)
     
+class StudentSection(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=True, blank=True)
+    enrollment = models.ForeignKey(Enrollment,on_delete=models.CASCADE, null=True, blank=True)
 
 class LessonPlan(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -82,10 +85,7 @@ class SubjectProgerssReport(models.Model):
     remark = models.TextField(null=True, blank=True)
     topic = models.CharField(max_length=200)
     report = models.ForeignKey(SubjectTeacher, on_delete=models.CASCADE)
-    
-class StudentSection(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
+
 
 class TeacherTimeTable(models.Model):    
     day_of_week = models.CharField(max_length=20, choices=DAY_CHOICE)

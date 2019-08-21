@@ -27,5 +27,7 @@ urlpatterns=[
     path('timetablecreate/',views.timetablecreate, name="timetablecreate"),
     path('load_subject_available/', views.load_subject_available, name="load_subject_available"),
     path('check_teacher_available/', views.check_teacher_available, name="check_teacher_available"),
-
+    path('student_section_assign/', views.student_section_assign, name="student_section_assign"),
+    path('student_section_assign_ajax/', views.student_section_assign_ajax, name="student_section_assign_ajax"),
+    path('save_section_student/', views.save_section_student, name="save_section_student"),    
 ]

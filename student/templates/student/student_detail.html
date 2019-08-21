@@ -234,8 +234,7 @@
                         <a href="" class="btn btn-info" id="reject_btn">Reject</a>
                         <span id="approve_msg"></span>
                     {% else %}
-                        <span id="approve_msg">Approved</span>
-                        <a href="{% url 'collect_fee' id=object.pk %}" class="btn btn-info">Collect fees</a>
+                        <span id="approve_msg">Approved</span>                       
                     {% endif %}
                 </div>
                 <input type="text" id="student_id" value="{{object.pk}}" hidden="hidden">
@@ -271,9 +270,7 @@ $(document).ready(function(){
     success:function(data){
             $("#note_table").html(data);
             }
-    });
-
-    
+    });    
 });
     function pinToggle(id){
         var student_id=$("#student_id").val();

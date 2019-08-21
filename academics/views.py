@@ -7,7 +7,7 @@ from django.urls import reverse_lazy,reverse
 from employee.models import Employee, Category, Designation
 from django.db import transaction
 from django.db.models import Count
-from student.models import Student
+from student.models import Student,Enrollment
 from django.db import connection
 import json
 from coursemanagement.models import Stream
@@ -255,7 +255,6 @@ def save_attendance(request):
             progress_obj.topic = topic
             progress_obj.report = sub_obj
             progress_obj.save()
-
             total_class = int(sub_obj.total_class_held)
             sub_obj.total_class_held = total_class+1
             sub_obj.save()
@@ -269,14 +268,15 @@ def save_attendance(request):
                 att_obj.attendance_type = attn_type
                 att_obj.date=attendancedate
                 att_obj.remark = remark
-                att_obj.save()
-            
+                att_obj.save()            
             attendance_json = json.dumps({'msg': "success", "id_subject":id_subject, "id_section":id_section})
         else:
             attendance_json = json.dumps({'msg': "Please Enter Correct Time!!!!!"})
     except:
         attendance_json = json.dumps({'msg': "Something went Wrong!!!"})
     return HttpResponse(attendance_json, 'application/json')
+
+
 def teacher_load(request):
     stream_id = request.GET.get('stream_id')
     cat_obj = Category.objects.get(name="Teaching")
@@ -349,7 +349,6 @@ def studentsectioncreate(request):
                 return redirect('/student_section_list/')
         else:
             pass
-
     else:
         form = StudentSectionForm()
         context = {"form":form}
@@ -419,3 +418,73 @@ def check_teacher_available(request):
         print(e)
         attendance_json = json.dumps({'msg': "available", "merge": ""})
     return HttpResponse(attendance_json, 'application/json')
+
+def student_section_assign(request):
+    if request.method == "POST":
+        stream = request.POST.get('stream')
+        course = request.POST.get('course')
+        batch = request.POST.get('batch')
+        semestar = request.POST.get('semestar')
+        section_list = Section.objects.filter(semestar=semestar)
+        print(section_list)
+        obj = Student.objects.filter(batch=batch)
+        context = {
+            'obj':obj,
+            'section_list':section_list,
+        }
+    else:
+        form = StudentSectionForm()
+        context = {'form':form}
+    return render(request,'academics/student_section_assign.html',context)
+
+def student_section_assign_ajax(request):
+    if request.method == "POST":
+        stream = request.POST.get('stream')
+        course = request.POST.get('course')
+        batch = request.POST.get('batch_id')        
+        semestar = request.POST.get('semestar')        
+        section_obj = Section.objects.filter(semestar=semestar)        
+        obj = Enrollment.objects.filter(batch=batch) 
+        obj_list = []
+        for i in obj:
+            obj_dict = {}
+            obj_dict['student_name'] = i.student_name.first_name + " " + i.student_name.last_name
+            obj_dict['enrollment_number'] = i.pk
+            obj_list.append(obj_dict)
+        section_list = []
+        for i in section_obj:
+            sec_dict = {}
+            sec_dict['id'] = i.pk
+            sec_dict['name'] = i.section_name
+            section_list.append(sec_dict)
+
+        context = {
+            'obj_list':obj_list,
+            'section_list':section_list,
+        }
+        section_json = json.dumps(context)
+        return HttpResponse(section_json, 'application/json')
+    else:
+        form = StudentSectionForm()
+        context = {'form':form}
+        return render(request,'academics/student_section_assign.html',context)
+
+def save_section_student(request):
+    try:
+        # enrollment_id = request.POST.get('enr_no')
+        # section_id = request.POST.get('section_assign')
+        total_count = int(request.POST.get('total_count'))
+        
+        for i in range(total_count):
+            student_type = request.POST.get('attn_list['+ str(i) +'][enr_no_id]')
+            section_type = request.POST.get('attn_list['+ str(i) +'][section_assign_id]')
+            assign_obj = StudentSection()
+            assign_obj.enrollment = Enrollment.objects.get(pk=student_type) 
+            assign_obj.section = Section.objects.get(pk=section_type)
+            assign_obj.save()
+        section_json = json.dumps({"msg":"success"})
+        return HttpResponse(section_json, 'application/json')
+    except Exception as e:
+        print(e)
+    
+   

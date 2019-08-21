@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect, FeeDetails
+from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect, FeeDetails, MoneyReceipt, MoneyReceiptDetails
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView,View
 from .forms import FeesPlanTypeForm
 from coursemanagement.models import Stream, Course, Batch
@@ -13,7 +13,9 @@ from django.contrib.auth.models import User
 from student.views import addstudentuser
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-
+from .render import render_to_pdf
+import pdfkit
+from django.template.loader import get_template, render_to_string
 
 
 def add_months(sourcedate, months):
@@ -520,6 +522,7 @@ class CollectFee(View):
 
 
 def collectfeesave(request):
+    total_mr_amount = 0
     student_id = request.POST.get('student_id')
     total_count = request.POST.get('total_fee_type')
     for i in range(int(total_count)):
@@ -527,10 +530,12 @@ def collectfeesave(request):
             amount = float(request.POST.get('fee'+str(i)))
         except:
             amount = 0.0
+            total_amount = total_amount + amount
         if amount > 0:
             enroll = True
             break
     if enroll:
+        fee_detail_obj_list = []
         for i in range(int(total_count)):
             approve_id = request.POST.get('approve_fee_id'+str(i))
             approved_fee_obj = ApproveFeeplanType.objects.get(pk=approve_id)
@@ -542,7 +547,7 @@ def collectfeesave(request):
             if total_amount == amount:
                 remaing_amt = 0.0
             else:
-                remaing_amt = total_amount
+                remaing_amt = total_amount-amount
             fee_collect_obj, created = FeeCollect.objects.get_or_create(
                 student=approved_fee_obj.student,
                 approve_fee=approved_fee_obj,
@@ -552,6 +557,8 @@ def collectfeesave(request):
             fee_collect_obj.save()
             if amount>0:
                 fee_detail_obj = FeeDetails.objects.create(fee=fee_collect_obj,amount=amount)
+                fee_detail_obj_list.append(fee_detail_obj)
+                total_mr_amount = total_mr_amount + amount
         approve_other_objs = ApproveFeeplanType.objects.filter(student=student_id)
         for obj in approve_other_objs:
             if obj.no_of_installments==2:
@@ -608,6 +615,8 @@ def collectfeesave(request):
                 enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=stud_obj)
                 enrl_obj.enrollment_number = enrl_no
                 enrl_obj.save()
+                stud_obj.fee_status=3
+                stud_obj.save()
             except:
                 enrl_obj = Enrollment.objects.create(stream=stream_obj, course=course_obj, batch=batch_obj, student_name=stud_obj)
                 stream_abb = stream_obj.short_name
@@ -619,9 +628,25 @@ def collectfeesave(request):
                 enrl_obj.save()
                 stud_obj.fee_status=3
                 stud_obj.save()
-    else:
-        pass
-    return redirect('/fee/collect_fee/'+student_id+"/")
+            if len(fee_detail_obj_list)>0:
+                mr_obj = MoneyReceipt.objects.all().order_by('-pk')
+                if len(mr_obj)>0:
+                    mr_no = int(mr_obj[0].mr_no)
+                    mr_no = str(mr_no+1)
+                else:
+                    mr_no = "1"
+                mr_obj = MoneyReceipt()
+                mr_obj.mr_no = mr_no
+                mr_obj.enrollment_number = enrl_obj
+                mr_obj.amount = total_mr_amount
+                mr_obj.save()
+                for fee_detail in fee_detail_obj_list:
+                    mrd_obj = MoneyReceiptDetails()
+                    mrd_obj.money_receipt = mr_obj
+                    mrd_obj.fee_details = fee_detail
+                    mrd_obj.save()
+            
+    return redirect('/viewfeedetailsdetail/'+str(mr_obj.pk))
 
 
 from django.shortcuts import get_object_or_404
@@ -680,6 +705,7 @@ def pay_by_id(request):
     fee_obj = FeeCollect.objects.get(pk=pay_id)
     previous_amt = fee_obj.amount_paid
     total_pay_amt = float(pay_amount) + float(previous_amt)
+    enr_obj = Enrollment.objects.get(student_name=fee_obj.student.pk)
     if float(pay_amount) > float(fee_obj.amount_left):
         to_json = {
             "msg": "Unsuccessfull"
@@ -693,8 +719,25 @@ def pay_by_id(request):
         fee_obj.save()
         if pay_amount>0:
             fee_detail_obj = FeeDetails.objects.create(fee=fee_obj,amount=pay_amount)
+            mr_objs = MoneyReceipt.objects.all().order_by('-pk')
+            if len(mr_objs)>0:
+                mr_no = int(mr_objs[0].mr_no)
+                mr_no = str(mr_no+1)
+            else:
+                mr_no = "1"
+            mr_obj = MoneyReceipt()
+            mr_obj.mr_no = mr_no
+            mr_obj.enrollment_number = enr_obj
+            mr_obj.amount = pay_amount
+            mr_obj.save()
+            mrd_obj = MoneyReceiptDetails()
+            mrd_obj.money_receipt = mr_obj
+            mrd_obj.fee_details = fee_detail_obj
+            mrd_obj.save()
+            
+            
         to_json = {
-            "msg": "Successfull"
+            "msg": "Successfull", "mr_id": mr_obj.pk
             }
         return HttpResponse(json.dumps(to_json), 'application/json')
 
@@ -708,7 +751,145 @@ def viewfeedetails(request,id):
     return render(request,'feeplan/payment_option.html',{'enr_no':enr_no,'feesc':feesc})
 
 def viewfeedetailsdetail(request,id):
+    mr_obj = MoneyReceipt.objects.get(id=id)
+    mr_det_obj = MoneyReceiptDetails.objects.filter(money_receipt=mr_obj.pk)
+    context = {"mr_obj":mr_obj, "mr_det_obj":mr_det_obj}
+    return render(request,'feeplan/invoice_detail.html',context)
+
+
+def printfee(request,id):
     enr_no = Enrollment.objects.get(id=id)
-    feesc = ApproveFeeplanType.objects.filter(student=id)
-    feeplan = FeeCollect.objects.filter(student=id)
-    return render(request,'feeplan/invoice_detail.html',{'enr_no':enr_no,'feesc':feesc,'feeplan':feeplan})
+    feesc = FeeCollect.objects.values_list('pk').filter(student=id)
+    feeplan = FeeDetails.objects.filter(fee__in=list(feesc), is_printed=0).select_related('fee')
+    mr_no = "xyz"
+    fee_list = []
+    for feeobj in feeplan:
+        feedic = {}
+        feedic['type'] = feeobj.fee.approve_fee.fees_node.fees_type
+        feedic['amount'] = feeobj.amount
+        fee_list.append(feedic)
+    context={
+        'enr_no':enr_no,
+        'fee_list':fee_list,
+         "mr_no":mr_no
+        }
+    render_to_pdf('feeplan/payment_option.html',context)
+    
+def printfee_pdf(request, id):
+    enr_no = Enrollment.objects.get(id=id)
+    feesc = FeeCollect.objects.values_list('pk').filter(student=id)
+    feeplan = FeeDetails.objects.filter(fee__in=list(feesc), is_printed=0).select_related('fee')
+    mr_no = "xyz"
+    fee_list = []
+    for feeobj in feeplan:
+        feedic = {}
+        feedic['type'] = feeobj.fee.approve_fee.fees_node.fees_type
+        feedic['amount'] = feeobj.amount
+        fee_list.append(feedic)
+    context={
+        'enr_no':enr_no,
+        'fee_list':fee_list,
+         "mr_no":mr_no
+        }
+    template = get_template('feeplan/payment_option1.html')
+    html = template.render(context)
+    print(html)
+    options = {
+        'page-size': 'A4',
+        'encoding': "UTF-8",
+    }
+    path_wkhtml = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtml)
+    pdf = pdfkit.from_string(html, 'static/test.pdf', configuration=config)
+    print(pdf)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="fees_list_pdf.pdf"'
+    return response  
+
+def money_receipt(request, id):
+    mr_no = MoneyReceiptDetails.objects.get(id=id)
+
+
+def pay_multiple_fee(request):
+    total = int(request.POST.get('total'))
+    fee_details_obj_list = []
+    total_pay_amount = 0
+    for i in range(total):
+        pay_id = request.POST.get('id_amount_array['+str(i)+'][pay_id]')
+        pay_amount = request.POST.get('id_amount_array['+str(i)+'][pay_amount]')
+        fee_obj = FeeCollect.objects.get(pk=pay_id)
+        if i == 0:
+            enr_obj = Enrollment.objects.get(student_name=fee_obj.student.pk)
+        previous_amt = fee_obj.amount_paid
+        total_pay_amt = float(pay_amount) + float(previous_amt)
+        if float(pay_amount) > float(fee_obj.amount_left):
+            to_json = {
+                "msg": "Unsuccessfull"
+                }
+            return HttpResponse(json.dumps(to_json), 'application/json')
+        else:
+            amt_left = float(fee_obj.amount_left)-float(pay_amount)
+            fee_obj.amount_paid = total_pay_amt
+            fee_obj.amount_left = amt_left
+            fee_obj.save()
+            fee_detail_obj = FeeDetails.objects.create(fee=fee_obj,amount=pay_amount)
+            fee_details_obj_list.append(fee_detail_obj)
+            total_pay_amount = total_pay_amount + int(pay_amount)
+    if fee_details_obj_list:
+        mr_objs = MoneyReceipt.objects.all().order_by('-pk')
+        if len(mr_objs)>0:
+            mr_no = int(mr_objs[0].mr_no)
+            mr_no = str(mr_no+1)
+        else:
+            mr_no = "1"
+        mr_obj = MoneyReceipt()
+        mr_obj.mr_no = mr_no
+        mr_obj.enrollment_number = enr_obj
+        mr_obj.amount = total_pay_amount
+        mr_obj.save()
+        for fee_detail_obj in fee_details_obj_list:
+            mrd_obj = MoneyReceiptDetails()
+            mrd_obj.money_receipt = mr_obj
+            mrd_obj.fee_details = fee_detail_obj
+            mrd_obj.save()
+    to_json = {
+        "msg": "Successfull", "mr_id": mr_obj.pk
+        }
+    return HttpResponse(json.dumps(to_json), 'application/json')
+
+
+
+from django.db.models import Aggregate, CharField
+class Concat(Aggregate):
+    function = 'GROUP_CONCAT'
+    template = '%(function)s(%(distinct)s%(expressions)s)'
+
+    def __init__(self, expression, distinct=False, **extra):
+        super(Concat, self).__init__(
+            expression,
+            distinct='DISTINCT ' if distinct else '',
+            output_field=CharField(),
+            **extra)
+
+def moneyreceiptdetails(request):    
+    queryset = MoneyReceiptDetails.objects.all().select_related('money_receipt').values('money_receipt').annotate(fee_details=Concat('fee_details'))
+    queryset_list = []
+    for a in queryset:
+        queryset_dic = {}
+        queryset_dic['money_receipt'] = MoneyReceipt.objects.get(pk=a['money_receipt'])
+        fee_list = str(a['fee_details']).split(',')
+        fee_type_name = ""
+        i = 0
+        for fee in fee_list:
+            fee_detail_obj = FeeDetails.objects.get(pk=int(fee))
+            if i == 0:
+                fee_type_name = str(fee_detail_obj.fee.approve_fee.fees_node.fees_type)
+                i = i+1
+            else:
+                fee_type_name = fee_type_name + "," + str(fee_detail_obj.fee.approve_fee.fees_node.fees_type)
+        queryset_dic['fee_details'] = fee_type_name
+        queryset_list.append(queryset_dic)
+    context = {
+        'queryset':queryset_list
+    }
+    return render(request,'feeplan/moneyreceiptdetails.html',context)

@@ -310,7 +310,7 @@ class Enroll_StudentList(View):
     template_name = 'student/enroll_student_list.html'    
     @method_decorator(login_required(login_url='/login'))
     def get(self, request, *args, **kwargs):
-        object_list = Student.objects.filter(academic_status=2, fee_status=2)
+        object_list = Student.objects.filter(academic_status=2, fee_status=3)
         return render(request, 'student/enroll_student_list.html', context={'object_list':object_list})
     
 def addstudentuser(pk):
