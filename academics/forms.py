@@ -1,7 +1,7 @@
 from django import forms
 from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance, Section
 from coursemanagement.models import Stream, Course, Batch
-from employee.models import Employee
+from employee.models import Employee, Category, Designation
 from django.forms.models import inlineformset_factory
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit
@@ -70,3 +70,8 @@ class ClassTimingsForm(forms.Form):
     batch = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Batch.objects.all()])
     semestar = forms.ChoiceField(choices=[(o.id, str(o)) for o in Semestar.objects.all()])
     section = forms.ChoiceField(choices=[(o.id, str(o)) for o in Section.objects.all()])
+
+class TeacherTimeTableForm(forms.Form):
+    category_pk = Category.objects.values_list('pk').filter(name="Teaching")
+    designation_pk = Designation.objects.values_list('pk').filter(category__in=list(category_pk))
+    teacher = forms.ChoiceField(choices=[ (o.id, str(o)) for o in Employee.objects.filter(employee_designation__in=list(designation_pk))])

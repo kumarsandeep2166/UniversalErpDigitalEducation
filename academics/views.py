@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import ListView,CreateView,UpdateView,DeleteView,DetailView, View
-from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance, Section, SubjectProgerssReport, StudentSection, TeacherTimeTable
-from .forms import SemestarForm, SubjectForm, SubjectTeacherForm, LessonPlanForm, AttendanceForm, StudentSectionForm,ClassTimingsForm
+from .models import Semestar, Subject, SubjectTeacher, LessonPlan, Attendance, Section, \
+    SubjectProgerssReport, StudentSection, TeacherTimeTable, SectionTimeTable
+from .forms import SemestarForm, SubjectForm, SubjectTeacherForm, LessonPlanForm, \
+    AttendanceForm, StudentSectionForm,ClassTimingsForm, TeacherTimeTableForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy,reverse
 from employee.models import Employee, Category, Designation
@@ -13,6 +15,7 @@ import json
 from coursemanagement.models import Stream
 import datetime
 from django.db.models import Q
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 class SemestarCreateView(CreateView):
@@ -381,13 +384,54 @@ def load_subject_available(request):
     print(len(subject_objs))
     return render(request, 'academics/load_subject_available.html',{"subject_objs": subject_objs})
 
+def check_previous_teacher_available(request):
+    start_time = request.GET.get('start_time')
+    start_time = datetime.datetime.strptime(start_time, "%I:%M %p")
+    start_time = datetime.datetime.strftime(start_time, "%H:%M")
+    end_time = request.GET.get('end_time')
+    end_time = datetime.datetime.strptime(end_time, "%I:%M %p")
+    end_time = datetime.datetime.strftime(end_time, "%H:%M")
+    subject_teacher = request.GET.get('subject_teacher')
+    day = request.GET.get('day')
+    teacher_table_id = int(request.GET.get('teacher_table_id'))
+    try:
+        obj = SubjectTeacher.objects.get(pk=subject_teacher)
+        teacher_id = obj.teacher.pk
+        teacher_id_list = list(SubjectTeacher.objects.values_list('pk').filter(teacher=teacher_id))
+        teacher_obj = TeacherTimeTable.objects.filter(
+            subjects__in=teacher_id_list,
+            day_of_week=day).filter(
+            Q(start_time__lt=start_time, end_time__gt=end_time) 
+            | Q(start_time=start_time, end_time=end_time) 
+            | Q(start_time=start_time, start_time__lt=end_time, end_time__gt=end_time)
+            | Q(start_time__lt=start_time,end_time__gt=start_time, end_time=end_time) 
+            | Q(start_time__gt=start_time, start_time__lt=end_time, end_time__gt=end_time)
+            | Q(start_time__lt=start_time,end_time__gt=start_time, end_time__lt=end_time)
+            | Q(start_time__gt=start_time, end_time__lt=end_time)
+            )
+        teacher_obj = teacher_obj.exclude(pk=teacher_table_id)
+        if len(teacher_obj):
+            t_time_table = TeacherTimeTable.objects.filter(
+                subjects__in=teacher_id_list,
+                day_of_week=day, start_time=start_time, end_time=end_time)
+            if len(t_time_table):
+                attendance_json = json.dumps({'msg': "not available do you want to merge", "merge": "merge"})
+            else:
+                attendance_json = json.dumps({'msg': "not available", "merge": ""})
+        else:
+            attendance_json = json.dumps({'msg': "available", "merge": ""})
+    except Exception as e:
+        print(e)
+        attendance_json = json.dumps({'msg': "available", "merge": ""})
+    return HttpResponse(attendance_json, 'application/json')
+
 
 def check_teacher_available(request):
     start_time = request.GET.get('start_time')
-    start_time = datetime.datetime.strptime(start_time, "%H:%M %p")
+    start_time = datetime.datetime.strptime(start_time, "%I:%M %p")
     start_time = datetime.datetime.strftime(start_time, "%H:%M")
     end_time = request.GET.get('end_time')
-    end_time = datetime.datetime.strptime(end_time, "%H:%M %p")
+    end_time = datetime.datetime.strptime(end_time, "%I:%M %p")
     end_time = datetime.datetime.strftime(end_time, "%H:%M")
     subject_teacher = request.GET.get('subject_teacher')
     day = request.GET.get('day')
@@ -396,13 +440,16 @@ def check_teacher_available(request):
         obj = SubjectTeacher.objects.get(pk=subject_teacher)
         teacher_id = obj.teacher.pk
         teacher_id_list = list(SubjectTeacher.objects.values_list('pk').filter(teacher=teacher_id))
-        query = Q(start_time__lte=start_time, end_time__gte=end_time)
         teacher_obj = TeacherTimeTable.objects.filter(
             subjects__in=teacher_id_list,
             day_of_week=day).filter(
-            Q(start_time__lte=start_time, end_time__gte=start_time) 
-            | Q(start_time__lte=end_time, end_time__gte=end_time) 
-            | Q(start_time__gte=start_time, start_time__lte=end_time)
+            Q(start_time__lt=start_time, end_time__gt=end_time) 
+            | Q(start_time=start_time, end_time=end_time) 
+            | Q(start_time=start_time, start_time__lt=end_time, end_time__gt=end_time)
+            | Q(start_time__lt=start_time,end_time__gt=start_time, end_time=end_time) 
+            | Q(start_time__gt=start_time, start_time__lt=end_time, end_time__gt=end_time)
+            | Q(start_time__lt=start_time,end_time__gt=start_time, end_time__lt=end_time)
+            | Q(start_time__gt=start_time, end_time__lt=end_time)
             )
         if len(teacher_obj):
             t_time_table = TeacherTimeTable.objects.filter(
@@ -487,3 +534,245 @@ def save_section_student(request):
     except Exception as e:
         print(e)
 
+def save_time_table(request):
+    print(request.POST)
+    total = int(request.POST.get('total'))
+    section = int(request.POST.get('section'))
+    for i in range(total):
+        day = request.POST.get("dataArray["+str(i)+"][day]")
+        subject_id = int(request.POST.get("dataArray["+str(i)+"][subject_id]"))
+        start_time = request.POST.get("dataArray["+str(i)+"][start_time]")
+        start_time = datetime.datetime.strptime(start_time, "%I:%M %p")
+        start_time = datetime.datetime.strftime(start_time, "%H:%M")
+        end_time = request.POST.get("dataArray["+str(i)+"][end_time]")
+        end_time = datetime.datetime.strptime(end_time, "%I:%M %p")
+        end_time = datetime.datetime.strftime(end_time, "%H:%M")
+        print(start_time)
+        print(end_time)
+        if subject_id>0:
+            subject_teacher_obj = SubjectTeacher(pk=subject_id)
+            teacher_table_obj = TeacherTimeTable()
+            teacher_table_obj.day_of_week = day
+            teacher_table_obj.start_time = start_time
+            teacher_table_obj.end_time = end_time
+            teacher_table_obj.subjects = subject_teacher_obj
+            teacher_table_obj.save()
+            section_table_obj = SectionTimeTable()
+            section_table_obj.day_of_week = day
+            section_table_obj.start_time = start_time
+            section_table_obj.end_time = end_time
+            section_table_obj.subjects = subject_teacher_obj
+            section_table_obj.section = Section.objects.get(pk=section)
+            section_table_obj.save()
+        else:
+            section_table_obj = SectionTimeTable()
+            section_table_obj.day_of_week = day
+            section_table_obj.start_time = start_time
+            section_table_obj.end_time = end_time
+            section_table_obj.section = Section.objects.get(pk=section)
+            section_table_obj.save()
+    time_table_json = json.dumps({'msg': "data"})
+    return HttpResponse(time_table_json, 'application/json')
+
+
+def student_time_table_load(request):
+    form=ClassTimingsForm()
+    return render(request, 'academics/student_time_table.html',{'form':form})
+
+def teacher_time_table_load(request):
+    form = TeacherTimeTableForm()
+    return render(request, 'academics/teacher_time_table.html',{'form':form})
+
+def student_time_table_view(request):
+    section = request.GET.get('section')
+    subject_objs = SubjectTeacher.objects.filter(section=section)
+    subject_list = []
+    subject_dict = {}
+    subject_dict['id'] = 0
+    subject_dict['name'] = "Break"
+    subject_list.append(subject_dict)
+    for obj in subject_objs:
+        subject_dict = {}
+        subject_dict['id'] = obj.pk
+        subject_dict['name'] = obj.subject.name + "-(" + obj.teacher.first_name + " " + obj.teacher.last_name + ")"
+        subject_list.append(subject_dict)
+    subject_teacher_list = SubjectTeacher.objects.values_list('pk').filter(section=section)
+    day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    maximum = 0
+    section_time_table = []
+    for day in day_list:
+        section_time_table_day_dict = {}
+        section_time_table_day_dict['day'] = day
+        section_time_table_day_list = [] 
+        section_time_table_obj = SectionTimeTable.objects.filter(day_of_week=day,section=section).order_by('start_time')
+        count = 0
+        for obj in section_time_table_obj:
+            count = count + 1
+            section_time_table_dic = {}
+            if obj.subjects is not None:
+                section_time_table_dic['subject_teacher_id'] = obj.subjects.pk
+                section_time_table_dic['subject'] = obj.subjects.subject.name
+                section_time_table_dic['teacher'] = obj.subjects.teacher.first_name + " " + obj.subjects.teacher.last_name
+                teacher_obj = TeacherTimeTable.objects.get(
+                    day_of_week=day,
+                    subjects=obj.subjects.pk,
+                    start_time=obj.start_time,
+                    end_time=obj.end_time)
+                print(teacher_obj.pk, obj.pk)
+                section_time_table_dic['teacher_id'] = teacher_obj.pk
+            else:
+                section_time_table_dic['subject'] = "Break"
+                section_time_table_dic['teacher'] = ""
+                section_time_table_dic['subject_teacher_id'] = 0
+                section_time_table_dic['teacher_id'] = 0
+            section_time_table_dic['id'] = obj.pk
+            hour = str(obj.start_time.hour).zfill(2)
+            minute = str(obj.start_time.minute).zfill(2)
+            start_time = hour+":"+minute
+            start_time = datetime.datetime.strptime(start_time, "%H:%M")
+            start_time = datetime.datetime.strftime(start_time, "%I:%M %p")
+            section_time_table_dic['fromtime'] = start_time
+            hour = str(obj.end_time.hour).zfill(2)
+            minute = str(obj.end_time.minute).zfill(2)
+            to_time = hour+":"+minute
+            to_time = datetime.datetime.strptime(to_time, "%H:%M")
+            to_time = datetime.datetime.strftime(to_time, "%I:%M %p")
+            section_time_table_dic['totime'] = to_time
+            section_time_table_day_list.append(section_time_table_dic)
+        section_time_table_day_dict['class'] = section_time_table_day_list
+        section_time_table.append(section_time_table_day_dict)
+        if count>maximum:
+            maximum = count
+    time_table_json = json.dumps({'section_time_table': section_time_table, 'maximum':maximum, 'subject_list':subject_list},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
+
+
+def teacher_time_table_view(request):
+    teacher_id = request.GET.get('teacher_id')
+    subject_teacher_list = SubjectTeacher.objects.values_list('pk').filter(teacher=teacher_id)
+    day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    maximum = 0
+    teacher_time_table = []
+    for day in day_list:
+        teacher_time_table_day_dict = {}
+        teacher_time_table_day_dict['day'] = day
+        teacher_time_table_day_list = [] 
+        section_time_table_obj = TeacherTimeTable.objects.filter(day_of_week=day,subjects__in=subject_teacher_list).order_by('start_time')
+        count = 0
+        print(section_time_table_obj.query)
+        for obj in section_time_table_obj:
+            count = count + 1
+            teacher_time_table_dic = {}
+            teacher_time_table_dic['subject'] = obj.subjects.subject.name
+            teacher_time_table_dic['section'] = obj.subjects.section.section_name
+            teacher_time_table_dic['semestar'] = obj.subjects.section.semestar.name
+            teacher_time_table_dic['batch'] = obj.subjects.section.semestar.batch.batch_no
+            teacher_time_table_dic['course'] = obj.subjects.section.semestar.course.course_name
+            teacher_time_table_dic['stream'] = obj.subjects.section.semestar.stream.name
+            teacher_time_table_dic['fromtime'] = obj.start_time
+            teacher_time_table_dic['totime'] = obj.end_time    
+            teacher_time_table_day_list.append(teacher_time_table_dic)
+        teacher_time_table_day_dict['class'] = teacher_time_table_day_list
+        teacher_time_table.append(teacher_time_table_day_dict)
+        if count>maximum:
+            maximum = count
+    time_table_json = json.dumps({'teacher_time_table': teacher_time_table, 'maximum':maximum},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
+
+def edit_selected_time_table(request):
+    teacher_time_id = int(request.GET.get('teacher_time_id'))
+    section_time_id = int(request.GET.get('section_time_id'))
+    subject_teacher_id = int(request.GET.get('subject_teacher_id'))
+    start_time = request.GET.get('start_time')
+    day = request.GET.get('day')
+    start_time = datetime.datetime.strptime(start_time, "%I:%M %p")
+    start_time = datetime.datetime.strftime(start_time, "%H:%M")
+    end_time = request.GET.get('end_time')
+    end_time = datetime.datetime.strptime(end_time, "%I:%M %p")
+    end_time = datetime.datetime.strftime(end_time, "%H:%M")
+    if subject_teacher_id==0:
+        if teacher_time_id>0:
+            TeacherTimeTable.objects.get(pk=teacher_time_id).delete()
+        section_time_obj = SectionTimeTable.objects.get(pk=section_time_id)
+        section_time_obj.subjects = None
+    else:
+        subject_teacher_obj = SubjectTeacher.objects.get(pk=subject_teacher_id)
+        if teacher_time_id==0:
+            teacher_table_obj = TeacherTimeTable()
+            teacher_table_obj.day_of_week = day
+        else:
+            teacher_table_obj = TeacherTimeTable.objects.get(pk=teacher_time_id)
+        teacher_table_obj.start_time = start_time
+        teacher_table_obj.end_time = end_time
+        teacher_table_obj.subjects = subject_teacher_obj
+        teacher_table_obj.save()
+        section_time_obj = SectionTimeTable.objects.get(pk=section_time_id)
+        section_time_obj.subjects = subject_teacher_obj
+    
+    section_time_obj.start_time = start_time
+    section_time_obj.end_time = end_time
+    section_time_obj.save()
+    time_table_json = json.dumps({'msg': "success"},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
+
+
+def delete_selected_time_table(request):
+    teacher_time_id = int(request.GET.get('teacher_time_id'))
+    section_time_id = int(request.GET.get('section_time_id'))
+    if teacher_time_id>0:
+        TeacherTimeTable.objects.get(pk=teacher_time_id).delete()
+    SectionTimeTable.objects.get(pk=section_time_id).delete()
+    time_table_json = json.dumps({'msg': "success"},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
+
+
+def delete_selected_day_time_table(request):
+    print(request.POST)
+    count = int(request.POST.get('total'))
+    for i in range(count):
+        teacher_time_id = int(request.POST.get('data['+str(i)+'][teacher_time_id]'))
+        section_time_id = int(request.POST.get('data['+str(i)+'][section_time_id]'))
+        if teacher_time_id>0:
+            TeacherTimeTable.objects.get(pk=teacher_time_id).delete()
+        SectionTimeTable.objects.get(pk=section_time_id).delete()
+    time_table_json = json.dumps({'msg': "success"},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
+
+def edit_selected_day_time_table(request):
+    print(request.POST)
+    count = int(request.POST.get('total'))
+    for i in range(count):
+        teacher_time_id = int(request.POST.get('data['+str(i)+'][teacher_time_id]'))
+        section_time_id = int(request.POST.get('data['+str(i)+'][section_time_id]'))
+        subject_teacher_id = int(request.POST.get('data['+str(i)+'][subject_teacher_id]'))
+        start_time = request.POST.get('data['+str(i)+'][start_time]')
+        day = request.POST.get('data['+str(i)+'][day]')
+        start_time = datetime.datetime.strptime(start_time, "%I:%M %p")
+        start_time = datetime.datetime.strftime(start_time, "%H:%M")
+        end_time = request.POST.get('data['+str(i)+'][end_time]')
+        end_time = datetime.datetime.strptime(end_time, "%I:%M %p")
+        end_time = datetime.datetime.strftime(end_time, "%H:%M")
+        if subject_teacher_id==0:
+            if teacher_time_id>0:
+                TeacherTimeTable.objects.get(pk=teacher_time_id).delete()
+            section_time_obj = SectionTimeTable.objects.get(pk=section_time_id)
+            section_time_obj.subjects = None
+        else:
+            subject_teacher_obj = SubjectTeacher.objects.get(pk=subject_teacher_id)
+            if teacher_time_id==0:
+                teacher_table_obj = TeacherTimeTable()
+                teacher_table_obj.day_of_week = day
+            else:
+                teacher_table_obj = TeacherTimeTable.objects.get(pk=teacher_time_id)
+            teacher_table_obj.start_time = start_time
+            teacher_table_obj.end_time = end_time
+            teacher_table_obj.subjects = subject_teacher_obj
+            teacher_table_obj.save()
+            section_time_obj = SectionTimeTable.objects.get(pk=section_time_id)
+            section_time_obj.subjects = subject_teacher_obj
+        
+        section_time_obj.start_time = start_time
+        section_time_obj.end_time = end_time
+        section_time_obj.save()
+    time_table_json = json.dumps({'msg': "success"},sort_keys=True,indent=1,cls=DjangoJSONEncoder)
+    return HttpResponse(time_table_json, 'application/json')
