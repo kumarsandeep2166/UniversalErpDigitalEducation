@@ -6,13 +6,14 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 
-class FeesPlanType(models.Model):    
+class FeesPlanType(models.Model):
     stream=models.ForeignKey(Stream,on_delete=models.CASCADE)
     course=models.ForeignKey(Course,on_delete=models.CASCADE)
     batch=models.ForeignKey(Batch,on_delete=models.CASCADE)
     fees_type=models.ForeignKey(Feestype, on_delete=models.CASCADE)
-    actual_fees=models.DecimalField(max_digits=10,decimal_places=2)
-    default_installment=models.IntegerField(default=1)
+    year = models.DateField(null=True, blank=True)
+    actual_fees=models.DecimalField(max_digits=10,decimal_places=2,null=True, blank=True)
+    default_installment=models.IntegerField(default=1,null=True, blank=True)
 
 class ApproveFeeplanType(models.Model):
     student=models.ForeignKey(Student,on_delete=models.CASCADE, null=True, blank=True)

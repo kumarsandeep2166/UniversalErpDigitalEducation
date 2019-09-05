@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'user',
     'academics',
     'exam',
+    'collegesetup',
+    'librarymanagement',
+    
 ]
 
 MIDDLEWARE = [

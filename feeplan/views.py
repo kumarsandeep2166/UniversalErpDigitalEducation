@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .models import FeesPlanType,ApproveFeeplanType, Note, FeeCollect, FeeDetails, MoneyReceipt, MoneyReceiptDetails
 from django.views.generic import CreateView, DetailView, DeleteView, UpdateView, ListView,View
 from .forms import FeesPlanTypeForm
-from coursemanagement.models import Stream, Course, Batch
+from coursemanagement.models import Stream, Course, Batch, Feestype
 from django.db.models import Q
 from student.models import Enrollment, Student
 import datetime
@@ -43,7 +43,12 @@ class FeesPlanTypeCreate(CreateView):
         return render(request, 'feeplan/feeplan_create.html', {'form':form})
 
 
-
+def feeplan_created_view(request):
+    queryset = FeesPlanType.objects.all()
+    context = {
+        "queryset":queryset,
+    }
+    return render(request,'feeplan/feeplan_create_list.html',context)
 
 class FeesPlanTypeView(ListView):
     model=FeesPlanType
@@ -69,6 +74,29 @@ def ajax_load_list_data(request):
     objects=FeesPlanType.objects.filter(course=course_id,stream=stream_id,batch=batch_id)
     context={'objects': objects}
     return render(request,'feeplan/includes/data.html',context)
+
+def ajax_load_list_data_fee(request):
+    stream_id=request.GET.get('stream_id')
+    course_id=request.GET.get('course_id')
+    batch_id=request.GET.get('batch_id')
+    fees_type_id=request.GET.get('fees_type_id')
+    year_id=request.GET.get('year_id')
+    actual_fees_id=request.GET.get('actual_fees_id')
+    default_installment_id=request.GET.get('default_installment_id')
+    print(stream_id, course_id, batch_id, fees_type_id)
+    stream_obj = Stream.objects.get(id=stream_id)
+    course_obj = Course.objects.get(id=course_id)
+    batch_obj = Batch.objects.get(id=batch_id)
+    fees_obj = Feestype.objects.get(id=fees_type_id)
+    
+    obj,created = FeesPlanType.objects.get_or_create(course=course_obj,stream=stream_obj,batch=batch_obj,fees_type=fees_obj)
+    obj.year=year_id
+    obj.actual_fees=actual_fees_id
+    obj.default_installment=default_installment_id
+    obj.save()
+    objects=FeesPlanType.objects.filter(course=course_id,stream=stream_id,batch=batch_id)
+    context={'objects': objects}
+    return render(request,'feeplan/feeplan_create_list.html',context)
 """
 feeplanType
 stores information of current Course, Stream and Batch after submitting and the view shows

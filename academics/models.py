@@ -42,7 +42,6 @@ class Section(models.Model):
 class Subject(models.Model):
     semestar = models.ForeignKey(Semestar, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-     
 
     def __str__(self):
         return self.name
@@ -106,3 +105,13 @@ class SectionTimeTable(models.Model):
     day_of_week = models.CharField(max_length=20, choices=DAY_CHOICE)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+
+class Syllabus(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    syllabus = models.TextField(null=True, blank=True)
+    cover = models.ImageField(null=True, blank=True)
+
+    def __str__(self):
+        return self.syllabus

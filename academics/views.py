@@ -486,5 +486,4 @@ def save_section_student(request):
         return HttpResponse(section_json, 'application/json')
     except Exception as e:
         print(e)
-    
-   
+

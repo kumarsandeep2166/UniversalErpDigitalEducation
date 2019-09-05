@@ -22,6 +22,7 @@ urlpatterns=[
     path('printfee_pdf/<int:id>', views.printfee_pdf, name="printfee_pdf"),
     path('pay_multiple_fee/', views.pay_multiple_fee, name="pay_multiple_fee"),
     path('moneyreceiptdetails/', views.moneyreceiptdetails, name="moneyreceiptdetails"),
+    path('ajax_load_list_data_fee/', views.ajax_load_list_data_fee, name="ajax_load_list_data_fee"),
 
 
     

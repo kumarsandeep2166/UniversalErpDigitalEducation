@@ -11,7 +11,10 @@ urlpatterns = [
     path('',include('feeplan.urls')),
     path('',include('employee.urls')),
     path('',include('user.urls')),
-    path('',include('academics.urls')),   
+    path('',include('academics.urls')),  
+    path('',include('exam.urls')),
+    path('',include('collegesetup.urls')),
+    path('',include('librarymanagement.urls')),
 ]
 
 if settings.DEBUG:
