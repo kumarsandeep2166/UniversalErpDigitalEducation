@@ -133,6 +133,27 @@
         </div>
         
     </div>
+    <div class="row" id="previous_timetable_div" style="display: none;">
+        <div class="col-lg-12">
+            <div class="panel">
+                <header class="panel-heading clearfix col-sm-12">
+                    <div class="col-sm-4 col-xs-12">
+                        Current TimeTable
+                    </div>
+                </header>
+                <div class="panel-body" style="overflow-x:auto;">
+                    <table class="table table-bordered table-striped table-condensed" id="previous_timetable_table">
+                        <thead>
+            
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row" id="time_table_div" style="display: none;">
             <div class="col-lg-12">
                 <div class="panel">
@@ -160,7 +181,435 @@
 <script src="{% static 'js/bootstrap-timepicker.js' %}"></script>
 
 <script type="text/javascript">
-    
+function edit_table_content(obj){
+    var start = $(obj).attr('count_start');
+    var class_day = $("#class_day_list").val();
+    var class_day_list = class_day.split(" ");
+    var end = $(obj).attr('count_end');
+    var edit_button_id = "#edit_day_button";
+    var save_button_id = "#save_day_button";
+    var delete_button_id = "#delete_day_button";
+    var cancel_button_id = "#cancel_day_button";
+    $(edit_button_id).hide();
+    $(save_button_id).show();
+    $(delete_button_id).hide();
+    $(cancel_button_id).show();
+    for(i=start;i<end;i++){
+        edit_content(i);
+    }
+    for(i=0;i<class_day_list.length;i++){
+        var count = class_day_list[i];
+        if(count){
+            var edit_button_id = "#edit_day_button"+count;
+            var save_button_id = "#save_day_button"+count;
+            var delete_button_id = "#delete_day_button"+count;
+            var cancel_button_id = "#cancel_day_button"+count;
+            $(edit_button_id).hide();
+            $(save_button_id).show();
+            $(delete_button_id).hide();
+            $(cancel_button_id).show();
+        }
+    }
+}
+function restore_table_content(obj){
+    var start = $(obj).attr('count_start');
+    var class_day = $("#class_day_list").val();
+    var class_day_list = class_day.split(" ");
+    var end = $(obj).attr('count_end');
+    var edit_button_id = "#edit_day_button";
+    var save_button_id = "#save_day_button";
+    var delete_button_id = "#delete_day_button";
+    var cancel_button_id = "#cancel_day_button";
+    $(edit_button_id).show();
+    $(save_button_id).hide();
+    $(delete_button_id).show();
+    $(cancel_button_id).hide();
+    for(i=start;i<end;i++){
+        restore_content(i);
+    }
+    for(i=0;i<class_day_list.length;i++){
+        var count = class_day_list[i];
+        if(count){
+            var edit_button_id = "#edit_day_button"+count;
+            var save_button_id = "#save_day_button"+count;
+            var delete_button_id = "#delete_day_button"+count;
+            var cancel_button_id = "#cancel_day_button"+count;
+            $(edit_button_id).show();
+            $(save_button_id).hide();
+            $(delete_button_id).show();
+            $(cancel_button_id).hide();
+        }
+    }
+}
+function delete_table_tr_content(obj){
+    var start = $(obj).attr('count_start');
+    var end = $(obj).attr('count_end');
+    var data_array = new Array();
+    var i = 0;
+    for(var k=start;k<=end;k++){
+        i = i+1;
+        var section_time = "#section_tt"+k;
+        var teacher_time = "#teacher_tt"+k;
+        var teacher_time_id = $(teacher_time).val();
+        var section_time_id = $(section_time).val();
+        dict = {
+            'teacher_time_id': teacher_time_id,
+            'section_time_id': section_time_id,
+        }
+        data_array.push(dict);
+    }
+    console.log(data_array);
+    $.ajax({
+        url:'/delete_selected_day_time_table/',
+        type: "POST",
+        data:{
+            'data': data_array,
+            'total': i,
+        },
+        success:function(data){
+            alert(data.msg);
+            show_time_table();
+        },
+    });
+}
+function save_table_tr_content(obj){
+    var count = $(obj).attr('count');
+    var start = $(obj).attr('count_start');
+    var end = $(obj).attr('count_end');
+    var data_array = new Array();
+    var i = 0;
+    for(var k=start;k<=end;k++){
+        i = i+1;
+        var day_id = "#view_day"+k;
+        var start_time_id = "#pttst"+k;
+        var end_time_id = "#pttet"+k;
+        var subject_id = "#pttts"+k;
+        var section_time = "#section_tt"+k;
+        var teacher_time = "#teacher_tt"+k;
+        var start_time = $(start_time_id).val();
+        var end_time = $(end_time_id).val();
+        var subject_teacher_id = $(subject_id).val();
+        var teacher_time_id = $(teacher_time).val();
+        var section_time_id = $(section_time).val();
+        var day = $(day_id).val();
+        dict = {
+            'start_time': start_time,
+            'end_time': end_time,
+            'subject_teacher_id': subject_teacher_id,
+            'teacher_time_id': teacher_time_id,
+            'section_time_id': section_time_id,
+            'day': day
+        }
+        data_array.push(dict);
+    }
+    console.log(data_array);
+    var section = $("#id_section").val();
+    $.ajax({
+        url:'/edit_selected_day_time_table/',
+        type: "POST",
+        data:{
+            'data': data_array,
+            'section': section,
+            'total': i,
+        },
+        success:function(data){
+            alert("msg");
+            show_time_table();
+        },
+    });
+}
+function restore_table_tr_content(obj){
+    var count = $(obj).attr('count');
+    var start = $(obj).attr('count_start');
+    var end = $(obj).attr('count_end');
+    var edit_button_id = "#edit_day_button"+count;
+    var save_button_id = "#save_day_button"+count;
+    var delete_button_id = "#delete_day_button"+count;
+    var cancel_button_id = "#cancel_day_button"+count;
+    $(edit_button_id).show();
+    $(save_button_id).hide();
+    $(delete_button_id).show();
+    $(cancel_button_id).hide();
+    for(i=start;i<=end;i++){
+        restore_content(i);
+    }
+}
+function edit_table_tr_content(obj){
+    var count = $(obj).attr('count');
+    var start = $(obj).attr('count_start');
+    var end = $(obj).attr('count_end');
+    var edit_button_id = "#edit_day_button"+count;
+    var save_button_id = "#save_day_button"+count;
+    var delete_button_id = "#delete_day_button"+count;
+    var cancel_button_id = "#cancel_day_button"+count;
+    $(edit_button_id).hide();
+    $(save_button_id).show();
+    $(delete_button_id).hide();
+    $(cancel_button_id).show();
+    for(i=start;i<=end;i++){
+        edit_content(i);
+    }
+}
+function delete_table_td_content(obj){
+        var k = $(obj).attr('count');
+        var section_time = "#section_tt"+k;
+        var teacher_time = "#teacher_tt"+k;
+        var teacher_time_id = $(teacher_time).val();
+        var section_time_id = $(section_time).val();
+        $.ajax({
+            url:'/delete_selected_time_table/',
+            type: "GET",
+            data:{
+                'teacher_time_id': teacher_time_id,
+                'section_time_id': section_time_id,
+            },
+            success:function(data){
+                alert(data.msg);
+                show_time_table();
+            },
+        });
+    }
+    function save_table_td_content(obj){
+        var k = $(obj).attr('count');
+        var day_id = "#view_day"+k;
+        var start_time_id = "#pttst"+k;
+        var end_time_id = "#pttet"+k;
+        var subject_id = "#pttts"+k;
+        var section_time = "#section_tt"+k;
+        var teacher_time = "#teacher_tt"+k;
+        var start_time = $(start_time_id).val();
+        var end_time = $(end_time_id).val();
+        var subject_teacher_id = $(subject_id).val();
+        var teacher_time_id = $(teacher_time).val();
+        var section_time_id = $(section_time).val();
+        var day = $(day_id).val();
+        var section = $("#id_section").val();
+        $.ajax({
+            url:'/edit_selected_time_table/',
+            type: "GET",
+            data:{
+                'start_time': start_time,
+                'end_time': end_time,
+                'subject_teacher_id': subject_teacher_id,
+                'teacher_time_id': teacher_time_id,
+                'section_time_id': section_time_id,
+                'day': day,
+                'section': section,
+            },
+            success:function(data){
+                alert("msg");
+                show_time_table();
+            },
+        });
+    }
+    function restore_table_td_content(obj){
+        var k = $(obj).attr('count');
+        restore_content(k);
+    }
+    function restore_content(k){
+        var start_time_id = "#pttst"+k;
+        var end_time_id = "#pttet"+k;
+        var subject_id = "#pttts"+k;
+        var edit_start_time_id = "#edit_pttst"+k;
+        var edit_end_time_id = "#edit_pttet"+k;
+        var edit_subject_id = "#edit_pttts"+k;
+        var save_button_id = "#save_button"+k;
+        var edit_button_id = "#edit_button"+k;
+        var start_time_span_id = "#start_time_span"+k;
+        var end_time_span_id = "#end_time_span"+k;
+        var cancel_button_id = "#cancel_button"+k;
+        var delete_button_id = "#delete_button"+k;
+        $(end_time_id).val($(edit_end_time_id).val());
+        $(start_time_id).val($(edit_start_time_id).val());
+        $(subject_id).val($(edit_subject_id).val());
+        $(start_time_id).prop("readonly", true);
+        $(end_time_id).prop("readonly", true);
+        $(subject_id).prop("disabled", true);
+        $(edit_button_id).show();
+        $(save_button_id).hide();
+        $(delete_button_id).show();
+        $(cancel_button_id).hide();
+        $(start_time_span_id).hide();
+        $(end_time_span_id).hide();
+    }
+    function edit_table_td_content(obj){
+        var k = $(obj).attr('count');
+        edit_content(k);
+    }
+    function edit_content(k){
+        
+        var start_time_id = "#pttst"+k;
+        var end_time_id = "#pttet"+k;
+        var subject_id = "#pttts"+k;
+        var save_button_id = "#save_button"+k;
+        var edit_button_id = "#edit_button"+k;
+        var start_time_span_id = "#start_time_span"+k;
+        var end_time_span_id = "#end_time_span"+k;
+        var cancel_button_id = "#cancel_button"+k;
+        var delete_button_id = "#delete_button"+k;
+        $(start_time_id).prop("readonly", false);
+        $(end_time_id).prop("readonly", false);
+        $(subject_id).prop("disabled", false);
+        $(edit_button_id).hide();
+        $(save_button_id).show();
+        $(delete_button_id).hide();
+        $(cancel_button_id).show();
+        $(start_time_span_id).show();
+        $(end_time_span_id).show();
+        $(start_time_span_id).html('<i class="glyphicon glyphicon-time"></i>');
+        $(end_time_span_id).html('<i class="glyphicon glyphicon-time"></i>');
+    }
+    function load_previous_available_subject(obj){
+        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
+        var subject_id = $(obj).attr('id');
+        var new_id = subject_id.replace('pttts','');
+        
+        var j = new_id.replace(/[^0-9]+/ig,"");
+        var start_id = "#pttst"+j;
+        var end_id = "#pttet"+j;
+        var start_time = $(start_id).val();
+        var end_time = $(end_id).val();
+        var subject_teacher =$(obj).val();
+        var day = day_of_week[j];
+        var teacher_time = "#teacher_tt"+j;
+        var teacher_table_id = $(teacher_time).val();
+        if(subject_teacher>0){
+            $.ajax({
+                url:'/check_previous_teacher_available/',
+                data:{
+                    'start_time':start_time,
+                    'end_time': end_time,
+                    'subject_teacher': subject_teacher,
+                    'day': day,
+                    'teacher_table_id': teacher_table_id,
+                },
+                success:function(data){
+                    if(data.msg=="available"){
+
+                    } else if(data.merge=="merge"){
+                        if(cnf_msg = confirm("want to merge class")){
+                            console.log("hi");
+                        }else {
+                            $(obj).val(0);
+                        }
+                    } else {
+                        alert("teacher is not available at this time")
+                        $(obj).val(0);
+                    }
+                }
+            });
+        }
+    }
+    function show_time_table(){
+        var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
+        var section = $("#id_section").val();
+        $.ajax({
+            url:'/student_time_table_view/',
+            type: "GET",
+            data:{
+                'section': section,
+            },
+            success:function(data){
+                $("#previous_timetable_div").show();
+                var thead_str = '<tr class="hdclr"><th width="10%">Day</th><th>Action</th><th>Paticular</th>';
+                for(i=1; i<=data.maximum;i++){
+                    thead_str += '<th colspan="2">Class'+i+'</th>';
+                }
+                thead_str += '</tr>';
+                var body_str = '';
+                var m = 0;
+                var k = 0;
+                var class_day = "";
+                for(i=0; i<data.section_time_table.length;i++){
+                    if(data.section_time_table[i].class.length>0){
+                        class_day += i + " ";
+                        var class_length = data.section_time_table[i].class.length;
+                        var start = k;
+                        var end = k+class_length-1;
+                        body_str += '<tr><td rowspan="3">'+data.section_time_table[i].day+'</td>';
+                        body_str += '<td rowspan="3">';
+                        body_str += '<button id="edit_day_button'+i+'" onclick="edit_table_tr_content(this);" count_start="'+start+'" count_end="'+end+'" count="'+i+'">Edit</button><button style="display: none;" id="save_day_button'+i+'" onclick="save_table_tr_content(this);" count_start="'+start+'" count_end="'+end+'" count="'+i+'">Save</button>';
+                        body_str += '<button id="delete_day_button'+i+'" onclick="delete_table_tr_content(this);" count_start="'+start+'" count_end="'+end+'" count="'+i+'">Delete</button><button id="cancel_day_button'+i+'"style="display: none;" onclick="restore_table_tr_content(this);" count_start="'+start+'" count_end="'+end+'" count="'+i+'">Cancel</button>';    
+                        body_str += '</td>';
+                        body_str += '<td>Time</td>';
+                        k = m;
+                        for(j=0; j<data.section_time_table[i].class.length;j++){
+                            body_str += '<td>';
+                            body_str += '<div class="col-sm-12 col-xs-12 tmop">';
+                            body_str += '<div class="input-group bootstrap-timepicker timepicker">';
+                            body_str += '<input type="text" class="form-control input-small timepicker1" id="pttst'+k+'" value="'+data.section_time_table[i].class[j].fromtime+'" readonly="readonly">';
+                            body_str += '<span class="input-group-addon" id="start_time_span'+k+'" style="display: none;><i class="glyphicon glyphicon-time"></i></span>';
+                            body_str += '</div>';
+                            body_str += '</div>';
+                            body_str += '<input type="text" class="form-control input-small timepicker1" id="edit_pttst'+k+'" value="'+data.section_time_table[i].class[j].fromtime+'" style="display: none;">';
+                            body_str += '</td>';
+                            body_str += '<td>';
+                            body_str += '<div class="col-sm-12 col-xs-12 tmop">';
+                            body_str += '<div class="input-group bootstrap-timepicker timepicker">';
+                            body_str += '<input type="text" class="form-control input-small timepicker1" id="pttet'+k+'" value="'+data.section_time_table[i].class[j].totime+'" readonly="readonly">';
+                            body_str += '<span class="input-group-addon" id="end_time_span'+k+'" style="display: none;><i class="glyphicon glyphicon-time"></i></span>';
+                            body_str += '</div>';
+                            body_str += '</div>';
+                            body_str += '<input type="text" class="form-control input-small timepicker1" id="edit_pttet'+k+'" value="'+data.section_time_table[i].class[j].totime+'" style="display: none;">';
+                            body_str += '</td>';
+                            k = k+1;
+                        }
+                        body_str += '</tr>';
+                        body_str += '<tr><td>Subject</td>';
+                        k = m;
+                        for(j=0; j<data.section_time_table[i].class.length;j++){
+                            body_str += '<td  colspan="2">';
+                            body_str += '<div class="form-group col-sm-12 col-xs-12 mn10">';
+                            body_str += '<select class="form-control subject_dropdown" id="pttts'+k+'"  onchange="load_previous_available_subject(this)" disabled="disabled">';
+                            for(l=0;l<data.subject_list.length;l++){
+                                if(data.subject_list[l].id==data.section_time_table[i].class[j].subject_teacher_id) {
+                                    body_str += '<option value="'+ data.subject_list[l].id +'" selected="selected">'+ data.subject_list[l].name +'</option>';
+                                } else {
+                                    body_str += '<option value="'+ data.subject_list[l].id +'">'+ data.subject_list[l].name +'</option>';
+                                }
+                            }
+                            body_str += '</select>';
+                            body_str += '<select class="form-control subject_dropdown" id="edit_pttts'+k+'" style="display: none;">';
+                            for(l=0;l<data.subject_list.length;l++){
+                                if(data.subject_list[l].id==data.section_time_table[i].class[j].subject_teacher_id) {
+                                    body_str += '<option value="'+ data.subject_list[l].id +'" selected="selected">'+ data.subject_list[l].name +'</option>';
+                                } else {
+                                    body_str += '<option value="'+ data.subject_list[l].id +'">'+ data.subject_list[l].name +'</option>';
+                                }
+                            }
+                            body_str += '</select>';
+                            body_str += '</div>';
+                            body_str += '</td>';
+                            k = k+1;
+                        }
+                        body_str += '</tr>';
+                        body_str += '<tr><td>Action</td>';
+                        k = m;
+                        for(j=0; j<data.section_time_table[i].class.length;j++){
+                            body_str += '<td  colspan="2">';
+                            body_str += '<input type="hidden" id="section_tt'+k+'" value="'+data.section_time_table[i].class[j].id+'">';
+                            body_str += '<input type="hidden" id="teacher_tt'+k+'" value="'+data.section_time_table[i].class[j].teacher_id+'">';
+                            body_str += '<input type="hidden" id="view_day'+k+'" value="'+day_of_week[i]+'">';
+                            body_str += '<button id="edit_button'+k+'" onclick="edit_table_td_content(this);" count="'+k+'">Edit</button><button style="display: none;" id="save_button'+k+'" onclick="save_table_td_content(this);" count="'+k+'">Save</button>';
+                            body_str += '<button id="delete_button'+k+'" onclick="delete_table_td_content(this);" count="'+k+'">Delete</button><button id="cancel_button'+k+'"style="display: none;" onclick="restore_table_td_content(this);" count="'+k+'">Cancel</button>';
+                            body_str += '</td>';
+                            k = k+1;
+                        }
+                        body_str += '</tr>';
+                        m=k;
+                    }
+                }
+                body_str += '<tr><td><input type="hidden" id="class_day_list" value="'+class_day+'"><button id="edit_day_button" onclick="edit_table_content(this);" count_start="0" count_end="'+k+'">Edit</button><button style="display: none;" id="save_day_button" onclick="save_table_content(this);" count_start="0" count_end="'+k+'">Save</button>';
+                body_str += '<button id="delete_day_button" onclick="delete_table_content(this);" count_start="0" count_end="'+k+'">Delete</button><button id="cancel_day_button"style="display: none;" onclick="restore_table_content(this);" count_start="0" count_end="'+k+'">Cancel</button></td></tr>';
+                $("#previous_timetable_table thead").html(thead_str);
+                $("#previous_timetable_table tbody").html(body_str);
+                $('.timepicker1').timepicker();
+            },
+            error:function(data){
+                
+            }
+        });   
+    }
     
     $("#id_stream").change(function(){
         var url=$("#assignSubjectTeacherForm").attr("data-course-url");
@@ -234,7 +683,8 @@
             }
         });
     });
-    $("#id_section").change(function(){      
+    $("#id_section").change(function(){
+        show_time_table();
         $("#daytable").show();
     });
 
@@ -367,6 +817,7 @@
             });
         }
     }
+    
     function saveTimeTable(){
         var day_of_week = ["Monday", "Tuesday", "WednesDay", "Thursday", "Friday", "Saturday", "Sunday"];
         var day_class = new Array(7);
@@ -409,7 +860,9 @@
                 'section': $("#id_section").val(),
                 },
             success:function(data){
-                alert("Time table saved successfully!!!")
+                alert("Time table saved successfully!!!");
+                show_time_table();
+                $("#time_table_div").hide();
             }
         });
     }

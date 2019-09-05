@@ -35,4 +35,9 @@ urlpatterns=[
     path('student_time_table_load/', views.student_time_table_load, name="student_time_table_load"),   
     path('teacher_time_table_view/', views.teacher_time_table_view, name="teacher_time_table_view"),
     path('teacher_time_table_load/', views.teacher_time_table_load, name="teacher_time_table_load"),
+    path('edit_selected_time_table/', views.edit_selected_time_table, name="edit_selected_time_table"),
+    path('delete_selected_time_table/', views.delete_selected_time_table, name="delete_selected_time_table"),
+    path('check_previous_teacher_available/', views.check_previous_teacher_available, name="check_previous_teacher_available"),
+    path('edit_selected_day_time_table/', views.edit_selected_day_time_table, name="edit_selected_day_time_table"),
+    path('delete_selected_day_time_table/', views.delete_selected_day_time_table, name="delete_selected_day_time_table"),
 ]
