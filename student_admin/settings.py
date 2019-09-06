@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'exam',
     'collegesetup',
     'librarymanagement',
-    
+    'hostel',
 ]
 
 MIDDLEWARE = [

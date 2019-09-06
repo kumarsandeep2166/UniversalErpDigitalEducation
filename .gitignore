@@ -17,3 +17,5 @@ student_admin/local_settings.py
 exam/migrations/*.*
 librarymanagement/migrations/*.*
 librarymanagement/__pycache__/
+hostel/migrations/*.*
+hostel/__pycache__/

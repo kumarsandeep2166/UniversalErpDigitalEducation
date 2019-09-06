@@ -15,6 +15,7 @@ urlpatterns = [
     path('',include('exam.urls')),
     path('',include('collegesetup.urls')),
     path('',include('librarymanagement.urls')),
+    path('',include('hostel.urls')),
 ]
 
 if settings.DEBUG:
