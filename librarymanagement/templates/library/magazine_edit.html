@@ -8,128 +8,100 @@
         <div class="col-sm-12 col-xs-12 col-sm-offset-0">
             <div class="text-center">
                 <h1 class="hdrcolorbg">
-                    Add A Book
+                    Add An EBook
                 </h1>
             </div>
             <form class="frmbgg clear-fx"  method="post" enctype="multipart/form-data"  id="assignSubjectTeacherForm" data-course-url="{% url 'ajax_load_course' %}" data-batch-url="{% url 'ajax_load_batch' %}" data-semestar-url="{% url 'ajax_load_sem' %}"  data-subject-url="{% url 'ajax_load_subject' %}">
                 <div class="row">
                     {% csrf_token %}
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Name</label>
+                        <label>Name</label>
                         {{ form.name}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>ISBN Number</label>
-                        {{ form.ISBN}}
+                        <label>Publisher</label>
+                        {{ form.publisher}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Author</label>
-                        {{ form.book_author}}
+                        <label>publication year</label>
+                        {{ form.publication_year}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Publication Date</label>
-                        {{ form.publication_date}}
+                        <label>Category</label>
+                        {{ form.category}}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Type</label>
-                        {{ form.book_type}}
+                        <label>Location</label>
+                        {{ form.location}}
                     </div> 
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Product Category</label>
-                        {{ form.product_category}}
+                        <label>ISBN</label>
+                        {{ form.ISBN}}
                     </div>                        
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Price</label>                        
-                        {{ form.book_price}}
+                        <label>Magazine Format</label>                        
+                        {{ form.magazine_format}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Description</label>                        
-                        {{ form.book_description}}
+                        <label>Author</label>                        
+                        {{ form.book_author}}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Bar Code</label>                        
-                        {{ form.barcode}}
-                    </div>  
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Cover Image</label>                        
-                        {{ form.cover}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Number</label>                        
-                        {{ form.book_number}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Subtitle</label>                        
-                        {{ form.book_subtitle}}
-                    </div>      
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Sub Author</label>                        
-                        {{ form.book_sub_author}}
-                    </div>  
                     <div class="form-group col-sm-3 col-xs-12">
                         <label>Book Sub Author1</label>                        
+                        {{ form.book_sub_author}}
+                    </div> 
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Book Sub Author2</label>                        
                         {{ form.book_sub_author1}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Sub Author2</label>                        
-                        {{ form.book_sub_author2}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Book Sub Author2</label>                        
-                        {{ form.book_sub_author3}}
-                    </div>      
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Publisher</label>                        
-                        {{ form.publisher}}
-                    </div>  
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Genre</label>                        
-                        {{ form.genre}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Number Of Pages</label>                        
-                        {{ form.no_of_pages}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Language</label>                        
-                        {{ form.language}}
-                    </div>      
-                </div>
-                <div class="row">
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Edition</label>                        
-                        {{ form.edition}}
-                    </div> 
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Link</label>                        
-                        {{ form.link}}
-                    </div>
-                    <div class="form-group col-sm-3 col-xs-12">
-                        <label>Location</label>                        
-                        {{ form.location}}
+                        <label>Magazine Type</label>                        
+                        {{ form.magazine_type}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
                         <label>Supplier</label>                        
                         {{ form.supplier}}
+                    </div>                  
+                </div>                
+                <div class="row">
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Subject</label>
+                        {{ form.subject}}
+                    </div> 
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Remark</label>
+                        {{ form.remark}}
+                    </div>                        
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Remark1</label>                        
+                        {{ form.remarkq}}
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Remark2</label>                        
+                        {{ form.remark2}}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Subject</label>                        
-                        {{ form.subject}}
+                        <label>Price</label>                        
+                        {{ form.price}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
-                        <label>Purchase From</label>                        
+                        <label>Purchase Order</label>                        
                         {{ form.purchase_oder}}
-                    </div>                  
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Edition</label>                        
+                        {{ form.edition}}
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Link</label>                        
+                        {{ form.link}}
+                    </div>
                 </div>
                     <button class="btn btn-info save" type="submit">Submit</button>
             </form> 
@@ -160,8 +132,8 @@
 <script src="{% static 'js/datepicker.js' %}"></script>
 <script>
 $( function() {
-        $( "#id_publication_date" ).datepicker();
-        $( "#id_publication_date" ).attr('autocomplete','off');
+        $( "#id_publication_year" ).datepicker();
+        $( "#id_publication_year" ).attr('autocomplete','off');
 } );
 </script>
 {% endblock content %}

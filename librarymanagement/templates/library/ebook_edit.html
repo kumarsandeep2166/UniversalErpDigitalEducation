@@ -42,7 +42,7 @@
                     </div>                        
                     <div class="form-group col-sm-3 col-xs-12">
                         <label>Book Format</label>                        
-                        {{ form.journal_format}}
+                        {{ form.ebook_format}}
                     </div>
                     <div class="form-group col-sm-3 col-xs-12">
                         <label>Author</label>                        
@@ -90,6 +90,18 @@
                     <div class="form-group col-sm-3 col-xs-12">
                         <label>Price</label>                        
                         {{ form.price}}
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Purchase Order</label>                        
+                        {{ form.purchase_oder}}
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Edition</label>                        
+                        {{ form.edition}}
+                    </div>
+                    <div class="form-group col-sm-3 col-xs-12">
+                        <label>Link</label>                        
+                        {{ form.link}}
                     </div>
                 </div>
                     <button class="btn btn-info save" type="submit">Update</button>

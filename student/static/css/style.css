@@ -7006,3 +7006,14 @@ ul.sidebar-menu li.active ul.sub {
 }
 
  
+.search_buttton_book {
+    position: absolute;
+    margin-top: 2px;
+    padding: 8px 20px;
+}
+.dvtbg{
+    background-color: #94b9b7;
+    padding: 20px 0;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}

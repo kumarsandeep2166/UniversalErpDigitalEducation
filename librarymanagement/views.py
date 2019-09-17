@@ -2,14 +2,23 @@ from django.shortcuts import render, redirect,get_object_or_404
 from .models import (BookDetails, BookType, Vendor,
                         ProductCategory, PurchaseOrder, Location, 
                         LibraryNumber, RoomNo, SelveNo, Journal,
-                        E_Book, Magazine)
+                        E_Book, Magazine, BookIssueStudent, JournalIssueStudent,
+                        JournalIssueTeacher, EbookIssueStudent, EbookIssueTeacher,BookIssueTeacher,
+                        MagazineIssueStudent, MagazineIssueTeacher)
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, DeleteView, UpdateView
 from .forms import (BookAddForm,BookTypeForm,VendorForm,ProductCategoryForm,
                     ProductCategoryFormUpdate,BookTypeFormUpdate,PurchaseOrderForm,
                     LocationForm,LibraryNumberCreateForm,RoomNoCreateForm,ShelveForm,
-                    LocationUpdateForm, JournalForm, EBookForm, MagazineForm)
+                    LocationUpdateForm, JournalForm, EBookForm, MagazineForm,
+                    )
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from student.models import Enrollment, Student
+from employee.models import Employee
+from django.db.models import Sum
+import datetime
+import json
+from django.db.models import Q
 
 
 class BookTypeFormList(ListView):
@@ -68,6 +77,7 @@ class BookList(ListView):
     
     def get_context_data(self, *args ,**kwargs):
         context=super().get_context_data(**kwargs)
+        print(context['object_list'][0].cover)
         return context
 
 class BookEdit(UpdateView):
@@ -107,6 +117,9 @@ def bookeditview(request,pk):
         form.fields["location"].initial = obj.location
         form.fields["supplier"].initial = obj.supplier
         form.fields["subject"].initial = obj.subject
+        form.fields["purchase_oder"].initial = obj.purchase_oder
+        form.fields["edition"].initial = obj.edition
+        form.fields["link"].initial = obj.link
         return render(request,'library/editbook.html',{'form':form})
 
 class BookDelete(DeleteView):
@@ -140,8 +153,6 @@ class BookCreate(CreateView):
             print(form.errors)
         return render(request,'library/addbook.html',{'form':form})
 
-
-
 class VendorCreate(CreateView):
     model = Vendor
     form_class = VendorForm
@@ -162,7 +173,6 @@ class VendorCreate(CreateView):
             print(form.errors)
             return redirect('vendor_list')        
         return render(request,'library/vendor_create.html',{'form':form})
-
 
 
 class VendorList(ListView):
@@ -188,6 +198,9 @@ def vendor_update(request, pk):
         form.fields["contact"].initial = obj.contact
         form.fields["email"].initial = obj.email
         form.fields["address"].initial = obj.address
+        form.fields["gst"].initial = obj.gst
+        form.fields["pan"].initial = obj.pan
+        form.fields["tan"].initial = obj.tan
         return render(request,'library/vendor_edit.html',{'form':form})
 
 
@@ -510,7 +523,10 @@ def journalupdateview(request,pk):
         form.fields["subject"].initial = obj.subject
         form.fields["journal_format"].initial = obj.journal_format
         form.fields["supplier"].initial = obj.supplier
-        form.fields["subject"].initial = obj.subject     
+        form.fields["subject"].initial = obj.subject
+        form.fields["purchase_oder"].initial = obj.purchase_oder
+        form.fields["edition"].initial = obj.edition
+        form.fields["link"].initial = obj.link 
         return render(request,'library/journal_edit.html',{'form':form})
 
 class EbookCreate(CreateView):
@@ -574,5 +590,505 @@ def ebookupdateview(request,pk):
         form.fields["remark2"].initial = obj.remark2
         form.fields["price"].initial = obj.price
         form.fields["ebook_type"].initial = obj.ebook_type
+        form.fields["purchase_oder"].initial = obj.purchase_oder
+        form.fields["edition"].initial = obj.edition
+        form.fields["link"].initial = obj.link
         return render(request,'library/ebook_edit.html',{'form':form})
 
+class MagazineCreate(CreateView):
+    model = Magazine
+    form_class =MagazineForm
+    template_name = 'library/magazine_create.html'
+
+    def get_context_data(self, *args ,**kwargs):
+        context=super(MagazineCreate,self).get_context_data(**kwargs)        
+        return context
+    
+    def get(self,request,*args,**kwargs):        
+        context={'form':MagazineForm()}
+        return render(request,'library/magazine_create.html',context)
+    
+    def post(self,request,*args,**kwargs):
+        form=MagazineForm(request.POST or None)
+        if form.is_valid():
+            form.save()
+            return redirect('magazine_list')
+        return render(request,'library/magazine_create.html',{'form':form})
+
+class MagazineList(ListView):
+    queryset = Magazine.objects.all()
+    template_name = 'library/magazine_list.html'
+    context_object_name='magazine_list'
+    
+    def get_context_data(self, *args ,**kwargs):
+        context=super().get_context_data(**kwargs)
+        return context
+
+class MagazineDelete(DeleteView):
+    model = Magazine
+    success_url=reverse_lazy('magazine_list')
+
+def magazineeditview(request,pk):
+    obj = get_object_or_404(Magazine, pk=pk)
+    if request.method=="POST":
+        form = EBookForm(request.POST or None)
+        if form.is_valid():
+            form.update(obj)
+        return redirect(reverse_lazy('magazine_list'))    
+    else:
+        form = MagazineForm()
+        form.fields["name"].initial = obj.name
+        form.fields["publisher"].initial = obj.publisher
+        form.fields["publication_year"].initial = obj.publication_year
+        form.fields["location"].initial = obj.location
+        form.fields["category"].initial = obj.category
+        form.fields["ISBN"].initial = obj.ISBN
+        form.fields["book_author"].initial = obj.book_author
+        form.fields["book_sub_author"].initial = obj.book_sub_author
+        form.fields["book_sub_author1"].initial = obj.book_sub_author1
+        form.fields["magazine_format"].initial = obj.magazine_format
+        form.fields["supplier"].initial = obj.supplier
+        form.fields["subject"].initial = obj.subject
+        form.fields["remark"].initial = obj.remark
+        form.fields["remarkq"].initial = obj.remarkq
+        form.fields["remark2"].initial = obj.remark2
+        form.fields["price"].initial = obj.price
+        form.fields["magazine_type"].initial = obj.magazine_type
+        form.fields["purchase_oder"].initial = obj.purchase_oder
+        form.fields["edition"].initial = obj.edition
+        form.fields["link"].initial = obj.link
+        return render(request,'library/magazine_edit.html',{'form':form})
+
+def issuebook(request):
+    try:
+        if request.method == "POST":
+            student_id = request.POST.get('student_id')
+            student = Enrollment.objects.get(id=int(student_id))            
+            status = "Issued"
+            books_id = request.POST.getlist('selector')
+            for book_id in books_id:
+                book = BookDetails.objects.get(id=book_id)
+                b = BookIssueStudent()
+                b.status=status
+                b.is_active=True
+                b.issue_date=datetime.date.today()
+                b.student=student
+                b.book=book
+                b.save()
+                return redirect("/")
+        else:
+            students = Enrollment.objects.all()           
+            
+        context = {"students": students}
+        return render(request,'library/issuebook.html',context)
+    except Exception as e:
+        print(e)
+
+
+def ajax_showbook_list(request):
+    student_id = request.POST.get('student')
+    data = BookIssueStudent.objects.filter(student=int(student_id),status="Issued", is_active=True,)
+    current_user = BookIssueStudent.objects.filter(status="Issued", is_active=True,)
+    book_pk_list = []
+    for b in current_user:
+        book_pk_list.append(b.book.pk)
+    books = BookDetails.objects.exclude(pk__in=book_pk_list)
+    context = {'books':books,'data':data}
+    return render(request,'library/ajax_book_list.html', context)
+
+
+def ajax_issue_book(request):
+    student_id = request.POST.get('student')
+    stud_obj = Student.objects.get(pk=student_id)
+    book_id = request.POST.getlist('book_id_list[]')
+    status="Issued"
+    curr_date = datetime.date.today()
+    for i in book_id:
+        book_obj = BookDetails.objects.get(pk=int(i))
+        BookIssueStudent.objects.create(
+            student=stud_obj,
+            book=book_obj,
+            status=status,
+            issue_date=curr_date,
+            is_active=True,
+        )
+
+    data = BookIssueStudent.objects.filter(student=student_id,status="Issued", is_active=True,)
+    current_user = BookIssueStudent.objects.filter(status="Issued", is_active=True,)
+    book_pk_list = []
+    for b in current_user:
+        book_pk_list.append(b.book.pk)
+    books = BookDetails.objects.exclude(pk__in=book_pk_list)
+    context = {'books':books,'data':data}
+    return render(request,'library/ajax_book_list.html', context)
+
+
+def issue_book(request):
+    return render(request,'library/issue_new_book.html')
+
+def issue_new_book_ajax(request):
+    student = request.GET.get('student')
+    stud_obj = Enrollment.objects.get(enrollment_number=student)
+    if stud_obj is None:
+        message = "Student is not available"
+        stud_name = ''
+        book_list = []
+        book_history = []
+    else:
+        student_id = stud_obj.student_name.pk
+        stud_name = str(stud_obj.student_name)
+        book_list = get_student_current_book(student_id)
+        book_history = get_student_returned_book(student_id)
+        message = "Successfull"
+    
+    context = {
+        'stud_name': stud_name,
+        'book_list': book_list,
+        'book_history': book_history,
+        'message': message,
+    }
+    print(book_list)
+    book_available_json = json.dumps(context)
+    return HttpResponse(book_available_json, 'application/json')
+
+def get_student_current_book(student_id):
+    book_list = []
+    book_objs = BookIssueStudent.objects.filter(student=student_id,status="Issued", is_active=True)  
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['book'] = str(obj.book.name)
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['book_type'] = str(obj.book.book_type.name)
+        book_dict['category'] = "Book"
+        book_dict['status'] = obj.status
+        book_dict['issue_date'] = str(obj.issue_date)
+        book_dict['is_active'] = obj.is_active       
+        book_list.append(book_dict)
+
+    book_objs = JournalIssueStudent.objects.filter(student=student_id,status="Issued", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['journal'] = str(obj.journal.name)
+        book_dict['book_author'] = str(obj.journal.publisher)
+        book_dict['book_type'] = str(obj.book.journal_type.name)
+        book_dict['category'] = "Journal"
+        book_dict['status'] = obj.status
+        book_dict['issue_date'] = str(obj.issue_date)
+        book_dict['is_active'] = obj.is_active
+        book_list.append(book_dict)
+
+    book_objs = EbookIssueStudent.objects.filter(student=student_id,status="Issued", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['e_book'] = str(obj.e_book.name)
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['book_type'] = str(obj.book.ebook_type.name)
+        book_dict['category'] = "Ebook"
+        book_dict['status'] = obj.status
+        book_dict['issue_date'] = str(obj.issue_date)
+        book_dict['is_active'] = obj.is_active    
+        book_list.append(book_dict)
+
+    book_objs = MagazineIssueStudent.objects.filter(student=student_id,status="Issued", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['magazine'] = str(obj.magazine.name)
+        book_dict['book_type'] = str(obj.book.magazine_type.name)
+        book_dict['category'] = "Magazine"
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['status'] = obj.status
+        book_dict['issue_date'] = str(obj.issue_date)
+        book_dict['is_active'] = obj.is_active  
+        book_list.append(book_dict)
+    return book_list
+
+
+def get_student_returned_book(student_id):
+    book_list = []
+    book_objs = BookIssueStudent.objects.filter(student=student_id,status="Returned", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['book'] = str(obj.book.name)
+        book_dict['book_type'] = str(obj.book.book_type.name)
+        book_dict['category'] = "Book"
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['status'] = obj.status
+        book_dict['return_date'] = str(obj.return_date)
+        book_dict['is_active'] = obj.is_active  
+        book_list.append(book_dict)
+
+    book_objs = JournalIssueStudent.objects.filter(student=student_id,status="Returned", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['journal'] = str(obj.journal.name)
+        book_dict['book_author'] = str(obj.journal.publisher)
+        book_dict['category'] = "Journal"
+        book_dict['book_type'] = str(obj.book.journal_type.name)
+        book_dict['status'] = obj.status
+        book_dict['return_date'] = str(obj.return_date)
+        book_dict['is_active'] = obj.is_active
+        book_list.append(book_dict)
+
+    book_objs = EbookIssueStudent.objects.filter(student=student_id,status="Returned", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['e_book'] = str(obj.e_book.name)
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['book_type'] = str(obj.book.ebook_type.name)
+        book_dict['category'] = "EBook"
+        book_dict['status'] = obj.status
+        book_dict['return_date'] = str(obj.return_date)
+        book_dict['is_active'] = obj.is_active   
+        book_list.append(book_dict)
+
+    book_objs = MagazineIssueStudent.objects.filter(student=student_id,status="Returned", is_active=True)
+    for obj in book_objs:
+        book_dict = {}
+        book_dict['id'] = obj.id
+        book_dict['student'] = str(obj.student)
+        book_dict['magazine'] = str(obj.magazine.name)
+        book_dict['book_author'] = str(obj.book.book_author)
+        book_dict['book_type'] = str(obj.book.magazine_type.name)
+        book_dict['category'] = "Magazine"
+        book_dict['status'] = obj.status
+        book_dict['return_date'] = str(obj.return_date)
+        book_dict['is_active'] = obj.is_active
+        book_list.append(book_dict)
+    return book_list
+
+def autocompletesearchbooks(request):
+    data = request.POST.get('term')
+    type_of_book = request.POST.get('select_type')
+    if type_of_book=='Journal':
+        Model = Journal
+    elif type_of_book=='Magazine':
+        Model = Magazine
+    elif type_of_book=='Book':
+        Model = BookDetails
+    elif type_of_book=='EBook':
+        Model = E_Book 
+    books = Model.objects.filter(Q(name__icontains=data) | Q(book_author__icontains=data)| Q(barcode__icontains=data)| Q(book_sub_author__icontains=data))
+    results = []
+    if Model=="Journal":
+        for book in books:
+            user_json = {}
+            user_json['id'] = book.id
+            user_json['name'] = book.name+" -"+ book.barcode
+            results.append(user_json)
+    else:
+        for book in books:
+            user_json = {}
+            user_json['id'] = book.id
+            user_json['name'] = book.name + " - " + book.book_author +" -"+ book.barcode
+            results.append(user_json)
+    data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def reissuematerial(request,pk):
+    pass
+
+def returnbook(request):
+    book = int(request.GET.get('book_id'))
+    book_category = request.GET.get('book_category')    
+    print(book,book_category)
+    message = ""
+    book_list = []
+    book_history = []
+    if book_category=='Journal':
+        obj = JournalIssueStudent.objects.get(pk=book) 
+    elif book_category=='Magazine':
+        obj = MagazineIssueStudent.objects.get(pk=book)
+    elif book_category=='Book':
+        obj = BookIssueStudent.objects.get(pk=book)
+    elif book_category=='EBook':
+        obj = EbookIssueStudent.objects.get(pk=book)
+    obj.status="Returned"
+    obj.return_date=datetime.date.today()
+    obj.save()
+    student_id = obj.student.pk
+    stud_name = str(obj.student)
+    book_list = get_student_current_book(student_id)
+    book_history = get_student_returned_book(student_id)
+    message = "success"
+    context = {
+        'stud_name': stud_name,
+        'book_list':book_list,
+        'book_history':book_history,
+        'message': message,
+    }
+    data = json.dumps(context)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+def get_book_list(request):
+    id_string = request.GET.get('book')
+    select_type = request.GET.get('select_type')
+    selected_id = int(id_string.split('-')[0])
+    if select_type=='Journal':
+        obj = Journal.objects.get(pk=selected_id)
+        book_id = obj.pk
+        name = obj.name
+        author = ""
+        book_category='Journal'
+        barcode = obj.barcode
+        book_no  = obj.journal_no
+        if obj.available:
+            availability = "not available"
+        else:
+            availability = "available"
+    elif select_type=='Magazine':
+        obj = Magazine.objects.get(pk=selected_id)
+        book_id = obj.pk
+        name = obj.name
+        author = obj.book_author
+        book_category='Magazine'
+        barcode = obj.barcode
+        book_no  = obj.magazine_no
+        if obj.available:
+            availability = "not available"
+        else:
+            availability = "available"
+    elif select_type=='Book':
+        obj = BookDetails.objects.get(pk=selected_id)
+        book_id = obj.pk
+        name = obj.name
+        author = obj.book_author
+        book_category='Book'
+        barcode = obj.barcode
+        book_no  = obj.book_number
+        if obj.available:
+            availability = "not available"
+        else:
+            availability = "available"
+    elif select_type=='EBook':
+        obj = E_Book.objects.get(pk=selected_id)
+        book_id = obj.pk
+        name = obj.name
+        author = obj.book_author
+        book_category='EBook'
+        barcode = obj.barcode
+        book_no  = obj.ebook_no
+        if obj.available:
+            availability = "not available"
+        else:
+            availability = "available"
+    context = {
+        'book_id': book_id,
+        'name':name,
+        'author':author,
+        'availability':availability,
+        'book_category': book_category,
+        'barcode': barcode,
+        'book_no': book_no,
+    }
+    data = json.dumps(context)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+def issuse_book_teacher(request):
+    return render(request, 'library/issue_book_teacher.html')
+
+def issue_new_book_ajax_teacher(request):
+    employee = request.GET.get('employee')
+    emp_obj = Employee.objects.get(enrollment_number=employee)
+    if stud_obj is None:
+        message = "Student is not available"
+        stud_name = ''
+        book_list = []
+        book_history = []
+    else:
+        student_id = emp_obj.student_name.pk
+        stud_name = str(stud_obj.student_name)
+        book_list = get_student_current_book(student_id)
+        book_history = get_student_returned_book(student_id)
+        message = "Successfull"
+    
+    context = {
+        'stud_name': stud_name,
+        'book_list': book_list,
+        'book_history': book_history,
+        'message': message,
+    }
+    print(book_list)
+    book_available_json = json.dumps(context)
+    return HttpResponse(book_available_json, 'application/json')
+
+def issue_this_book_ajax(request):
+    student = request.GET.get('student')
+    book_id = request.GET.get('book_id')
+    book_category = request.GET.get('book_category')
+    student_id = Enrollment.objects.get(enrollment_number=student)
+    #student_id = Student.objects.get(pk=student_obj.pk)
+    print(student_id)
+    message = ""
+    book_list = []
+    book_history = []
+    if book_category=='Journal':
+        obj = Journal.objects.get(pk=book_id)
+        issue_obj = JournalIssueStudent.objects.create(
+            student=student_id,
+            journal=obj,
+            issue_date = datetime.date.today(),
+            status = "Issued",
+        )
+        obj.available = 1
+        obj.save()
+    elif book_category=='Magazine':
+        obj = Magazine.objects.get(pk=book_id)
+        issue_obj = MagazineIssueStudent.objects.create(
+            student=student_id,
+            magazine=obj,
+            issue_date = datetime.date.today(),
+            status = "Issued",            
+        )
+        obj.available = 1
+        obj.save()
+    elif book_category=='Book':
+        obj = BookDetails.objects.get(pk=book_id)
+        issue_obj = BookIssueStudent.objects.create(
+            student=student_id,
+            book=obj,
+            issue_date = datetime.date.today(),
+            status = "Issued",            
+        )
+        obj.available = 1
+        obj.save()
+    elif book_category=='EBook':
+        obj = E_Book.objects.get(pk=book_id)
+        issue_obj = EbookIssueStudent.objects.create(
+            student=student_id,
+            e_book=obj,
+            issue_date = datetime.date.today(),
+            status = "Issued",            
+        )
+        obj.available = 1
+        obj.save()
+     
+    book_list = get_student_current_book(student_id)
+    book_history = get_student_returned_book(student_id)
+    message = "success"
+    context = {        
+        'book_id':book_id,
+        'book_category':book_category,        
+        'book_list':book_list,
+        'book_history':book_history,
+        'message': message,
+    }
+    data = json.dumps(context)
+    return HttpResponse(data, 'application/json')

@@ -121,7 +121,7 @@
                 else {
                     for(var i=1;i<= data.exam_type_list.length;i++){
                         tableString += "<tr><td>"+ i +"</td><td>" + data.exam_type_list[i-1].exam_type + "</td>";                  
-                        tableString += "<input type=\"hidden\"id=\"exam_type"+i+"\" value=\""+data.exam_type_list[i-1].id+"\">" + data.exam_type_list[i-1].exam_type + "</td>";    
+                        tableString += "<input type=\"hidden\" id=\"exam_type"+i+"\" value=\""+data.exam_type_list[i-1].id+"\">" + data.exam_type_list[i-1].exam_type + "</td>";    
                         tableString += "<td><input type=\"text\" id=\"nums"+i+"\">";                        
                         tableString += "</td>"
                         tableString += "</tr>";

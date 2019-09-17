@@ -1,8 +1,10 @@
 from django import forms
 from .models import (BookDetails, BookType, Vendor,
                     ProductCategory,PurchaseOrder,Location,
-                    LibraryNumber, SelveNo, RoomNo, Journal, Magazine, E_Book)
+                    LibraryNumber, SelveNo, RoomNo, Journal, Magazine, E_Book ,EDITION, BookIssueStudent, BookIssueTeacher)
 from academics.models import Subject
+from student.models import Student, Enrollment
+from employee.models import Employee
 
 class BookTypeForm(forms.Form):
     name = forms.CharField()
@@ -89,6 +91,7 @@ class BookAddForm(forms.Form):
     location = forms.ChoiceField(choices=[(o.id, str(o.selve_no)) for o in Location.objects.all()],required=False)
     supplier = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in Vendor.objects.all()],required=False)
     subject = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in Subject.objects.all()],required=False)
+    purchase_oder = forms.ChoiceField(choices=[(o.id, str(o.bill_no)) for o in PurchaseOrder.objects.all()],required=False)
 
     def save(self):
         data = self.cleaned_data
@@ -99,6 +102,7 @@ class BookAddForm(forms.Form):
             location_obj = Location.objects.get(pk=data['location'])
             subject_obj = Subject.objects.get(pk=data['subject'])
             supplier_obj = Vendor.objects.get(pk=data['supplier'])
+            purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
             obj = BookDetails(name=data['name'],
                             ISBN=data['ISBN'],
                             book_author=data['book_author'],
@@ -124,6 +128,8 @@ class BookAddForm(forms.Form):
                             location=location_obj,
                             supplier=supplier_obj,
                             subject=subject_obj,
+                            purchase_oder=purchase_oder_obj,
+                            available=1,
                             )
             obj.save()
         except Exception as e:
@@ -137,6 +143,7 @@ class BookAddForm(forms.Form):
         location_obj = Location.objects.get(pk=data['location'])
         subject_obj = Subject.objects.get(pk=data['subject'])
         supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
         obj.book_type = bookype_obj
         obj.product_category = product_obj
         obj.location = location_obj
@@ -162,6 +169,8 @@ class BookAddForm(forms.Form):
         obj.language=data['language']
         obj.edition=data['edition']
         obj.link=data['link']
+        obj.purchase_oder=purchase_oder_obj
+        obj.available=1,
         obj.save()
         return obj
 
@@ -277,6 +286,9 @@ class JournalForm(forms.Form):
     journal_format = forms.CharField(required=False)
     supplier = forms.ChoiceField(choices=[(o.id, str(o)) for o in Vendor.objects.all()])
     subject = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in Subject.objects.all()],required=False)
+    purchase_oder = forms.ChoiceField(choices=[(o.id, str(o.bill_no)) for o in PurchaseOrder.objects.all()],required=False)
+    edition = forms.ChoiceField(choices=EDITION)
+    link = forms.URLField(required=False)
 
     def save(self):
         data = self.cleaned_data        
@@ -285,6 +297,7 @@ class JournalForm(forms.Form):
         location_obj = Location.objects.get(pk=data['location'])
         subject_obj = Subject.objects.get(pk=data['subject'])
         supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
         obj = Journal(journal_no=data['journal_no'],
                         publisher=data['publisher'],
                         ISSN=data['ISSN'],
@@ -297,6 +310,10 @@ class JournalForm(forms.Form):
                         journal_format=data['journal_format'],
                         supplier=supplier_obj,
                         subject=subject_obj,
+                        purchase_oder=purchase_oder_obj,
+                        edition=data['edition'],
+                        link=data['link'],
+                        available=1,
                         )
         obj.save()
         return obj
@@ -308,6 +325,7 @@ class JournalForm(forms.Form):
         location_obj = Location.objects.get(pk=data['location'])
         subject_obj = Subject.objects.get(pk=data['subject'])
         supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
         obj.journal_no = data["journal_no"]
         obj.publisher = data['publisher']
         obj.ISSN = data['ISSN']
@@ -320,6 +338,10 @@ class JournalForm(forms.Form):
         obj.journal_format = data['journal_format']
         obj.supplier = supplier_obj
         obj.subject = subject_obj
+        obj.purchase_oder=purchase_oder_obj
+        obj.edition=data['edition']
+        obj.link=data['link']
+        obj.available=1
         obj.save()
         return obj
 
@@ -341,6 +363,9 @@ class EBookForm(forms.Form):
     remarkq = forms.CharField(required=False)
     remark2 = forms.CharField(required=False)
     price = forms.CharField(required=False)
+    purchase_oder = forms.ChoiceField(choices=[(o.id, str(o.bill_no)) for o in PurchaseOrder.objects.all()],required=False)
+    edition = forms.ChoiceField(choices=EDITION)
+    link = forms.URLField()
 
     def save(self):
         data = self.cleaned_data
@@ -349,12 +374,13 @@ class EBookForm(forms.Form):
         location_obj = Location.objects.get(pk=data['location'])
         subject_obj = Subject.objects.get(pk=data['subject'])
         supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
         obj = E_Book(name=data['name'],
                     publisher=data['publisher'],
                     publication_year=data['publication_year'],
                     location=location_obj,
                     category=product_obj,
-                    journal_format=data['ebook_format'],
+                    ebook_format=data['ebook_format'],
                     ISBN=data['ISBN'],
                     book_author=data['book_author'],
                     book_sub_author=data['book_sub_author'],
@@ -366,6 +392,10 @@ class EBookForm(forms.Form):
                     ebook_type=ebook_type_obj,
                     supplier=supplier_obj,
                     subject=subject_obj,
+                    purchase_oder=purchase_oder_obj,
+                    edition=data['edition'],
+                    link=data['link'],
+                    available=1,
                 )
         obj.save()
         return obj
@@ -377,6 +407,7 @@ class EBookForm(forms.Form):
         location_obj = Location.objects.get(pk=data['location'])
         subject_obj = Subject.objects.get(pk=data['subject'])
         supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
         obj.name = data['name']
         obj.publisher = data['publisher']
         obj.publication_year = data['publication_year']
@@ -394,8 +425,97 @@ class EBookForm(forms.Form):
         obj.ebook_type = ebook_type_obj
         obj.supplier = supplier_obj
         obj.subject = subject_obj
+        obj.purchase_oder=purchase_oder_obj
+        obj.edition=data['edition']
+        obj.link=data['link']
+        obj.available=1
         obj.save()
         return obj
 
 class MagazineForm(forms.Form):
-    pass
+    name = forms.CharField()
+    publisher = forms.CharField(required=False)
+    publication_year = forms.DateField(required=False)
+    magazine_format = forms.CharField(max_length=250,required=False)
+    ISBN = forms.CharField(required=False,max_length=250)
+    book_author = forms.CharField(max_length=250,required=False)
+    book_sub_author = forms.CharField(max_length=250,required=False)
+    book_sub_author1 = forms.CharField(max_length=250,required=False)
+    remark = forms.CharField(max_length=250,required=False)
+    remarkq = forms.CharField(max_length=250,required=False)
+    remark2 = forms.CharField(max_length=250,required=False)
+    price = forms.CharField(max_length=250,required=False)
+    location = forms.ChoiceField(choices=[(o.id, str(o.selve_no)) for o in Location.objects.all()],required=False)
+    category = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in ProductCategory.objects.all()],required=False)
+    magazine_type = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in BookType.objects.all()],required=False)
+    supplier = forms.ChoiceField(choices=[(o.id, str(o)) for o in Vendor.objects.all()])
+    subject = forms.ChoiceField(choices=[(o.id, str(o.name)) for o in Subject.objects.all()],required=False)
+    purchase_oder = forms.ChoiceField(choices=[(o.id, str(o.bill_no)) for o in PurchaseOrder.objects.all()],required=False)
+    edition = forms.ChoiceField(choices=EDITION)
+    link = forms.URLField()
+    
+    def save(self):
+        data = self.cleaned_data
+        product_obj = ProductCategory.objects.get(pk=data['category'])
+        magazine_type_obj = BookType.objects.get(pk=data['magazine_type'])
+        location_obj = Location.objects.get(pk=data['location'])
+        subject_obj = Subject.objects.get(pk=data['subject'])
+        supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
+        obj = Magazine(name=data['name'],
+                    publisher=data['publisher'],
+                    publication_year=data['publication_year'],
+                    magazine_format=data['magazine_format'],
+                    ISBN=data['ISBN'],
+                    book_author=data['book_author'],
+                    book_sub_author=data['book_sub_author'],
+                    book_sub_author1=data['book_sub_author1'],
+                    remark=data['remark'],
+                    remarkq=data['remarkq'],
+                    remark2=data['remark2'],
+                    price=data['price'],
+                    edition=data['edition'],
+                    link=data['link'],
+                    location=location_obj,
+                    category=product_obj,
+                    purchase_oder=purchase_oder_obj,
+                    supplier=supplier_obj,
+                    subject=subject_obj,
+                    magazine_type=magazine_type_obj,
+                    available=1,
+                        )
+        obj.save()
+        return obj
+    
+    def update(self,obj):
+        data = self.cleaned_data
+        product_obj = ProductCategory.objects.get(pk=data['category'])
+        magazine_type_obj = BookType.objects.get(pk=data['magazine_type'])
+        location_obj = Location.objects.get(pk=data['location'])
+        subject_obj = Subject.objects.get(pk=data['subject'])
+        supplier_obj = Vendor.objects.get(pk=data['supplier'])
+        purchase_oder_obj = PurchaseOrder.objects.get(pk=data['purchase_oder'])
+        obj.name=data['name']
+        obj.publisher=data['publisher']
+        obj.publication_year=data['publication_year']
+        obj.magazine_format=data['magazine_format']
+        obj.ISBN=data['ISBN']
+        obj.book_author=data['book_author']
+        obj.book_sub_author=data['book_sub_author']
+        obj.book_sub_author1=data['book_sub_author1']
+        obj.remark=data['remark']
+        obj.remarkq=data['remarkq']
+        obj.remark2=data['remark2']
+        obj.price=data['price']
+        obj.edition=data['edition']
+        obj.link=data['link']
+        obj.location=location_obj
+        obj.category=product_obj
+        obj.purchase_oder=purchase_oder_obj
+        obj.supplier=supplier_obj
+        obj.subject=subject_obj
+        obj.magazine_type=magazine_type_obj
+        obj.available=1
+        obj.save()
+        return obj
+
